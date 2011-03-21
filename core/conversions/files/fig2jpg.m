@@ -1,4 +1,4 @@
-function fig2jpg( figdirectory )
+function fig2jpg( figdirectory, chview )
 %%Matlab program - fig2jpg
 
 
@@ -18,9 +18,12 @@ for i = startfig:endfig
     
     fname = p2;
     
-    fname_input = sprintf('%s/%s',figdirectory,fname)
+    fname_input = sprintf('%s/%s.fig',figdirectory,fname)
     fname_output = sprintf('%s/%s.jpg',figdirectory,fname)
     f = openfig(fname_input)
+    if nargin ==2,
+        view(chview);
+    end
     saveas(f,fname_output,'jpg');
     close(f);
 end 
