@@ -1,5 +1,5 @@
-function[actual_n,im_coords,angles,angarr,planes,failReason,result] = ...
-    examineX0Effect_simulated( T, P, D, DELTA, NOISE2 )
+function[angles,angarr,planes,failReason,result] = ...
+    examineX0Effect_video( im_coords, H, DELTA, vidname )
 
 if ~exist('T','var'),
     T = input('Input Theta: ');
@@ -19,10 +19,7 @@ end
 
 
 
-
-% Make simulated data
-[actual_n,~,~,coords,im_coords] = make_test_data(T, D, 1,P, 1000, NOISE2 );
-actual_n
+coords = H*makeHomogenous( im_coords );
 
 % Find same length vectors and select 3.
 [ids_full,usable,im_ids] = pickIds( coords, im_coords, DELTA );
@@ -66,7 +63,7 @@ for p=[-1,1],
                     
                 
                 % checks
-                f = notFit( im_coords, [D,actual_n'], x_iter, 0.05 );
+                f = notFit( im_coords, H, x_iter, 0.05 );
 %                     f = var(lengths) < eps;
 %                 lengths = speedDistFromCoords( wc );
                 [vn, vd] = checkPlaneValidity( x_iter );
@@ -99,8 +96,10 @@ end
 angarr = reshape([angles{:}],2,NUM_RES)';
 
 draw_x0_NormalResults_script
-
-
-fname = sprintf('%s/effectOfX0_full/x0_converge_T2_noise=%.2f_T=%d_P=%d_D=%d_DELTA=%.3f', getTodaysFolder(), NOISE2, T, P, D,DELTA )
+fld = sprintf( 'x0_effect_video/%s/%s', vidname, getTodaysFolder() );
+if ~exist(fld,'dir'),
+    mkdir( fld );
+end
+fname = sprintf('%s/x0_converge_DELTA=%.3d', fld, DELTA )
 saveas(gcf, strcat(fname,'.fig'));
 save( strcat(fname, '.mat'), '*' );
