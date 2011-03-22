@@ -1,18 +1,5 @@
-function[angles,angarr,planes,failReason,result] = ...
-    examineX0Effect_video( im_coords, H, DELTA, vidname )
+function [angles,angarr,planes,failReason,result,im_ids] = examineX0Effect_video( im_coords, H, DELTA, vidname )
 
-if ~exist('T','var'),
-    T = input('Input Theta: ');
-end
-if ~exist('P','var'),
-    P = input('Input Psi: ');
-end
-if ~exist('D','var'),
-    D = input('Input D: ');
-end
-if ~exist('NOISE2','var'),
-    NOISE2 = input('Input Type-2 Noise: ');
-end
 if ~exist('DELTA','var'),
     DELTA = input('Input Selection DELTA: ');
 end
@@ -33,7 +20,8 @@ options = optimset( 'Display', 'off', ...
                    'TolFun',1e-19, ...
                    'ScaleProblem','Jacobian' );
                
-
+actual_n = findNormalFromH( H );
+actual_n = actual_n.a;
 
 trng       = 0:1:30;
 prng       = 0:1:45;
@@ -52,7 +40,7 @@ for p=[-1,1],
         for q=[-1,1],
             for j=prng,
                 psi = psi_0 + j*q;
-                x0 = [D, normalFromAngle( theta, psi, 'degrees' )' ];
+                x0 = [5, normalFromAngle( theta, psi, 'degrees' )' ];
                 % Iterate
                 [ x_iter, ~, exitflag, ~ ] = fsolve( @gp_iter_func, x0, options, im_coords(:,im_ids) );
                 wc = find_real_world_points( im_coords, iter2plane(x_iter) );
