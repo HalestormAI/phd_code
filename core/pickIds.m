@@ -7,20 +7,33 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
         full_idx = sort([(2.*idx_1-1),(2.*idx_1-1)+1]);
         usable = imc( :, full_idx );
         
-        usable
+        if nargin < 4,
+            [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx );
+        else
+            [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx, im );
+        end
+        
+        more_usable = imc(:, vert_ids )
+        
+        %% Now make final selection
         
         %ids_full = monteCarloPaths( usable, 3,3,5 );
         if nargin < 4,
-            ids_full = smartSelection( usable, 3, 1/3 );
+            ids_sub = smartSelection( more_usable, 3, 1/3 );
         else
-            ids_full = smartSelection( usable, 3, 1/3, im );
+            ids_sub = smartSelection( more_usable, 3, 1/3, im );
         end
-        im_ids = full_idx(ids_full);
+        
+        ids_full = (vert_sub(ids_sub));
+        im_ids = vert_ids(ids_sub);
+        
+        %% Draw them
         
          if nargin >= 4,
             figure,
             imagesc(im);
-            drawcoords(imc(:,full_idx) , '', 0, 'b');
+            drawcoords(imc(:,full_idx) , '', 0, 'k');
+            drawcoords(imc(:,vert_ids) , '', 0, 'b');
             drawcoords(usable(:,ids_full) , '', 0, 'g');
          end
     
@@ -29,6 +42,7 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
             throw( err );
         end
 
+        
 %         save important_info ids_full usable full_idx
 
     end
