@@ -1,4 +1,4 @@
-function [angles,angarr,planes,failReason,result,im_ids] = examineX0Effect_video( im_coords, H, DELTA, vidname )
+function [angles,angarr,planes,failReason,result,im_ids] = examineX0Effect_video( im_coords, H, DELTA, vidname, img )
 
 if ~exist('DELTA','var'),
     DELTA = input('Input Selection DELTA: ');
@@ -10,6 +10,27 @@ coords = H*makeHomogenous( im_coords );
 
 % Find same length vectors and select 3.
 [ids_full,usable,im_ids] = pickIds( coords, im_coords, DELTA );
+
+
+% Build file name data
+fld = sprintf( 'x0_effect_video/%s/%s', vidname, getTodaysFolder() );
+if ~exist(fld,'dir'),
+    mkdir( fld );
+end
+a        = dir(sprintf('./%s/x0_converge_DELTA=%.3d_run*.fig',fld,DELTA));
+next_id  = size(a,1) + 1;
+
+fname = sprintf('%s/x0_converge_DELTA=%.3d_run%d', fld, DELTA, next_id )
+
+saveas(gcf, strcat(fname,'_chosen','.fig'));
+close( gcf );
+
+% Create and save image showing used coords
+figure
+imagesc(img);
+drawcoords( im_coords, '', 0, 'b' );
+drawcoords( im_coords(:,im_ids), '', 0, 'g' );
+
 
 % ids = smartSelection( im_coords, 3, 0 );
 
@@ -63,8 +84,8 @@ for p=[-1,1],
                         failReason(num) = 1;
                     elseif ~vn,
                         failReason(num) = 2;
-                    elseif ~vd
-                        failReason(num) = 3;
+                    %elseif ~vd
+                 %       failReason(num) = 3;
                     elseif baddist
                         failReason(num) = 4;
                     else
@@ -84,10 +105,8 @@ end
 angarr = reshape([angles{:}],2,NUM_RES)';
 
 draw_x0_NormalResults_script
-fld = sprintf( 'x0_effect_video/%s/%s', vidname, getTodaysFolder() );
-if ~exist(fld,'dir'),
-    mkdir( fld );
-end
-fname = sprintf('%s/x0_converge_DELTA=%.3d', fld, DELTA )
+
 saveas(gcf, strcat(fname,'.fig'));
+
+
 save( strcat(fname, '.mat'), '*' );

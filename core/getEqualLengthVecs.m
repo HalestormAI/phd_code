@@ -35,7 +35,6 @@ function [planes, mup, dist, ids, figHandles, failReasons,x0s] = getEqualLengthV
     h = waitbar( 1/NUM_ITERS, sprintf('Running %d iterations',NUM_ITERS), 'Name', sprintf('Running %d iterations',NUM_ITERS) );
 
     failReasons = cell( NUM_ITERS, 1);
-    failPlanes = cell( NUM_ITERS, MAX_ATTEMPTS);
     x0s = cell(NUM_ITERS, 1);
     image_ids = cell(NUM_ITERS, 1);
 
