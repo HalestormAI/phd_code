@@ -12,7 +12,7 @@ Ch = H*makeHomogenous( im_coords );
 mu_l = findLengthDist( Ch, 0 );
 Ch_norm = Ch ./ mu_l;
 
-[~,~,im_ids] = pickIds( Ch_norm, im_coords, 0.01, im1 );
+[~,~,im_ids] = pickIds( Ch_norm, im_coords, 500, im1 );
 
 im_coords(:,im_ids)
 
@@ -41,9 +41,8 @@ parfor i=1:NUM_ITERS,
     [validn,validd] = checkPlaneValidity( x_iter );
     
     wc = find_real_world_points( im_coords, iter2plane(x_iter) );
-    [mu_lwc,sd_wcl,lengths] = findLengthDist( wc, 0 );
-    numbad = length(find(lengths > mu_lwc + 10*sd_wcl ));
-    baddist = numbad > 1;
+    baddist = checkDistributionFeasibility( wc, 5, 2 );
+    
     f = notFit( im_coords, H, x_iter, 0.05 );
 
     %% checks
@@ -78,7 +77,12 @@ parfor i=1:NUM_ITERS,
 
 end
 
-good_dist=find(~failReasons(:,5));
+xiter_mat=cell2mat(x_iters);
+successful = find(~failReasons(:,1));
+good_dist=find(~failReasons(successful,5));
+good_barring_d = find(~sum(failReasons(:,[1,2,4]),2));
+
+x_iter_mn = mean(xiter_mat(good_barring_d,:));
 
 %% Save data    
 fld = sprintf('errorRate/%s',getTodaysFolder( ) );
