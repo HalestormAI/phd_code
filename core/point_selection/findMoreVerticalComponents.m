@@ -14,7 +14,7 @@ function [idx, idx_sub] = findMoreVerticalComponents( imc, im_ids, im )
         comp_h = imc_hh(:,1) - imc_hh(:,2);
         comp_v = imc_vv(:,1) - imc_vv(:,2);
         
-        gttest = abs(comp_v) >= abs(comp_h);
+        gttest = abs(comp_v) >eps;%= abs(comp_h);
         % Pick those with larger vertical than horizontal component
         idx_sub_mp = find( gttest )';
         
