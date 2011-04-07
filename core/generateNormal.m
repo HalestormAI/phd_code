@@ -1,7 +1,7 @@
 
     function x0 = generateNormal( im_coords )
-        theta = randi(randi(60))
-        psi   = randi(90)-45
+        theta = randi(randi(60));
+        psi   = randi(90)-45;
         n = normalFromAngle( theta, psi, 'degrees' );
         % find the best d for this normal so we're using something sensible
         if nargin == 1,

@@ -1,22 +1,24 @@
+function [failReasons, x0s_mat, xiter_mat, pass] = ...
+    runWithErrors( im_coords, H, im_ids, NUM_ITERS, num )
+% Given a set of image points and the real-world homography, performs a
+% single "run" of the algorithm, consisting of NUM_ITERS attempts.
+%
+%  INPUT:
+%   im_coords    The set of image=-plane vectors
+%   H            Homography from real-world
+%   im_ids       Image coordinate ids used as input vectors
+%   NUM_ITERS    Number of iterations (default: 1000)
+%
+%  OUTPUT:
+%   failReasons  A matrix of reasons for attempt failure per iteration
+%   x0s_mat      Matrix of initial conditions used for each iteration
+%   xiter_mat    Matrix of output planes (in "iter" format) per iteration
+%   pass         Column vector of passes/failure (1==pass) per iteration
 
-if exist('imc','var') && ~exist('im_coords','var'),
-    im_coords = imc;
-    clear imc;
+if nargin < 3,
+    NUM_ITERS = 1000;
 end
-if exist('im2','var') && ~exist('im1','var'),
-    im1 = im2;
-    clear im2;
-end
 
-Ch = H*makeHomogenous( im_coords );
-mu_l = findLengthDist( Ch, 0 );
-Ch_norm = Ch ./ mu_l;
-
-[~,~,im_ids] = pickIds( Ch_norm, im_coords, 500, im1 );
-
-im_coords(:,im_ids)
-
-NUM_ITERS = 1000;
 options = optimset( 'Display', 'off', ...
                     'Algorithm', {'levenberg-marquardt',0.00001}, ...
                     'MaxFunEvals', 100000, ...
@@ -30,7 +32,7 @@ pass        = zeros( NUM_ITERS, 1 );
 
 
 imc_use = im_coords(:,im_ids) ;
-parfor i=1:NUM_ITERS,
+for i=1:NUM_ITERS,
     x0 = generateNormal();
     x0s{i} = x0;
     [ x_iter, ~, exitflag, ~ ] = fsolve( @gp_iter_func, x0, options, imc_use);
@@ -73,16 +75,12 @@ parfor i=1:NUM_ITERS,
     if sum(fR) == 0,
         pass(i) = 1;
     end
-    fprintf('**********************************\nIteration %04d\n*************************************\nPass: %d\n\n', i,pass(i));
+    fprintf('**********************************\nRun %04d, Attempt %04d\n*************************************\nPass: %d\n\n', num, i,pass(i));
     
 end
-
 xiter_mat=cell2mat(x_iters);
-successful = find(~failReasons(:,1));
-good_dist=find(~failReasons(successful,5));
-good_barring_d = find(~sum(failReasons(:,[1,2,4]),2));
 
-x_iter_mn = mean(xiter_mat(good_barring_d,:));
+x0s_mat = cell2mat(x0s);
 
 %% Save data    
 fld = sprintf('errorRate/%s',getTodaysFolder( ) );
