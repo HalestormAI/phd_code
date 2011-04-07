@@ -10,10 +10,10 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
         if nargin < 4,
             [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx );
         else
-            [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx, im );
+            [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx );
         end
         
-        more_usable = imc(:, vert_ids )
+        more_usable = imc(:, vert_ids );
         
         %% Now make final selection
         

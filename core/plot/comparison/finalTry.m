@@ -69,8 +69,8 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
     pts_e = rescaleCoords( moveTo(rect_pts_e(:,:)), rect_pts_a(:,:) );
     
     
-    handles(1).onPlaneActual = drawcoords(rect_pts_a(:,idx_pick), 'Actual Moved to Plane');    
-    handles(1).onPlaneEstimate = drawcoords3(rect_pts_e(:,idx_pick) , 'Estimate Moved to Plane',1,'r');
+%     handles(1).onPlaneActual = drawcoords(rect_pts_a(:,idx_pick), 'Actual Moved to Plane');    
+%     handles(1).onPlaneEstimate = drawcoords3(rect_pts_e(:,idx_pick) , 'Estimate Moved to Plane',1,'r');
     % pause
     
     % BEFORE MIRRORING
@@ -97,7 +97,7 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
     mindist,mindist2
     format short
     disp('*******************************')
-    if mindist2 > mindist,
+    if mindist2 < mindist,
 %         aligned = aligned_mir;
         disp('Mirroring');
     end
@@ -228,11 +228,11 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
 
 %         delete(h)
         [mindist,minidx]=min(dists);
-        figure;
-        scatter(rng, dists);
-        l=line([rng(minidx),rng(minidx)],[min(dists),max(dists)]);
-        set(l,'Color','r');
-        xlabel('Rotation angle, degrees'); ylabel('Sum euclidean distance between actual and estimated endpoints');
+%         figure;
+%         scatter(rng, dists);
+%         l=line([rng(minidx),rng(minidx)],[min(dists),max(dists)]);
+%         set(l,'Color','r');
+%         xlabel('Rotation angle, degrees'); ylabel('Sum euclidean distance between actual and estimated endpoints');
 %         if nargin == 3,
 %             title(sprintf('Rotation against sum euclidean distance. Iteration %d', num ));
 %         end

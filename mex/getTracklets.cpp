@@ -153,6 +153,7 @@ IplImage *image = 0, *grey = 0, *prev_grey = 0, *pyramid = 0, *prev_pyramid = 0,
 int win_size = 10;
 const int MAX_COUNT = 500;
 const int MINSPEED = 3;
+const int FPS = 25;
 
 CvPoint2D32f* points[2] = {0,0}, *swap_points;
 char* status = 0;
@@ -396,7 +397,7 @@ int mainLoop( int argc, string argv[] )
 
     
 
-        if(frameNumber %  25 == 0) {
+        if(frameNumber %  FPS == 0) {
         
             if( outputFrameSpeeds ) {
             //    outputSpeedDist( &frameTracklets );
