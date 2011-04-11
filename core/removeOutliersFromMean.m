@@ -1,6 +1,6 @@
 function [newMean, ok_planes,f] = removeOutliersFromMean( planes, n, draw )
 
-STD_COEFF = 1;
+STD_COEFF = 2;
 
 if nargin < 3,
     draw = 1;
@@ -24,18 +24,31 @@ good_idx = find( ~sum(bigger,2) );
 bad_idx  = find( sum(bigger,2) );
 
 ok_planes  = planes( good_idx, : );
-bad_planes = planes( bad_idx,  : );
 
 newMean = mean( ok_planes, 1 );
 
 if draw,
     %% Draw axes and planes
+    
+    % Get full "n" by creating array of structs
+    drawPlanes = cellfun( @iter2plane, num2cell(planes,2), 'UniformOutput', 1 );
+    structGood   = drawPlanes( good_idx, : );
+    structBad    = drawPlanes(  bad_idx, : );
+    drawGood     = [structGood.n];
+    drawBad      = [structBad.n ];
     f = figure('Position',[0 -50 1280 1024]);
     hold on,
-    scatter3( ok_planes(:,2),ok_planes(:,3),ok_planes(:,4),'g*' );
-    scatter3( bad_planes(:,2),bad_planes(:,3),bad_planes(:,4),'r*' );
-    scatter3( mu_p(:,2),mu_p(:,3),mu_p(:,4),'bo' );
-    scatter3( newMean(:,2),newMean(:,3),newMean(:,4),'b*' );
+    if ~isempty(drawBad),
+        scatter3(  drawBad(1,:), drawBad(2,:), drawBad(3,:),'ro' );
+    end
+    if ~isempty(drawGood),
+        scatter3( drawGood(1,:),drawGood(2,:),drawGood(3,:),'g*' );
+    end
+    muPlane = iter2plane(mu_p);
+    scatter3( muPlane.n(1), muPlane.n(2), muPlane.n(3),'bo' );
+    
+    newMeanPlane = iter2plane( newMean );
+    scatter3( newMeanPlane.n(1), newMeanPlane.n(2), newMeanPlane.n(3,:),'b*' );
     scatter3( n(1), n(2), n(3), 'm*');
     % [x,y,z] = ellipsoid( mu_p(2),mu_p(3),mu_p(4), std_p(2), std_p(3), std_p(4) );
     % mesh(x,y,z, 'FaceAlpha',0, 'EdgeAlpha', 0.5, 'EdgeColor',[0.5,0.5,0.5]);
