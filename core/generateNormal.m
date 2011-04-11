@@ -1,13 +1,17 @@
+function x0 = generateNormal( im1 )
+% Generates a 1x4 initial vector within reasonable bounds based.
+%
+% INPUT: 
+%   im1     Input image used to calculate alpha
+%
+% OUTPUT:
+%   x0      Initial vector: [ d(o), n_x(0), n_y(0), alpha(0) ]
 
-    function x0 = generateNormal( im_coords )
-        theta = randi(randi(60));
-        psi   = randi(90)-45;
-        n = normalFromAngle( theta, psi, 'degrees' );
-        % find the best d for this normal so we're using something sensible
-        if nargin == 1,
-            d = findDFromNandImage( n, im_coords );
-        else
-            d = randi(8)+2;
-        end
-        x0 = [ d(1), n' ];
-    end
+    theta = randi(90);
+    psi   = randi(90)-45;
+    n_0 = normalFromAngle( theta, psi, 'degrees' );
+    % find the best d for this normal so we're using something sensible
+    d = randi(8)+2;
+    alpha = 1/length(im1);
+    x0 = [ d(1), n_0', alpha ];
+end

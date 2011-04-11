@@ -1,16 +1,16 @@
-function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
+function [dist,idx_pick,handles] = finalTry( N_a, est_plane, imc, num_vecs, idx_pick )
 
     if size(N_a,2) > 3,
         C_a = N_a;
         N_a = planeFromPoints(C_a);
         
     else
-        C_a = find_real_world_points( imc, iter2plane([1,N_a']) );
+        C_a = find_real_world_points( imc, iter2plane([1,N_a(1:2)',1]) );
     end
     
     handles = struct([]);
     
-    C_e = find_real_world_points( imc, iter2plane([1,N_e']) );    
+    C_e = find_real_world_points( imc, est_plane );    
 %     
 %     mirrot = makehgtform('yrotate',pi );
 %     
@@ -48,7 +48,7 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
 
     %% Rotate into x-y plane
     [t_a,p_a] = anglesFromN( N_a );
-    [t_e,p_e] = anglesFromN( N_e );
+    [t_e,p_e] = anglesFromN( est_plane.n );
     
     nrotx_a = makehgtform('xrotate',t_a);
     nrotz_a = makehgtform('zrotate',p_a);

@@ -69,7 +69,7 @@ for p=[-1,1],
                     
                 
                 % checks
-                f = notFit( im_coords, [7,actual_n'], x_iter, 0.05 );
+                f = notFit( im_coords, [7,actual_n(1:2)',1], x_iter, 0.05 );
 %                     f = var(lengths) < eps;
 %                 lengths = speedDistFromCoords( wc );
                 [vn, vd] = checkPlaneValidity( x_iter );
