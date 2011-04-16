@@ -7,7 +7,7 @@ function x0 = generateNormal( im1 )
 % OUTPUT:
 %   x0      Initial vector: [ d(o), n_x(0), n_y(0), alpha(0) ]
 
-    theta = randi(90);
+    theta = randi(60);
     psi   = randi(90)-45;
     n_0 = normalFromAngle( theta, psi, 'degrees' );
     % find the best d for this normal so we're using something sensible

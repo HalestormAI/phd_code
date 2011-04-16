@@ -39,24 +39,28 @@ for i=1:NUM_VECS,
     taken_idx = sort( [taken_idx, idx1.*2, 2.*idx1-1] );
     
     % Draw it
-    if nargin >= 4,
-        figure;imagesc(im1);hold on;
-        drawcoords( imc, '', 0, 'b' );
-        circle( midpoints(:,idx1_mp), rng(1)*PROX_COEFF, 1000, 'r' );
-        drawcoords( imc(:,taken_idx), '', 0, 'g' );
-        axis([ 0, size( im1,2 ), 0,size( im1,1 )]);
-    end
+%     if nargin >= 4,
+%         figure;imagesc(im1);hold on;
+%         drawcoords( imc, '', 0, 'b' );
+%         circle( midpoints(:,idx1_mp), rng(1)*PROX_COEFF, 1000, 'r' );
+%         drawcoords( imc(:,taken_idx), '', 0, 'g' );
+%         axis([ 0, size( im1,2 ), 0,size( im1,1 )]);
+%     end
 end
+BAD = mpid2cid(unique(all_bad_idx));
 
 if nargin >= 4,
     figure,imagesc(im1);
 
     drawcoords( imc, '', 0, 'b' );
 
+    drawcoords( imc( :,BAD ), '', 0, 'r' );
     for i=1:2:length(taken_idx),
         mp_idx = (taken_idx(i) + 1) ./2;
-        circle( midpoints(:,mp_idx), rng(1)*PROX_COEFF, 1000, 'r' );
+        circle( midpoints(:,mp_idx), rng(1)*PROX_COEFF, 1000, 'k' );
+        scatter( midpoints(1,mp_idx),midpoints(2,mp_idx),'k*' )
     end
     axis([ 0, size( im1,2 ), 0,size( im1,1 )]);
     drawcoords( imc( :,taken_idx ), '', 0, 'g' );
+    
 end

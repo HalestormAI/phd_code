@@ -1,4 +1,8 @@
-function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
+function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im, NUM_VECS )
+
+        if nargin < 5,
+            NUM_VECS = 3;
+        end
         [~, ~, lengths, ~, hinfo] = findLengthDist( Ch_norm, 0 );
         [~,maxidx] = max(hinfo.counts);
         big = hinfo.boundaries(maxidx);
@@ -23,9 +27,9 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
         while ~done,
             try
                 if nargin < 4,
-                    ids_sub = smartSelection( more_usable, 5, PROX );
+                    ids_sub = smartSelection( more_usable, NUM_VECS, PROX );
                 else
-                    ids_sub = smartSelection( more_usable, 5, PROX, im );
+                    ids_sub = smartSelection( more_usable, NUM_VECS, PROX, im );
                 end
                 done = 1;
             catch err,

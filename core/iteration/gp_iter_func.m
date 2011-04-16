@@ -9,6 +9,7 @@ function F = gp_iter_func( x, coords )
     %x(2:4) = x(2:4)./norm(2:4);
     for i=1:2:size(coords,2),
         F((i+1)/2) = dist_eqn( x, coords(:,i:i+1) )*10;
-    end
+    end   
     
+    F = [F;abs(x(4)) > 0.999;x(5) > 1;x(1) > 20];
 end

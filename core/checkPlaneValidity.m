@@ -1,4 +1,4 @@
-function [validn, validd] = checkPlaneValidity( myplane )
+function [validn, validd, valida] = checkPlaneValidity( myplane )
 % Checks if the following assumptions hold for a given plane:
 %   \theta is between 0 and 60  degrees
 %   \psi is between -25 and 25 degrees
@@ -24,7 +24,7 @@ theta       = rad2deg( theta );
 psi         = rad2deg( psi );
 TOL_theta   = theta * TOL;
 TOL_psi     = psi * TOL;
-validTheta  = (theta-TOL_theta >= 0) && (theta+TOL_theta <= 60);
+validTheta  = (theta-TOL_theta >= 0) && (theta+TOL_theta <= 80);
 validPsi    = (psi-TOL_psi >= -45 ) && (psi+TOL_psi <= 45);
 
 validn      = validTheta && validPsi;
