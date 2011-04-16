@@ -3,13 +3,13 @@ close all
 % 
 % load soc_carpark1
 % im1=im2;im_coords=imc;
-load seq_eth
+% load seq_eth
  
 
-%load students003_data
+load students003_data
 
 NUM_RUNS        = 10;
-NUM_ATTEMPTS    = 50;
+NUM_ATTEMPTS    = 100;
 
 all_im_ids      =  cell( NUM_RUNS, 1 );
 all_x0s         =  cell( NUM_RUNS, 1 );
@@ -61,7 +61,7 @@ end
 
 xm       = cell2mat(all_xiters)
 fR_mat   = cell2mat(all_failReasons)
-finalSet = xm( sum(fR_mat(:,[1,2,4,5]),2 ) == 0,: );
+finalSet = xm( sum(fR_mat(:,[1:4]),2 ) == 0,: );
 if isempty(finalSet),
     error('Nothing came of this. Boo, hiss, etc');
 end
@@ -71,3 +71,5 @@ numu     = removeOutliersFromMean( finalSet, N.a, 1 );
 plane = iter2plane(numu);
 
 [dist,idx_pick,handles] = finalTry( Ch, plane, im_coords, 30 );
+
+save alldata

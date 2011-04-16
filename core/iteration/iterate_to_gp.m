@@ -13,10 +13,10 @@ function [ wc, x_iter, ids_full,attempts ] = iterate_to_gp( im_coords, x0, NUM_R
 
 
     if nargin < 2 || size(x0,2) == 1,
-        x0 = generateNormal( im_coords );
+        x0 = generateNormal( 1:720 );
     end
     if nargin < 3,
-        NUM_RANDOMS = 3;
+        NUM_RANDOMS = 5;
     end
     if nargin < 4,
         point_sampling = 'SMART';
@@ -41,10 +41,12 @@ function [ wc, x_iter, ids_full,attempts ] = iterate_to_gp( im_coords, x0, NUM_R
                     ids_full = smartSelection(im_coords, NUM_RANDOMS, PROX_C );
                     break;
                 catch ex,
-                    if strcmp(ex.identifier, 'VECSEL:OUTOFVECS'),
+                    if strcmp(ex.identifier, 'IJH:VECSEL:OUTOFVECS'),
                         PROX_C = PROX_C * 0.75;
                         disp('  OUT OF VECTORS ' );
                         continue;
+                    else
+                        rethrow(ex);
                     end
                 end
             end
@@ -54,15 +56,14 @@ function [ wc, x_iter, ids_full,attempts ] = iterate_to_gp( im_coords, x0, NUM_R
              ids_full = sort( [ ids, (ids + 1) ] );
         end
 
-        options = optimset( 'Display', 'off', 'Algorithm', {'levenberg-marquardt',0.00001}, 'MaxFunEvals', 100000, 'MaxIter', 1000000, 'TolFun',1e-3,'ScaleProblem','Jacobian' );
-        
+        options = optimset( 'Display', 'off', 'Algorithm', {'levenberg-marquardt',0.001}, 'MaxFunEvals', 100000, 'MaxIter', 1000000, 'TolFun',1e-11,'ScaleProblem','Jacobian' );
 
         [ x_iter, fval, exitflag, output ] = fsolve( @gp_iter_func, x0, options, im_coords(:,ids_full) );
 
 
         iters = output.iterations;
         pass = 1;
-        if exitflag < 1,
+        if exitflag > 1,
             exception = MException('AcctError:Incomplete', sprintf('Did not converge in %d iterations. Exitflag: %d.', iters, exitflag ));
            % fprintf('Used ids:'); ids_full
           %  disp( exception.message  );
@@ -85,10 +86,11 @@ function [ wc, x_iter, ids_full,attempts ] = iterate_to_gp( im_coords, x0, NUM_R
         else
             
 
-            plane = struct('n', x_iter(2:4)', 'd', x_iter(1));
+            plane = iter2plane(x_iter);
             wc = find_real_world_points( im_coords, plane );
             done = 1;
-                
+            nFactor = norm(x_iter(2:4));
+            x_iter = [x_iter(1), x_iter(2:4)./nFactor, x_iter(5)];
         end
     end
     
