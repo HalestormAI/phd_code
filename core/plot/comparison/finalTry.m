@@ -74,7 +74,7 @@ function [dist,idx_pick,handles] = finalTry( N_a, est_plane, imc, num_vecs, idx_
     
     handles(1).onPlaneActual = drawcoords(pts_a(:,idx_pick), 'Actual Moved to Plane');    
     handles(1).onPlaneEstimate = drawcoords3(pts_e(:,idx_pick) , 'Estimate Moved to Plane',1,'r');
-    pause
+%     pause
     
     % BEFORE MIRRORING
     disp('Rotating')
@@ -109,14 +109,14 @@ function [dist,idx_pick,handles] = finalTry( N_a, est_plane, imc, num_vecs, idx_
     % Align using mirrored coords
     A_final = moveTo(rect_pts_a(:,idx_pick));
     E_final = rescaleCoords( heavyMoveTo(aligned_mir(:,idx_pick)), A_final );   
-    handles(1).finalComparison = drawcoords(A_final);    
+    handles(1).finalMirrored= drawcoords(A_final);    
     drawcoords(E_final,'',0,'r');
     title('Alignment with mirroring');
     
     % Align using non-mirrored coords
     A_final = moveTo(rect_pts_a(:,idx_pick));
     E_final = rescaleCoords( heavyMoveTo(aligned(:,idx_pick)), A_final );
-    handles(1).finalComparison2 = drawcoords(A_final);    
+    handles(1).finalNotMirrored = drawcoords(A_final);    
     drawcoords(E_final,'',0,'r');
     title('Alignment without mirroring');
 %   

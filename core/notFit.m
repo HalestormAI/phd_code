@@ -22,12 +22,13 @@ end
 
 im_1 = find_real_world_points( im_coords, plane );
 
-rw_spds  = speedDistFromCoords( rw_1 );
-rw_spds = round2(rw_spds ./ mean(rw_spds), 0.00001);
-im_spds  = speedDistFromCoords( im_1 );
-im_spds = round2(im_spds ./ mean(im_spds), 0.00001);
+[rw_spds]  = speedDistFromCoords( rw_1 );%,plane );
+rw_spds = round2(rw_spds ./ mean(rw_spds), 0.1);
+[im_spds] = speedDistFromCoords( im_1);%,plane );
+im_spds = round2(im_spds ./ mean(im_spds) , 0.1);
 try
     doesntfit = kstest2( rw_spds, im_spds, alpha );
+    %close all
 catch err,
     if strcmp(err.identifier,'MATLAB:histc:InvalidInput'),
         doesntfit = 1;
