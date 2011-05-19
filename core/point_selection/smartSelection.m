@@ -48,11 +48,11 @@ for i=1:NUM_VECS,
 %     end
 end
 BAD = mpid2cid(unique(all_bad_idx));
-
-if nargin >= 4,
+% 
+% if nargin >= 4,
     figure,imagesc(im1);
 
-    drawcoords( imc, '', 0, 'b' );
+    drawcoords( imc, '', 0, 'w' );
 
     drawcoords( imc( :,BAD ), '', 0, 'r' );
     for i=1:2:length(taken_idx),
@@ -61,6 +61,6 @@ if nargin >= 4,
         scatter( midpoints(1,mp_idx),midpoints(2,mp_idx),'k*' )
     end
     axis([ 0, size( im1,2 ), 0,size( im1,1 )]);
-    drawcoords( imc( :,taken_idx ), '', 0, 'g' );
+    drawcoords( imc( :,taken_idx ), '', 0, 'k', 2 );
     
 end

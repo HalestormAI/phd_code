@@ -1,4 +1,4 @@
-function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, axes_size, marker )
+function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
 % Draw a set of 2D image coordinates on 2D plot
 %   Input:
 %       coords          A set of 3D coordinates
@@ -18,6 +18,9 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, axes_size, ma
     if nargin < 4,
         colour = 'k';
     end
+    if nargin < 5,
+        lw = 1;
+    end
     if nargin < 6,
         marker = 'o';
     end
@@ -34,9 +37,9 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, axes_size, ma
      thegroup = hggroup;
     for i=1:2:size(imcoords,2)
         if ischar(colour),
-            lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('-%s%s', marker, colour), 'LineWidth',1 );
+            lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('-%s%s', marker, colour), 'LineWidth',lw );
         else
-            lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s--', marker), 'Color', colour, 'LineWidth',1, 'MarkerSize', 10 );
+            lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s--', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
         end
         set(lines, 'Parent', thegroup )    
     end
@@ -46,7 +49,7 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, axes_size, ma
         title(ttl);
     end
     
-    if nargin >= 5 && max(size(axes_size)) > 1,
-        axis( [0 axes_size(1) 0 axes_size(2)] );
-    end
+%     if nargin >= 5 && max(size(axes_size)) > 1,
+%         axis( [0 axes_size(1) 0 axes_size(2)] );
+%     end
 end

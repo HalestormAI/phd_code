@@ -11,7 +11,7 @@ function [N_orig,levels,errors,fails,planes,coords,n_coords,offset_coords,good_i
                                          params.alpha, 100 );
     myH = [params.d, N_orig', params.alpha];
         
-    range = 0:0.01:1;
+    range = 0:0.02:1;
     errors          = zeros(size(range,2),1);
     levels          = zeros(size(range,2),1);
     planes          = zeros(size(range,2),5);
@@ -46,7 +46,7 @@ function [N_orig,levels,errors,fails,planes,coords,n_coords,offset_coords,good_i
         [failReasons, ~, xiters] = ...
             runWithErrors(C_imn,myH,ids_full,1:720,10,0);
         
-        mup        = mean(xiters(~sum(failReasons(:,1:4)),:),1)
+        mup        = mean(xiters(~sum(failReasons(:,1:4)),:),1);
         mup_struct = iter2plane(mup);
         wc         = find_real_world_points(C_im, mup_struct);
         

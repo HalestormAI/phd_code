@@ -17,11 +17,16 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
+#include <cmath>
 #include "mex.h"
 #include "matrix.h"
 
 #define PI (3.141592653589793)
+
 using namespace std;
+
+IplImage *image = 0, *grey = 0, *prev_grey = 0, *pyramid = 0, *prev_pyramid = 0, *swap_temp, *cleanImage = 0, *img_tracklet = 0, *img_tracklet_base = 0;
+
 
 double degToRad(double deg) {
     return PI/180*deg;
@@ -40,6 +45,68 @@ float getColourWeight(float angle, bool p) {
     return w;
 }
 
+int bresenhamsAlgorithm(CvPoint *loc, CvPoint end, vector<CvPoint> &passPoints,
+		int i, int j) {
+	bool steep = abs(end.y - loc->y) > abs(end.x - loc->x);
+	int count = 0;
+	int tmp;
+	if (steep) {
+		tmp = loc->x;
+		loc->x = loc->y;
+		loc->y = tmp;
+
+		tmp = end.x;
+		end.x = end.y;
+		end.y = tmp;
+	}
+	if (loc->x > end.x) {
+		int tmp;
+		tmp = loc->x;
+		loc->x = end.x;
+		end.x = tmp;
+
+		tmp = loc->y;
+		loc->y = end.y;
+		end.y = tmp;
+	}
+	int startx = loc->x;
+
+	int dx = end.x - loc->x;
+	int dy = abs(end.y - loc->y);
+	float error = 0;
+	float derror = (float)(dy) / dx;
+
+	int ystep;
+	int y = loc->y;
+
+	if (loc->y < end.y)
+		ystep = 1;
+	else
+		ystep = -1;
+	for (int x = startx; x<end.x; x++) {
+		if (steep) {
+			loc->x = y;
+			loc->y = x;
+		} else {
+			loc->x = x;
+			loc->y = y;
+		}
+		if (count < abs(i)+abs(j)) {
+			passPoints.push_back( *loc);
+			count++;
+			error += derror;
+
+			if (error >= 0.5) {
+				y += ystep;
+				error -= 1;
+			}
+		} else {
+			printf("Beyond Boundaries (%d*%d) = %d : %d\n", i, j,
+					abs(i)+abs(j), count);
+		}
+	}
+	return count;
+}
 
 bool nodisplay = false;
 class Tracklet
@@ -53,6 +120,7 @@ class Tracklet
         int angle;
         float speed;
         int creationFrame;
+        vector<CvPoint> passPoints;
 
         Tracklet( CvPoint *s, CvPoint *e, int f ) {
             start = *s;
@@ -64,6 +132,8 @@ class Tracklet
 
             speed = sqrt( dx*dx + dy*dy );
             angle = -1;
+            
+            getPassPoints( );
 //            angle = (int)getAngle( );
         }
 
@@ -145,10 +215,137 @@ class Tracklet
         return col;
 
     }        
+    
+    
+    int getPassPoints() {
+        // Tracking point to check location on line.
+
+        CvPoint whereWeAre;
+        whereWeAre = start;
+        int i = start.x - end.x;
+        int j = start.y - end.y;
+
+        int numPoints = bresenhamsAlgorithm(&whereWeAre, end,
+                passPoints, i, j);
+
+        return numPoints;
+        //printf("Done bres");
+    }
 
 };
 
-IplImage *image = 0, *grey = 0, *prev_grey = 0, *pyramid = 0, *prev_pyramid = 0, *swap_temp, *cleanImage = 0, *img_tracklet = 0, *img_tracklet_base = 0;
+bool CvPoint_isequal(CvPoint p, CvPoint p2) {
+	if (p.x == p2.x && p.y == p2.y)
+		return true;
+	return false;
+}
+
+void removeDuplicates(vector<CvPoint> &cvpoints) {
+	vector<CvPoint>::iterator vitr;
+	for (vitr = cvpoints.begin(); vitr != cvpoints.end()-1;) {
+		CvPoint pt1 = *vitr;
+		CvPoint pt2 = *(vitr+1);
+
+		if (CvPoint_isequal(pt1, pt2)) {
+			cvpoints.erase(vitr);
+		} else {
+			++vitr;
+		}
+	}
+}
+
+
+class Bin
+{
+    
+    public:
+        static const int B_SIZE = 32;
+        static const int NUM_DRN = 8;
+        int x;
+        int y;
+        
+        int directions[NUM_DRN];
+        
+        Bin( ) {
+            
+            x = y = 0;
+            initdrn();
+        }
+        
+        Bin( int xx, int yy ) {
+            x = xx;
+            y = yy;
+            initdrn();            
+        }
+        
+        void initdrn( ) { 
+            for( int i = 0; i < NUM_DRN; ++i ) {
+                directions[i] = 0;
+            }
+        }
+        
+        void increment( int angle ) {
+            angle = angle % 360;
+            float seg = 360 / (float)NUM_DRN;
+            int b = (int) floor( angle / seg );
+            if( b >= NUM_DRN || b < 0 ) {
+                cerr << "Illegal array index in bin (" << x << "," << y
+                     << "): " << b << "." << endl;
+            } else
+                directions[b]++;
+        }
+        
+        static void generateBins( map<int,map<int,Bin> > *bins,
+                int imw, int imh ) {
+            
+            // Create 32x32 bins
+            int nbinsH = ceil( imw / (float)B_SIZE );
+            int nbinsV = ceil( imh / (float)B_SIZE );
+            
+            
+            for( int i = 0; i < nbinsV; i++ ) 
+                for( int j = 0; j < nbinsH; j++ ) 
+                    (*bins)[i][j] = Bin( j*B_SIZE, i*B_SIZE );
+        }
+        
+        static vector<CvPoint> getBinIndices( Tracklet *t ) {
+            vector<CvPoint> idxs;
+            
+            vector<CvPoint>::iterator it;
+            
+            for( it=t->passPoints.begin();it != t->passPoints.end(); it++)
+            {
+                uint xpos = it->x/B_SIZE;
+                uint ypos = it->y/B_SIZE;
+                
+                pair<int,int> numBins = Bin::getNumBins(image);
+                
+                if( xpos > numBins.first ) 
+                    mexPrintf("This bin's too big... %d. Max: %d\n", xpos, numBins.first);
+                if( ypos > numBins.second ) 
+                    mexPrintf("This bin's too big... %d. Max: %d\n", ypos, numBins.second);
+            mexEvalString("drawnow");
+                
+                idxs.push_back(cvPoint(xpos,ypos));
+            }
+            
+            removeDuplicates( idxs);
+            return idxs;
+        }
+        
+    
+        static pair<int,int> getNumBins( IplImage *im ) {
+            // Returns a pair containing the number of bins horizontally
+            // and vertically.
+            int h = ceil(im->width / (float)Bin::B_SIZE);
+            int v = ceil(im->height /(float)Bin::B_SIZE);
+            
+            return make_pair(h,v);
+        }
+            
+    
+};
+
 
 int win_size = 10;
 const int MAX_COUNT = 500;
@@ -178,6 +375,10 @@ map<int, CvPoint> startPoints;
 map<int, CvPoint> endPoints;
 
 string outputfn_base = "";
+map < int, map <int, Bin> > bins;
+
+
+
 
 struct trackSpeedOrder
 {
@@ -329,6 +530,9 @@ int mainLoop( int argc, string argv[] )
             points[1] = (CvPoint2D32f*)cvAlloc(MAX_COUNT*sizeof(points[0][0]));
             status = (char*)cvAlloc(MAX_COUNT);
             flags = 0;
+            
+            Bin::generateBins( &bins, image->width, image->height);
+            
         }
 
         cvCopy( frame, image, 0 );
@@ -446,6 +650,15 @@ int mainLoop( int argc, string argv[] )
                         tracklets.insert( t );
                         frameTracklets.insert( t );
                         sectionTracklets.insert( t );
+                        
+                        vector<CvPoint> idx = Bin::getBinIndices( &t );
+                        
+                        vector<CvPoint>::iterator cvpiter;
+                        for( cvpiter = idx.begin(); cvpiter != idx.end(); cvpiter++ ) {
+                            bins[cvpiter->y][cvpiter->x].increment( t.angle );
+                        }
+                        
+                        
                         ++l;
                     }
                 }
@@ -474,21 +687,21 @@ int mainLoop( int argc, string argv[] )
         CV_SWAP( points[0], points[1], swap_points );
  //       if(!nodisplay) cvShowImage( "LkDemo", image );
 
-        if(need_to_init) {
-            string folder = "trackeroutput/";
-            string num;
-            stringstream numStream;
-            numStream << setfill('0') << setw(5) << initNumber;
-            num = numStream.str( );
-            string file = folder + "scene_" + num + ".jpg"; 
-            cvSaveImage( file.c_str( ), cleanImage );
-            file = folder + "salients_" + num + ".jpg"; 
-            cvSaveImage( file.c_str( ), image );
-            file = folder + "tracklets_" + num + ".jpg"; 
-            cvSaveImage( file.c_str( ), img_tracklet );
-            mexPrintf("File Saved");
-            initNumber++;
-        }
+//         if(need_to_init) {
+//             string folder = "trackeroutput/";
+//             string num;
+//             stringstream numStream;
+//             numStream << setfill('0') << setw(5) << initNumber;
+//             num = numStream.str( );
+//             string file = folder + "scene_" + num + ".jpg"; 
+//             cvSaveImage( file.c_str( ), cleanImage );
+//             file = folder + "salients_" + num + ".jpg"; 
+//             cvSaveImage( file.c_str( ), image );
+//             file = folder + "tracklets_" + num + ".jpg"; 
+//             cvSaveImage( file.c_str( ), img_tracklet );
+//             mexPrintf("File Saved\n");
+//             initNumber++;
+//         }
         frameNumber++;
         
         c = cvWaitKey(10);
@@ -521,12 +734,13 @@ int mainLoop( int argc, string argv[] )
 
 
 
-void formatTrackletsForMatlab( set<Tracklet,trackSpeedOrder> *tracklets, double* tMatlab )
+void formatTrackletsForMatlab( set<Tracklet,trackSpeedOrder> *tracklets, double* tMatlab, double* tTimes )
 {
 
     set<Tracklet,trackSpeedOrder>::iterator tI;
     
     int counter = 0;
+    int countert = 0;
     for( tI = tracklets->begin( ) ; tI != tracklets->end( ) ; tI++ ) 
     {
        // printf("%d,%d",tI->start.x,tI->start.y);
@@ -534,6 +748,9 @@ void formatTrackletsForMatlab( set<Tracklet,trackSpeedOrder> *tracklets, double*
         *(tMatlab+counter++) = tI->start.y;
         *(tMatlab+counter++) = tI->end.x;
         *(tMatlab+counter++) = tI->end.y;
+        *(tTimes+countert++) = tI->creationFrame;
+        *(tTimes+countert++) = tI->creationFrame;
+       // mexPrintf("(%d,%d): %d\n",tI->start.x, tI->start.y, tI->creationFrame);
     }
   
 }
@@ -551,11 +768,11 @@ void Ipl2MatlabImage( IplImage *in, unsigned char *op_ptr, mwSize dims[] )
     }
     ;*/
     
-    printf("Dims: [%d, %d, %d]\n", dims[0],dims[1],dims[2] );
-    printf("Img: [%d, %d, %d,%d]\n", in->height,in->width,in->widthStep,in->imageSize );
+//     printf("Dims: [%d, %d, %d]\n", dims[0],dims[1],dims[2] );
+//     printf("Img: [%d, %d, %d,%d]\n", in->height,in->width,in->widthStep,in->imageSize );
     int idx;
-    cvSaveImage("ftest.jpg",in);
-    mexPrintf("First pixel: %d,%d,%d\n", (unsigned char)in->imageData[2],(unsigned char)in->imageData[1],(unsigned char)in->imageData[0]);
+//     cvSaveImage("ftest.jpg",in);
+ //   mexPrintf("First pixel: %d,%d,%d\n", (unsigned char)in->imageData[2],(unsigned char)in->imageData[1],(unsigned char)in->imageData[0]);
     
     
         for(int x=0 ; x<dims[1] ; x++){
@@ -584,19 +801,68 @@ void Ipl2MatlabImage( IplImage *in, unsigned char *op_ptr, mwSize dims[] )
     printf("Managed to finish conversion.\n\n");
 }
 
+void outputBinsToMatlab( map < int, map <int, Bin> > *b, double *ml_b ) {
+    
+//     map < int, map <int, Bin> >::iterator mbi;
+//     map <int, Bin>::iterator bi;
+//     
+//     // For each row of bins
+//     int counter = 0;
+//     for( int i = 0; i < Bin::NUM_DRN; i++ ) {
+//         for( mbi = b->begin(); mbi != b->end(); mbi++ ) {
+//             // for each column of bins
+//             for( bi = mbi->second.begin(); bi != mbi->second.end(); bi++ ) {
+//                 *(ml_b+counter++) = (*bi).second.directions[i];
+//                 Bin *b = &(bi->second);
+//                 mexPrintf("(%d,%d)[%d]: %d\n", (b->x/Bin::B_SIZE)+1,(b->y/Bin::B_SIZE)+1,i,b->directions[i]);
+//                 mexEvalString("drawnow");
+//             }
+//         }
+//         
+//     }
+    
+    pair<int,int> numBins = Bin::getNumBins( image );
+    for( int y = 0; y < numBins.second; y++ ) {
+        for( int x = 0; x < numBins.first; x++ ) {
+            for( int d = 0; d < 8; d++ ) {
+                int idx = (numBins.second*x + y) + (numBins.first*numBins.second*d);
+                *(ml_b+idx) = bins[y][x].directions[d];
+            }
+        }
+    } 
+    stringstream bob;
+    for( int y = 0; y < numBins.second; y++ ) {
+        for( int x = 0; x < numBins.first; x++ ) {
+            bob << "(" << x+1 << "," << y+1 << "): [ ";
+            for( int d = 0; d < 8; d++ ) {
+                bob << bins[y][x].directions[d] << " ";
+            }
+            bob << "]\n";
+        }
+    }
+    
+    ofstream myfile;
+    myfile.open("bins.txt");
+    myfile << bob.str();
+    myfile.close();
+    mexPrintf("%s", bob.str().c_str( ) );
+    mexEvalString("drawnow");
+    
+}
+
 void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
     
     mwSize buflen;
 
-    double* ml_tracks,*imgsize;
+    double *ml_tracks,*ml_times,*imgsize,*blocksz,*ml_bins,*binidx;
     unsigned char *ml_firstFrame;
     
     /* check for proper number of arguments */
     if(nrhs!=1) 
-      mexErrMsgTxt("One input required.");
-    else if(nlhs > 3) 
-      mexErrMsgTxt("Too many output arguments.");
+      mexErrMsgTxt("One input required - Video Path.");
+    else if(nlhs != 7) 
+      mexErrMsgTxt("Wrong number of output arguments: [im_coords,im_times,im1,im_sz].");
 
     /* input must be a string */
     if ( mxIsChar(prhs[0]) != 1)
@@ -626,28 +892,85 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     args[3] = "--nodisplay";
     mexPrintf("%s\n", args[3].c_str( ));
     mexPrintf("Args list built.\n");
+    mexEvalString("drawnow");
     
     mainLoop( 2, args );
     
-    
-    
+    // Output 1: Tracklets (length ordered, [(x1,y1) ; (x2,y2)])
     plhs[0] = mxCreateDoubleMatrix(2,tracklets.size( )*2, mxREAL);
 	ml_tracks = mxGetPr(plhs[0]);
+    
+    // Output 2: Tracklet time indices
+    plhs[1] = mxCreateDoubleMatrix(1,tracklets.size( )*2, mxREAL);
+	ml_times = mxGetPr(plhs[1]);
+    mexPrintf("Formatting Tracklets\n");
+    mexEvalString("drawnow");
+    
+    formatTrackletsForMatlab(&tracklets, ml_tracks, ml_times );
+    mexPrintf("Tracklets formatted for matlab\n");
+    mexEvalString("drawnow");
     
     mwSize dims[3];
     dims[1] = firstFrame->width;
     dims[0] = firstFrame->height;
     dims[2] = 3;
     
-    plhs[1] = mxCreateNumericArray(3,dims, mxUINT8_CLASS, mxREAL);
-	ml_firstFrame = (unsigned char *) mxGetPr(plhs[1]);
+    // Output 2: First frame as image
+    plhs[2] = mxCreateNumericArray(3,dims, mxUINT8_CLASS, mxREAL);
+	ml_firstFrame = (unsigned char *) mxGetPr(plhs[2]);
     Ipl2MatlabImage( firstFrame, ml_firstFrame, dims);
     
-    plhs[2] = mxCreateDoubleMatrix(1,2, mxREAL);
-	imgsize = mxGetPr(plhs[2]);
+    // Output 4: Image dimensions
+    plhs[3] = mxCreateDoubleMatrix(1,2, mxREAL);
+	imgsize = mxGetPr(plhs[3]);
     *imgsize = image->width;
     *(imgsize+1) = image->height;
-    formatTrackletsForMatlab(&tracklets, ml_tracks );
+    
+    
+    
+    
+    
+    
+    
+    mexPrintf("Bins starting (%dx%d).\n",bins.size(), bins[0].size());
+    mexEvalString("drawnow");
+    // OUTPUT 5: Bin Histograms
+   // plhs[4] = mxCreateDoubleMatrix(Bin::NUM_DRN,bins.size( )*bins[0].size( ), mxREAL );
+    int bins_arr_sz[3] = {bins.size(), bins[0].size(), Bin::NUM_DRN};
+    plhs[4] = mxCreateNumericArray(3, bins_arr_sz, mxDOUBLE_CLASS, mxREAL);
+    ml_bins = mxGetPr(plhs[4]);
+    outputBinsToMatlab( &bins, ml_bins );
+    mexPrintf("Bins sorted.\n");
+    mexEvalString("drawnow");
+    
+    
+    
+    
+    
+    
+    
+    
+    mexPrintf("Bin indices started.\n");
+    mexEvalString("drawnow");
+    //OUTPUT 6: indices for each bin
+    plhs[5] = mxCreateDoubleMatrix( 2,bins.size( )*bins[0].size( ), mxREAL );
+    binidx = mxGetPr(plhs[5]);
+    for(int i =0; i < bins.size( ); i++ ) {
+        for( int j = 0; j < bins[0].size(); j++ ) {
+        *(binidx++) = i;
+        *(binidx++) = j;
+        }
+    }
+    mexPrintf("Bin Indices finished.\n");
+    mexEvalString("drawnow");
+        
+    // OUTPUT 7: Bin Size
+    plhs[6] = mxCreateDoubleMatrix( 1, 1, mxREAL );
+    blocksz = mxGetPr(plhs[6]);
+    *blocksz = Bin::B_SIZE;
+    mexPrintf("Bin size saved.\n");
+    mexEvalString("drawnow");
+    
 
     return;
 }

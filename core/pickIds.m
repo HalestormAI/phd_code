@@ -3,6 +3,8 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im, NUM_VECS )
         if nargin < 5,
             NUM_VECS = 3;
         end
+        
+        % Find the most common length bin
         [~, ~, lengths, ~, hinfo] = findLengthDist( Ch_norm, 0 );
         [~,maxidx] = max(hinfo.counts);
         big = hinfo.boundaries(maxidx);
@@ -23,7 +25,7 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im, NUM_VECS )
         
         %ids_full = monteCarloPaths( usable, 3,3,5 );
         done = 0;
-        PROX = 1/3;
+        PROX = 1/100;
         while ~done,
             try
                 if nargin < 4,

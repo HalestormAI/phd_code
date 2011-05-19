@@ -5,7 +5,7 @@ function [N_orig,levels,errors,fails,planes,base_error,offset_coords,all_failRs,
     
     % Make World/Image Points
         
-    range = 0:0.002:1;
+    range = 0:0.02:1;
     
     errors          = zeros(size(range,2),1);
     levels          = zeros(size(range,2),1);
@@ -38,14 +38,15 @@ function [N_orig,levels,errors,fails,planes,base_error,offset_coords,all_failRs,
                                                 params.psi, ...
                                                 params.d, ...
                                                 params.alpha, ...
-                                                [0 noise 0], 100 );
+                                                [0 noise 0], 10 ); %#ok<PFBNS>
                                                % Make iter vector for GT 
 
                 offset_coords{num}  = C;
                 base_error(num) = getlength_L2Error( C );
+                disp(base_error(num));
 
                 % Pick 3 vectors
-                ids_full = smartSelection(C_im, 4, 1/4);
+                ids_full = smartSelection(C_im, 3, 1/4);
 
                 % Get 10 estimates
                 [failReasons, ~, xiters] = ...
@@ -73,6 +74,14 @@ function [N_orig,levels,errors,fails,planes,base_error,offset_coords,all_failRs,
 
                 angles(num)   = 90-abs(90-angleError(N_orig, mup_struct.n));
                 errors(num)   = abs( base_error(num) - getlength_L2Error( wc ) );
+                
+                muwc    = findLengthDist(wc);
+                wc2     = wc ./ muwc;
+                wc_dist = speedDistFromCoords( wc2 );
+                gt_dist = speedDistFromCoords(  C );
+                
+                dists = (gt_dist - wc_dist).^2;
+                errors(num) = sum(dists)/(length(C)/2);
                 levels(num)   = noise;
                 planes(num,:) = mup;
 

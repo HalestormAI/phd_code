@@ -5,10 +5,16 @@ close all
 % im1=im2;im_coords=imc;
 % load seq_eth
  
-
+% 
 load students003_data
 
-NUM_RUNS        = 10;
+% Centralise coords
+% middle = [size(im1)./2];
+% middle = middle(1:2)';
+% im_coords_orig = im_coords;
+% im_coords = im_coords - repmat(middle,1,length(im_coords));
+
+NUM_RUNS        = 100;
 NUM_ATTEMPTS    = 100;
 
 all_im_ids      =  cell( NUM_RUNS, 1 );
@@ -32,7 +38,7 @@ end
 
 parfor i=1:NUM_RUNS,
     % Get some image vectors
-    [~,~,ids] = pickIds( Ch_norm, im_coords, 500 );
+    [~,~,ids] = pickIds( Ch_norm, im_coords, 0.1, im1, 4 );
     all_im_ids{i} = ids;
     
     % Perform a run of NUM_ATTEMPTS attempts

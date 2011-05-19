@@ -10,6 +10,6 @@ function F = gp_iter_func( x, coords )
     for i=1:2:size(coords,2),
         F((i+1)/2) = dist_eqn( x, coords(:,i:i+1) )*10;
     end   
-    
-    F = [F;abs(x(4)) > 0.999;x(5) > 1;x(1) > 20];
+    unitn = x(2:4) ./ norm(x(2:4));
+    F = [F;abs(unitn(3)) > 0.999;x(1) > 100];
 end

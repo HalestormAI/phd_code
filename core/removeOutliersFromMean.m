@@ -1,6 +1,6 @@
 function [newMean, ok_planes,f] = removeOutliersFromMean( planes, n, draw )
 
-STD_COEFF = 1;
+STD_COEFF = 2;
 
 if nargin < 3,
     draw = 1;
