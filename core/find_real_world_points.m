@@ -1,6 +1,5 @@
 function [ POINTS ] = find_real_world_points( points, plane )
-%FIND_REAL_WORLD_POINTS Summary of this function goes here
-%   Detailed explanation goes here
+% Take points as 2xn matrix, take plane in struct form.
 
 POINTS = zeros(3 , size(points,2) );
 for i=1:size(points,2)

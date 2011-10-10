@@ -1,16 +1,22 @@
-function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
+function [dist,idx_pick,handles] = finalTry( N_a, est_plane, imc, num_vecs, idx_pick )
 
-    if size(N_a,2) > 3,
+    if size(N_a,2) > 5,
         C_a = N_a;
         N_a = planeFromPoints(C_a);
         
+    elseif length(N_a) == 3
+        C_a = find_real_world_points( imc, iter2plane([1,N_a',1]) );
+    elseif isstruct(N_a),
+        C_a = find_real_world_points( imc, (N_a) );
+        N_a = N_a.n;
     else
-        C_a = find_real_world_points( imc, iter2plane([1,N_a']) );
+        C_a = find_real_world_points( imc, iter2plane(N_a) );
+        N_a = N_a(2:4);
     end
     
     handles = struct([]);
     
-    C_e = find_real_world_points( imc, iter2plane([1,N_e']) );    
+    C_e = find_real_world_points( imc, est_plane );    
 %     
 %     mirrot = makehgtform('yrotate',pi );
 %     
@@ -38,17 +44,17 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
         idx_pick = sort([ idx_base, idx_base+1]);
     end
 %     
-    handles(1).originalActual = drawcoords3( C_a,'Original Actual');
-    handles(1).originalEstimate = drawcoords3( C_e,'Original Estimate',1,'r');
+%     handles(1).originalActual = drawcoords3( C_a,'Original Actual');
+%     handles(1).originalEstimate = drawcoords3( C_e,'Original Estimate',1,'r');
     % pause
 %     C_a = C_a_full(:,idx_pick);
 %     C_e = C_e_full(:,idx_pick);
 % drawcoords3(rescaleCoords( moveTo(C_e), moveTo(C_a) ) ,'',0,'r');
-
+% pause
 
     %% Rotate into x-y plane
-    [t_a,p_a] = anglesFromN( N_a );
-    [t_e,p_e] = anglesFromN( N_e );
+    [t_a,p_a] = anglesFromN( N_a )
+    [t_e,p_e] = anglesFromN( est_plane.n );
     
     nrotx_a = makehgtform('xrotate',t_a);
     nrotz_a = makehgtform('zrotate',p_a);
@@ -69,9 +75,9 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
     pts_e = rescaleCoords( moveTo(rect_pts_e(:,:)), rect_pts_a(:,:) );
     
     
-%     handles(1).onPlaneActual = drawcoords(rect_pts_a(:,idx_pick), 'Actual Moved to Plane');    
-%     handles(1).onPlaneEstimate = drawcoords3(rect_pts_e(:,idx_pick) , 'Estimate Moved to Plane',1,'r');
-    % pause
+    handles(1).onPlaneActual = drawcoords(pts_a(:,idx_pick), 'Actual Moved to Plane');    
+    handles(1).onPlaneEstimate = drawcoords3(pts_e(:,idx_pick) , 'Estimate Moved to Plane',1,'r');
+%     pause
     
     % BEFORE MIRRORING
     disp('Rotating')
@@ -106,14 +112,14 @@ function [dist,idx_pick,handles] = finalTry( N_a, N_e, imc, num_vecs, idx_pick )
     % Align using mirrored coords
     A_final = moveTo(rect_pts_a(:,idx_pick));
     E_final = rescaleCoords( heavyMoveTo(aligned_mir(:,idx_pick)), A_final );   
-    handles(1).finalComparison = drawcoords(A_final);    
+    handles(1).finalMirrored= drawcoords(A_final);    
     drawcoords(E_final,'',0,'r');
     title('Alignment with mirroring');
     
     % Align using non-mirrored coords
     A_final = moveTo(rect_pts_a(:,idx_pick));
     E_final = rescaleCoords( heavyMoveTo(aligned(:,idx_pick)), A_final );
-    handles(1).finalComparison2 = drawcoords(A_final);    
+    handles(1).finalNotMirrored = drawcoords(A_final);    
     drawcoords(E_final,'',0,'r');
     title('Alignment without mirroring');
 %   

@@ -1,10 +1,7 @@
-function [actual_n,coords,im_coords,noisy_coords,noisy_im_coords] = make_test_data(theta, d, l,psi, num, noise )
+function [actual_n,coords,im_coords,noisy_coords,noisy_im_coords] = make_test_data(theta, psi, d, alpha, num, noise )
 
-    if nargin < 4,
-        psi = deg2rad(10);
-    end
     if nargin < 5,
-        num = 8
+        num = 8;
     end
 
     actual_n = normalFromAngle( theta, psi );

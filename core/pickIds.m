@@ -1,4 +1,10 @@
-function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
+function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im, NUM_VECS )
+
+        if nargin < 5,
+            NUM_VECS = 3;
+        end
+        
+        % Find the most common length bin
         [~, ~, lengths, ~, hinfo] = findLengthDist( Ch_norm, 0 );
         [~,maxidx] = max(hinfo.counts);
         big = hinfo.boundaries(maxidx);
@@ -10,7 +16,7 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
         if nargin < 4,
             [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx );
         else
-            [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx );
+            [vert_ids, vert_sub] = findMoreVerticalComponents( imc, full_idx, im );
         end
         
         more_usable = imc(:, vert_ids );
@@ -18,12 +24,24 @@ function [ids_full,usable,im_ids] = pickIds( Ch_norm, imc, DELTA, im )
         %% Now make final selection
         
         %ids_full = monteCarloPaths( usable, 3,3,5 );
-        if nargin < 4,
-            ids_sub = smartSelection( more_usable, 3, 1/3 );
-        else
-            ids_sub = smartSelection( more_usable, 3, 1/3, im );
+        done = 0;
+        PROX = 1/100;
+        while ~done,
+            try
+                if nargin < 4,
+                    ids_sub = smartSelection( more_usable, NUM_VECS, PROX );
+                else
+                    ids_sub = smartSelection( more_usable, NUM_VECS, PROX, im );
+                end
+                done = 1;
+            catch err,
+                if strcmp(err.identifier,'IJH:VECSEL:OUTOFVECS'),
+                    PROX = 1 / (1/PROX + 1); 
+                    fprintf('PROX too high. Decreasing to 1 / %d\n\n', 1/PROX);
+                else rethrow(err);
+                end
+            end
         end
-        
         ids_full = (vert_sub(ids_sub));
         im_ids = vert_ids(ids_sub);
         

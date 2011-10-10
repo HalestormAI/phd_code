@@ -1,0 +1,32 @@
+function L_t = labelTracklets( T, L_p,im1 )
+% Labels a set of tracklets, T with a set of cluster labels, L_t given the
+% labels of the pixels they cross, L_p.
+%
+% INPUT:
+%   T       The set of tracklets
+%   L_p     The set of pixel labels
+%
+% OUTPUT:
+%   L_t     The set of tracklet labels
+
+    L_t = zeros(length(T)/2);
+    
+    LABELS = unique(L_p);
+    L_hist = zeros( length(T),length(LABELS) );
+    for t=1:2:length(T),
+        px = getTrackletPx( T(:,t:t+1) );
+          if px(1) < 1 || px(2) < 1 || px(1) > size(im1,2) || ys(j) > size(im1,1),
+            continue;
+        end
+        for p=1:length(px)
+            l = find(LABELS == L_p(px(2),px(1)));
+            L_hist((t+1)/2,l) = L_hist((t+1)/2,l) + 1;
+        end
+        [~,L_t((t+1)/2)] = max(L_hist((t+1)/2,:));
+    end
+
+    function px = getTrackletPx( t )
+        [xs,ys] = bresenham( t(1,1),  t(2,1), t(1,2), t(2,2) );
+        px = [xs,ys];
+    end
+end
