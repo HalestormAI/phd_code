@@ -17,7 +17,11 @@ function [successful, good_dist, good_barring_d, x_iter_mn] = getFailStats(failR
 %                   \hat{n}, \hat{d} and \hat{P} are feasible
 
     successful     = find(~failReasons(:,1));
-    good_dist      = successful(~failReasons(successful,5));
+    if size(failReasons,2) > 4,
+        good_dist      = successful(~failReasons(successful,5));
+    else
+        good_dist = 0;
+    end
     good_barring_d = find(~sum(failReasons(:,[1,2,4]),2));
     if isempty(good_barring_d),
         err = MException('IJH:FAILS:EMPTY','No attempts passed n,P feasibility.');

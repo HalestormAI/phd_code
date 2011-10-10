@@ -1,11 +1,22 @@
 clear
 close all
+% 
+% load soc_carpark1
+% im1=im2;im_coords=imc;
+% load seq_eth
+ 
+% 
+load students003_data
 
-load soc_carpark1
-im1=im2;im_coords=imc;
+% Centralise coords
+% middle = [size(im1)./2];
+% middle = middle(1:2)';
+% im_coords_orig = im_coords;
+% im_coords = im_coords - repmat(middle,1,length(im_coords));
 
 NUM_RUNS        = 100;
-NUM_ATTEMPTS    = 500;
+NUM_ATTEMPTS    = 100;
+
 all_im_ids      =  cell( NUM_RUNS, 1 );
 all_x0s         =  cell( NUM_RUNS, 1 );
 all_xiters      =  cell( NUM_RUNS, 1 );
@@ -21,13 +32,17 @@ Ch = H*makeHomogenous( im_coords );
 mu_l = findLengthDist( Ch, 0 );
 Ch_norm = Ch ./ mu_l;
 
+if matlabpool('size') < 1,
+    matlabpool;
+end
+
 parfor i=1:NUM_RUNS,
     % Get some image vectors
-    [~,~,ids] = pickIds( Ch_norm, im_coords, 500 );
+    [~,~,ids] = pickIds( Ch_norm, im_coords, 0.1, im1, 4 );
     all_im_ids{i} = ids;
     
     % Perform a run of NUM_ATTEMPTS attempts
-    [fR, x0s, xiters,p] = runWithErrors( im_coords, H, ids, NUM_ATTEMPTS, i );
+    [fR, x0s, xiters,p] = runWithErrors( im_coords, H, ids, im1, NUM_ATTEMPTS, i );
     
     all_x0s{i}         = x0s;
     all_xiters{i}      = xiters;
@@ -50,9 +65,17 @@ parfor i=1:NUM_RUNS,
     end
 end
 
-xm       = cell2mat(all_xiters);
-fR_mat   = cell2mat(all_failReasons);
-finalSet = xm( sum(fR_mat(:,[1,2,4,5]),2 ) == 0,: );
+xm       = cell2mat(all_xiters)
+fR_mat   = cell2mat(all_failReasons)
+finalSet = xm( sum(fR_mat(:,[1:4]),2 ) == 0,: );
+if isempty(finalSet),
+    error('Nothing came of this. Boo, hiss, etc');
+end
 N        = findNormalFromH( H );
 numu     = removeOutliersFromMean( finalSet, N.a, 1 );
-[dist,idx_pick,handles] = finalTry( Ch, numu(2:4)', im_coords, 30 );
+
+plane = iter2plane(numu);
+
+[dist,idx_pick,handles] = finalTry( Ch, plane, im_coords, 30 );
+
+save alldata
