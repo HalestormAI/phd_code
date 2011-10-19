@@ -1,4 +1,4 @@
-function [acceptable,v_dists] = filterTrajectories( im_usable, THRESHOLD, MIN_LENGTH )
+function [acceptable,v_dists] = filterPaths( im_usable, THRESHOLD, MIN_LENGTH )
 
     if nargin == 1,
         THRESHOLD = 30;

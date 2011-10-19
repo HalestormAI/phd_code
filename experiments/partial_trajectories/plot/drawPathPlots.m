@@ -17,10 +17,16 @@ function f = drawPathPlots( acceptable, H, highlight, layout )
     
     for i=1:length(acceptable),
         if mod(i,cols*rows) == 1,
-            f(floor(i/(cols*rows)) = figure;
+            f(floor(i/(cols*rows))+1) = figure;
         end
-        s = subplot(4,5,i-floor(i/(cols*rows))*(cols*rows));
-        C = H*makeHomogenous(acceptable{i});
+        
+        %i-floor(i/(cols*rows))*(cols*rows)
+        sid = mod(i,20);
+        if sid == 0,
+            sid = 20;
+        end
+        s = subplot(4,5, sid);
+        C = makeHomogenous(acceptable{i});
         if any(i==highlight),
             set(s,'Color','w',...
             'XColor','r',...
