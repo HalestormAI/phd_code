@@ -4,7 +4,7 @@ if nargin < 2,
     FPS = 25;
 end
 
-pieces = round(traj(:, 1:FPS:end))
+pieces = round(traj(:, 1:FPS:end));
 
 if size(pieces,2) > 1
 
