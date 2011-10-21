@@ -7,14 +7,19 @@
 
 #include "cv.h"
 #include "highgui.h"
+#include <time.h>
 #include <iostream>
+#include <iomanip>
 #include <stdexcept>
 #include <exception>
 #include "functions.h"
 #include <string>
+#include <sys/stat.h>
 
 const uint MAX_CORNERS = 500;
-const uint win_size = 15;
+const uint win_size = 25;
+
+const std::string fOutputRoot = "/usr/not-backed-up/trackeroutput";
 int c_count = 0;
 std::vector<cv::Point2f> corners_st;
 std::vector<cv::Point2f> corners_nd;
@@ -32,20 +37,21 @@ cv::Mat frame, firstFrame, cleanFrame, image, grey, prev_grey, img_tracklet;
 int mainLoop(int argc, std::string argv[]) {
 	int need_to_init = 1;
 
+    cv::namedWindow("quit catcher");
 
-// 	time_t rawtime;
-// 	struct tm * timeinfo;
-// 	char tbuffer[80];
-// 
-// 	time( &rawtime );
-// 	timeinfo = localtime( &rawtime );
-// 
-// 	strftime(tbuffer, 80, "%d-%m-%y__%H-%M-%S", timeinfo);
-// 
-// 	const std::string fOutputFolder( tbuffer );
-// 
-// 	std::cout << "Creating folder " << fOutputRoot << "/" << fOutputFolder << std::endl;
-// 	mkdir( (fOutputRoot+"/"+fOutputFolder).c_str( ), 0777 );
+	time_t rawtime;
+	struct tm * timeinfo;
+	char tbuffer[80];
+
+	time( &rawtime );
+	timeinfo = localtime( &rawtime );
+
+	strftime(tbuffer, 80, "%d-%m-%y__%H-%M-%S", timeinfo);
+
+	const std::string fOutputFolder( tbuffer );
+
+	std::cout << "Creating folder " << fOutputRoot << "/" << fOutputFolder << std::endl;
+	mkdir( (fOutputRoot+"/"+fOutputFolder).c_str( ), 0777 );
 
 
 
@@ -186,15 +192,7 @@ int mainLoop(int argc, std::string argv[]) {
 
 			std::vector<std::vector<cv::Point2f> >::iterator it;
 			std::vector<cv::Point2f>::iterator it2;
-			CvScalar colour = cvScalar( 255,0,0 );
-			for( it = openTraj.begin(); it != openTraj.end(); it++ ) {
-				for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
-					if( (it2+1) != it->end( ) ) {
-						cv::line( trjimg, *it2, *(it2+1), colour,1);
-					}
-				}
-			}
-			colour = cvScalar( 0,0, 255 );
+			CvScalar colour = cvScalar( 0,0, 255 );
 			for( it = closeTraj.begin(); it != closeTraj.end(); it++ ) {
 				for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
 					if( (it2+1) != it->end( ) ) {
@@ -202,30 +200,60 @@ int mainLoop(int argc, std::string argv[]) {
 					}
 				}
 			}
+			colour = cvScalar( 255,0,0 );
+			for( it = openTraj.begin(); it != openTraj.end(); it++ ) {
+				for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
+					if( (it2+1) != it->end( ) ) {
+						cv::line( trjimg, *it2, *(it2+1), colour,1);
+					}
+				}
+			}
 
-// 			cv::imshow("Trajectories", trjimg);
-// 			cv::imshow("Start-End Points", image);
-// 
-// 			std::stringstream fnstream;
-// 			fnstream << fOutputRoot << "/" << fOutputFolder << "/" << "frame_";
-// 			fnstream << std::setw( 8 ) << std::setfill( '0' ) << frameNumber;
-// 			fnstream << ".jpg";
-// 
-// 			const std::string filename = fnstream.str( );
-// 
-// 			// Handle keypresses (this bit is a tad messy...)
-// 			cv::imwrite( filename, trjimg );
-// 			int k = cvWaitKey(2);
-// 			if( char(k) == 's' ) {
-// 				stepping = 1 - stepping;
-// 			}
-// 			if( char(k) == ' ' || stepping )
-// 				k = cv::waitKey( );
-// 			if( char(k) == 'q' || char(k) == 'Q' )
-// 				break;
-// 			if( char(k) == 's' ) {
-// 				stepping = 1 - stepping;
-// 			}
+			//cv::imshow("Trajectories", trjimg);
+			//cv::imshow("Start-End Points", image);
+
+			std::stringstream fnstream, frameStream, fnStream2;
+            frameStream << std::setw( 8 ) << std::setfill( '0' ) << frameNumber;
+            fnStream2 << fOutputRoot << "/" << fOutputFolder << "/" << "salient_" << frameStream.str( );
+			fnStream2 << ".jpg";
+			fnstream << fOutputRoot << "/" << fOutputFolder << "/" << "traj_" << frameStream.str( );
+			fnstream << ".jpg";
+            
+            int baseline = 0;
+            cv::Size textSize = cv::getTextSize( frameStream.str( ), cv::FONT_HERSHEY_SIMPLEX,
+                            0.5, 3, &baseline);
+            baseline += 3;
+            
+            cv::Point textOrg((trjimg.cols - textSize.width-10),
+                          (trjimg.rows - textSize.height-10));
+            
+            cv::rectangle(trjimg, textOrg - cv::Point(20,20) ,
+                          textOrg + cv::Point(textSize.width+20, -textSize.height+20),
+                          cv::Scalar(0,0,0),-1);
+            cv::putText(trjimg, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                        cv::Scalar::all(255), 1, CV_AA);
+            cv::rectangle(image, textOrg - cv::Point(20,20) ,
+                          textOrg + cv::Point(textSize.width+20, -textSize.height+20),
+                          cv::Scalar(0,0,0),-1);
+            cv::putText(image, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                        cv::Scalar::all(255), 1, CV_AA);
+
+			const std::string filename = fnstream.str( );
+
+			// Handle keypresses (this bit is a tad messy...)
+			cv::imwrite( filename, trjimg );
+			cv::imwrite( fnStream2.str( ), image );
+			int k = cvWaitKey(2);
+			if( char(k) == 's' ) {
+				stepping = 1 - stepping;
+			}
+			if( char(k) == ' ' || stepping )
+				k = cv::waitKey( );
+			if( char(k) == 'q' || char(k) == 'Q' )
+				break;
+			if( char(k) == 's' ) {
+				stepping = 1 - stepping;
+			}
 		}
 
 		std::swap(prev_grey, grey);
@@ -239,7 +267,6 @@ int mainLoop(int argc, std::string argv[]) {
 
 	return 0;
 }
-
 
 void formatTrajsForMatlab( std::vector< std::vector< cv::Point2f > > *traj, mxArray** tMatlab )
 {
@@ -289,22 +316,22 @@ void Ipl2MatlabImage( IplImage *in, unsigned char *op_ptr, mwSize dims[] )
  //   mexPrintf("First pixel: %d,%d,%d\n", (unsigned char)in->imageData[2],(unsigned char)in->imageData[1],(unsigned char)in->imageData[0]);
 
 
-        for(int x=0 ; x<dims[1] ; x++){
-          for(int y=0 ;y<dims[0] ;y++,op_ptr++){
+        for(uint x=0 ; x<dims[1] ; x++){
+          for(uint y=0 ;y<dims[0] ;y++,op_ptr++){
               idx = in->nChannels*x+2+y*in->widthStep;
               //printf( "(x,y) = (%d,%d), idx = (%d), C(R): %c", x,y,idx, (float)in->imageData[3*x+2+y*in->widthStep] );
             *op_ptr = (unsigned char)in->imageData[idx] ;
           }
         }
-        for(int x=0 ; x<dims[1] ; x++){
-          for(int y=0 ;y<dims[0] ;y++,op_ptr++){
+        for(uint x=0 ; x<dims[1] ; x++){
+          for(uint y=0 ;y<dims[0] ;y++,op_ptr++){
               idx = in->nChannels*x+1+y*in->widthStep;
               //printf( "(x,y) = (%d,%d), idx = (%d), C(R): %c", x,y,idx, (float)in->imageData[3*x+2+y*in->widthStep] );
             *op_ptr = (unsigned char)in->imageData[idx] ;
           }
         }
-        for(int x=0 ; x<dims[1] ; x++){
-          for(int y=0 ;y<dims[0] ;y++,op_ptr++){
+        for(uint x=0 ; x<dims[1] ; x++){
+          for(uint y=0 ;y<dims[0] ;y++,op_ptr++){
               idx = in->nChannels*x+y*in->widthStep;
               //printf( "(x,y) = (%d,%d), idx = (%d), C(R): %c", x,y,idx, (float)in->imageData[3*x+2+y*in->widthStep] );
             *op_ptr = (unsigned char)in->imageData[idx] ;
@@ -320,7 +347,6 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 
     mwSize buflen;
 
-    double *ml_tracks;
     unsigned char *ml_firstFrame;
 
     /* check for proper number of arguments */

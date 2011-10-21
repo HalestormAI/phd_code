@@ -1,6 +1,6 @@
 function makeCpp( fn, DBG )
 
-    if nargin < 2 || DBG,
+    if nargin < 2 || ~DBG,
         DEBUG = '';
     else
         DEBUG = ' -g';
@@ -24,7 +24,6 @@ function makeCpp( fn, DBG )
     function domex( fn )
         mex( fn, '-I/usr/not-backed-up/OpenCV-2.1.0/include/opencv', ...
              '-L/usr/not-backed-up/OpenCV-2.1.0/lib', '-lcv', ...
-             '-lcvaux', '-lcxcore', '-lhighgui', '-lstdc++', ...
-             '-lavcodec', '-lavformat', strcat('-lavutil', DEBUG));
+             '-lcvaux', '-lcxcore', '-lhighgui', '-lstdc++', DEBUG);
     end
 end
