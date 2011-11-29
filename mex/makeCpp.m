@@ -1,7 +1,7 @@
 function makeCpp( fn, DBG )
 
     if nargin < 2 || ~DBG,
-        DEBUG = '';
+        DEBUG = ' ';
     else
         DEBUG = ' -g';
     end

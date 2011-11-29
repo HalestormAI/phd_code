@@ -34,9 +34,12 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, camera, marke
     hold on
     thegroup = hggroup;
     for i=1:2:size(coords3,2)
-        lines = plot3( coords3(1,i:i+1), coords3(2,i:i+1), coords3(3,i:i+1), sprintf('-%s%s', marker, colour) );
-        set(lines, 'Parent', thegroup )
+        if i+1 <= size(coords3,2)
+            lines = plot3( coords3(1,i:i+1), coords3(2,i:i+1), coords3(3,i:i+1), sprintf('-%s%s', marker, colour) );
+            set(lines, 'Parent', thegroup )
+        end
     end
+    
     xlabel('x');ylabel('y');zlabel('z');
     title(ttl);
     grid on
