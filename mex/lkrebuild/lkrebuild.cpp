@@ -30,14 +30,16 @@ std::vector<float> trackErr;
 
 std::vector<std::vector<cv::Point2f> > openTraj;
 std::vector<std::vector<cv::Point2f> > closeTraj;
-cv::Mat frame, firstFrame, cleanFrame, image, grey, prev_grey, img_tracklet;
+cv::Mat frame, firstFrame, cleanFrame, image, grey, prev_grey, img_tracklet, frameCountImg;
 
 //std::map<int, std::map<int, IJH::Bin> > bins;
+
+bool showWin = 1;
 
 int mainLoop(int argc, std::string argv[]) {
 	int need_to_init = 1;
 
-    cv::namedWindow("quit catcher");
+    cv::namedWindow("quit catcher",CV_WINDOW_NORMAL);
 
 	time_t rawtime;
 	struct tm * timeinfo;
@@ -116,18 +118,43 @@ int mainLoop(int argc, std::string argv[]) {
 			cv::calcOpticalFlowPyrLK(prev_grey, grey, corners_st, corners_nd,
 					trackStatus, trackErr, cvSize(win_size, win_size));
 
+			cv::Mat errorImg;
+			frame.copyTo( errorImg );
+
 			for (i = corners_nd.size() - 1; i > 0; i--) {
 				// Remove any points which do not contain tracks
 				cv::circle(image, corners_st.at(i), 2,cvScalar(0,255,0),-1);
 				cv::circle(image, corners_nd.at(i), 2,cvScalar(0,0,255),-1);
 				cv::line(image, corners_st.at(i), corners_nd.at(i), cvScalar(255,0,0) );
-				bool cansave = false;
+
 				if (trackStatus.at(i)) {
 					try {
 						std::vector< cv::Point2f> d = openTraj.at(i);
 					} catch( ... ) {
 						std::cerr << "framenumber: " << frameNumber << "openTraj Size: " << openTraj.size( ) <<  ", Index: " << i << std::endl;
 						exit(1);
+					}
+
+
+					cv::Point mag = ( corners_nd.at(i) - corners_st.at(i) );
+					float curSpd = sqrt( pow(mag.x,2) + pow(mag.y,2) );
+
+					bool crazyfast = false;
+					if( curSpd > image.rows/2 ) {
+						crazyfast = true;
+						std::cout << "Maximum Speed Breached, Frame " << frameNumber << std::endl;
+						cv::circle(errorImg, corners_st.at(i), 2,cvScalar(0,255,0),-1);
+						cv::circle(errorImg, corners_nd.at(i), 2,cvScalar(0,0,255),-1);
+						cv::line(errorImg, corners_st.at(i), corners_nd.at(i), cvScalar(255,0,0) );
+						cv::imshow( "Error", errorImg );
+					}
+					std::vector<cv::Point2f>::iterator trajp = openTraj.at(i).end()-1;
+					cv::Point2f *trajst = &corners_st.at(i);
+
+					if( openTraj.at(i).size( ) > 0 && (*trajst != *trajp )) {
+						std::cout << "Frame " << frameNumber << ", No Match: (" << trajp->x << "," << trajp->y << ") != (";
+						std::cout << trajst->x << "," << trajst->y << ")" << std::endl;
+						trackStatus[i] = 0;
 					}
 
 					// If a match was found, and > 10 frames have been recorded,
@@ -137,7 +164,6 @@ int mainLoop(int argc, std::string argv[]) {
 						cv::Point2f p1,p2,dxy;
 
 						float sumspeeds = 0;
-						bool crazyfast = false;
 						for( int b = 1; b < 11; b++ ) {
 							p1 = openTraj.at(i).at((openTraj.at(i).size( )-1)-(b-1));
 							p2 = openTraj.at(i).at((openTraj.at(i).size( )-1)-(b));
@@ -145,27 +171,25 @@ int mainLoop(int argc, std::string argv[]) {
 						    dxy = p1-p2;
 
 						    float spd = sqrt( pow(dxy.x,2) + pow(dxy.y,2) );
-						    if( spd > frame.rows/2 ) {
-						    	crazyfast = true;
-						    	std::cout << "Something very odd has occurred..." << std::endl;
-						    	std::cout << "Start: (" << p1.x << "," << p1.y << ")";
-						    	std::cout << " => (" << p2.x << "," << p2.y << ")" << std::endl;
-						    	break;
-						    }
+//						    if( spd > frame.rows/2 ) {
+//						    	crazyfast = true;
+//						    	std::cout << "Something very odd has occurred..." << std::endl;
+//						    	std::cout << "Start: (" << p1.x << "," << p1.y << ")";
+//						    	std::cout << " => (" << p2.x << "," << p2.y << ")" << std::endl;
+//						    	break;
+//						    }
 						    sumspeeds += spd;
 						}
 
 						float meanspeed = sumspeeds/10;
 						if( meanspeed < 2 || crazyfast) {
 							trackStatus[i] = 0;
-						} else
-							cansave = true;
+						}
 
-					} else
-						cansave = true;
+					}
 				}
 
-				if( cansave && trackStatus.at(i) ) {
+				if( trackStatus.at(i) ) {
 					// Append this end-point to the back of the trajectory
 					openTraj.at(i).push_back(corners_nd.at(i));
 				} else {
@@ -183,77 +207,97 @@ int mainLoop(int argc, std::string argv[]) {
 				if (trackStatus.at(i))
 					corners_st.push_back(corners_nd.at(i));
 			corners_nd.clear();
+			trackStatus.clear( );
+
 		}
 
-		// Only draw trajectories every couple of frames to reduce overhead
-		 {
-			cv::Mat trjimg;
-			frame.copyTo( trjimg );
+		 // DRAWING AND SAING
+		cv::Mat trjimg;
+		frame.copyTo( trjimg );
 
-			std::vector<std::vector<cv::Point2f> >::iterator it;
-			std::vector<cv::Point2f>::iterator it2;
-			CvScalar colour = cvScalar( 0,0, 255 );
-			for( it = closeTraj.begin(); it != closeTraj.end(); it++ ) {
-				for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
-					if( (it2+1) != it->end( ) ) {
-						cv::line( trjimg, *it2, *(it2+1), colour,1);
-					}
+		std::vector<std::vector<cv::Point2f> >::iterator it;
+		std::vector<cv::Point2f>::iterator it2;
+		CvScalar colour = cvScalar( 0,0, 255 );
+		for( it = closeTraj.begin(); it != closeTraj.end(); it++ ) {
+			for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
+				if( (it2+1) != it->end( ) ) {
+					cv::line( trjimg, *it2, *(it2+1), colour,1);
 				}
 			}
-			colour = cvScalar( 255,0,0 );
-			for( it = openTraj.begin(); it != openTraj.end(); it++ ) {
-				for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
-					if( (it2+1) != it->end( ) ) {
-						cv::line( trjimg, *it2, *(it2+1), colour,1);
-					}
+		}
+		colour = cvScalar( 255,0,0 );
+		for( it = openTraj.begin(); it != openTraj.end(); it++ ) {
+			for( it2 = it->begin(); it2 != it->end( ); it2++ ) {
+				if( (it2+1) != it->end( ) ) {
+					cv::line( trjimg, *it2, *(it2+1), colour,1);
 				}
 			}
+		}
 
-			//cv::imshow("Trajectories", trjimg);
-			//cv::imshow("Start-End Points", image);
+		//cv::imshow("Trajectories", trjimg);
+		//cv::imshow("Start-End Points", image);
 
-			std::stringstream fnstream, frameStream, fnStream2;
-            frameStream << std::setw( 8 ) << std::setfill( '0' ) << frameNumber;
-            fnStream2 << fOutputRoot << "/" << fOutputFolder << "/" << "salient_" << frameStream.str( );
-			fnStream2 << ".jpg";
-			fnstream << fOutputRoot << "/" << fOutputFolder << "/" << "traj_" << frameStream.str( );
-			fnstream << ".jpg";
-            
-            int baseline = 0;
-            cv::Size textSize = cv::getTextSize( frameStream.str( ), cv::FONT_HERSHEY_SIMPLEX,
-                            0.5, 3, &baseline);
-            baseline += 3;
-            
-            cv::Point textOrg((trjimg.cols - textSize.width-10),
-                          (trjimg.rows - textSize.height-10));
-            
-            cv::rectangle(trjimg, textOrg - cv::Point(20,20) ,
-                          textOrg + cv::Point(textSize.width+20, -textSize.height+20),
-                          cv::Scalar(0,0,0),-1);
-            cv::putText(trjimg, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
-                        cv::Scalar::all(255), 1, CV_AA);
-            cv::rectangle(image, textOrg - cv::Point(20,20) ,
-                          textOrg + cv::Point(textSize.width+20, -textSize.height+20),
-                          cv::Scalar(0,0,0),-1);
-            cv::putText(image, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
-                        cv::Scalar::all(255), 1, CV_AA);
+		std::stringstream fnstream, frameStream, fnStream2;
+		frameStream << std::setw( 8 ) << std::setfill( '0' ) << frameNumber;
+		fnStream2 << fOutputRoot << "/" << fOutputFolder << "/" << "salient_" << frameStream.str( );
+		fnStream2 << ".jpg";
+		fnstream << fOutputRoot << "/" << fOutputFolder << "/" << "traj_" << frameStream.str( );
+		fnstream << ".jpg";
 
-			const std::string filename = fnstream.str( );
+		int baseline = 0;
+		cv::Size textSize = cv::getTextSize( frameStream.str( ), cv::FONT_HERSHEY_SIMPLEX,
+						0.5, 3, &baseline);
+		baseline += 3;
 
-			// Handle keypresses (this bit is a tad messy...)
-			cv::imwrite( filename, trjimg );
-			cv::imwrite( fnStream2.str( ), image );
-			int k = cvWaitKey(2);
-			if( char(k) == 's' ) {
-				stepping = 1 - stepping;
-			}
-			if( char(k) == ' ' || stepping )
-				k = cv::waitKey( );
-			if( char(k) == 'q' || char(k) == 'Q' )
-				break;
-			if( char(k) == 's' ) {
-				stepping = 1 - stepping;
-			}
+		cv::Point textOrg((trjimg.cols - textSize.width-10),
+					  (trjimg.rows - textSize.height-10));
+
+		cv::rectangle(trjimg, textOrg - cv::Point(20,20) ,
+					  textOrg + cv::Point(textSize.width+20, -textSize.height+20),
+					  cv::Scalar(0,0,0),-1);
+		cv::putText(trjimg, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
+					cv::Scalar::all(255), 1, CV_AA);
+		cv::rectangle(image, textOrg - cv::Point(20,20) ,
+					  textOrg + cv::Point(textSize.width+20, -textSize.height+20),
+					  cv::Scalar(0,0,0),-1);
+		cv::putText(image, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
+					cv::Scalar::all(255), 1, CV_AA);
+
+		frameCountImg = cv::Mat::zeros(textSize.height+20,textSize.width+20,trjimg.type());
+
+		cv::putText(frameCountImg, frameStream.str( ), cv::Point(10,textSize.height+10), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+					cv::Scalar::all(255), 1, CV_AA);
+
+		cv::rectangle(image, textOrg - cv::Point(20,20) ,
+					  textOrg + cv::Point(textSize.width+20, -textSize.height+20),
+					  cv::Scalar(0,0,0),-1);
+		cv::putText(image, frameStream.str( ), textOrg, cv::FONT_HERSHEY_SIMPLEX, 0.5,
+					cv::Scalar::all(255), 1, CV_AA);
+
+		const std::string filename = fnstream.str( );
+
+		// Handle keypresses (this bit is a tad messy...)
+		cv::imwrite( filename, trjimg );
+		cv::imwrite( fnStream2.str( ), image );
+		if( showWin ) {
+			cv::imshow( "Trajectories", trjimg );
+			cv::imshow( "End Points", image );
+		} else if( !(frameNumber%10) ) {
+			std::cout << "Frame Number: "  << frameNumber << std::endl;
+		}
+		cv::imshow( "quit catcher", frameCountImg );
+		int k = cvWaitKey(2);
+		if( char(k) == 's' || char(k) == 'S' ) {
+			stepping = 1 - stepping;
+		}
+		if( char(k) == ' ' || stepping )
+			k = cv::waitKey( );
+		if( char(k) == 'q' || char(k) == 'Q' )
+			break;
+		if( char(k) == 'w' || char(k) == 'W' )
+			showWin = 1 - showWin;
+		if( char(k) == 's' || char(k) == 'S' ) {
+			stepping = 1 - stepping;
 		}
 
 		std::swap(prev_grey, grey);

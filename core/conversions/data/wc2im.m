@@ -11,9 +11,11 @@ function [ imc ] = wc2im( wc, alpha )
 % OUTPUT:
 %   imc     A 2xn set of coordinates in the same ordering as wc.
 
-    imc = zeros( 2, size(wc,2) );
-    for i=1:size(wc,2),
-        imc(1,i) = wc(1,i) / (alpha*wc(3,i));
-        imc(2,i) = wc(2,i) / (alpha*wc(3,i));
-    end
+%     imc = zeros( 2, size(wc,2) );
+%     for i=1:size(wc,2),
+%         c(1) = wc(1,i) / (alpha*wc(3,i));
+%         c(2) = wc(2,i) / (alpha*wc(3,i))
+%         imc(:,i) = c;
+%     end
+imc = wc(1:2,:) .* repmat((ones(1,size(wc,2)) ./ ( alpha.*wc(3,:))),2,1);
 end

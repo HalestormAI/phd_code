@@ -1,8 +1,10 @@
 function angle = trajectoryAngle( traj )
 
-% get generallised direction of vector
-drn = abs(traj(:,1) - traj(:,end));
+    % get generalised direction of vector
+    drn = traj(:,1) - traj(:,end);
 
-angle = angleError( [0;1], drn );
-
+    angle = angleError( [0;1], drn );
+    if drn(1) < 0
+        angle = angle+180;
+    end
 end

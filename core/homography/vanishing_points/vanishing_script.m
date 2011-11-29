@@ -1,4 +1,8 @@
 close all
+
+if ~exist( 'needfresh','var' )
+    needfresh = 1;
+end
 if (needfresh),
     lines = cell(2,1);
 
@@ -120,6 +124,7 @@ disp('Now doing the others')
         done = 1;
     end
 end
+have_circles = 0;
 [xout,yout] = circ_intersect(c_alpha,c_beta,r,c_alpha2,c_beta2,r2)
 
 % Only need point w/ +ve y intersect
@@ -139,7 +144,7 @@ circle( [c_alpha2,c_beta2],r2,1000,'-r' );
 
 
  H = A*P;
-H_t = maketform( 'projective',H' );
+H_t = maketform( 'projective',H );
 I4 = imtransform( I1, H_t, 'bicubic','size',size(I1));
 figure, imagesc(I4);
 title('Affine Transformed')

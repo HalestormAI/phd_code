@@ -37,7 +37,7 @@ function [N,coords,im_coords] = makeNoisyVectors(theta, psi, d, alpha, noise, nu
     im_coords = wc2im( coords, alpha );
     
     if noise(3) > 0,
-        mu_im = mean(speedDistFromCoords(im_coords));
+        mu_im = findLengthDist( im_coords, 0);
         im_coords = add_coord_noise(im_coords,noise(3),mu_im,1);
     end
 end
