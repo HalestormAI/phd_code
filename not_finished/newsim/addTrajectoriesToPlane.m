@@ -1,4 +1,6 @@
-    function [traj,startframes,camTraj] = addTrajectoriesToPlane( worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns ) 
+    function [traj,startframes,camTraj] = addTrajectoriesToPlane( ...
+        worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, ...
+        STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns ) 
 
 
     %% Param check
@@ -52,7 +54,7 @@
         % 25% chance of spawn provided we have room
         if rand <= 0.25 && num_trajectories < MAX_TRAJ,
             
-            this_spd = NORM_SPEEDS(num_trajectories);
+            this_spd = NORM_SPEEDS(num_trajectories+1);
             
             if nargin < 8
                 [traj{num_trajectories+1}(:,1),prevdrn{num_trajectories+1}] = initialiseNewPoint( );
