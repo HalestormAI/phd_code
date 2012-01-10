@@ -1,4 +1,4 @@
-NUM_FRAMES = 100;
+NUM_FRAMES = 151;
 
 f = drawPlane( worldPlane,'',1,'r' );
 fnum = 1;
@@ -19,4 +19,3 @@ for t=1:1:NUM_FRAMES
         fnum = fnum + 1;
     end
 end
-delete(h)

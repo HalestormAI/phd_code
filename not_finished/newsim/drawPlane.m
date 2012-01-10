@@ -52,5 +52,6 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker )
         scatter3(0,0,0,32,'r*');
         
     end
+    view(-22,44);
     axis equal;
 end

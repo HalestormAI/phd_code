@@ -27,10 +27,10 @@ psi         = rad2deg( psi );
 TOL_theta   = theta * TOL;
 TOL_psi     = psi * TOL;
 validTheta  = (theta-TOL_theta >= 0) && (theta+TOL_theta <= 80);
-validPsi    = (psi-TOL_psi >= -45 ) && (psi+TOL_psi <= 45);
+validPsi    = (psi-TOL_psi >= -61 ) && (psi+TOL_psi <= 60);
 
 validn      = validTheta && validPsi;
 validalpha  = abs(myplane.alpha) < 1;
 
 % d must lie between MIND and MAXD
-validd = (MIND <=d) && (d <= MAXD);
+% validd = (MIND <=d) && (d <= MAXD);

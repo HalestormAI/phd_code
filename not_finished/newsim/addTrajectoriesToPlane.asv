@@ -1,4 +1,6 @@
-    function [traj,startframes,camTraj] = addTrajectoriesToPlane( worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns ) 
+    function [traj,startframes,camTraj] = addTrajectoriesToPlane( ...
+        worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, ...
+        STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns ) 
 
 
     %% Param check

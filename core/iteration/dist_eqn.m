@@ -12,11 +12,7 @@ a     = x(1);
 b     = x(2);
 c     = x(3);
 alpha = x(4);
-% l     = x(5);
 
-% 
-beta = c/alpha;
-% 
 
 Z1 = 1 / (alpha*(a*x1 + b*y1) + c);
 Z2 = 1 / (alpha*(a*x2 + b*y2) + c);

@@ -17,7 +17,6 @@ for p = 1:size(RESULT,1)
             GLOBAL_ANGLE_ERROR(p,i) = fixAngle(deg2rad(angleError( N, Ne )));
             AOE_ERROR(p,i) = fixAngle(deg2rad(theta) - real(Te));
             YAW_ERROR(p,i) = fixAngle(deg2rad(psi) - real(Pe));
-            [d, De]
             D_ERROR(p,i)   = (d - De);
             FOC_ERROR(p,i) = (1/FOCAL - RESULT{p,i}(4));
             
@@ -58,6 +57,7 @@ title('Number of Trajectories vs Mean Normal Angle Error');
 xlabel('No. Trajectories');
 ylabel('Mean Normal Angle Error (radians)');
 axis([ 1 length(OVERCONSTRAINEDNESS) -pi/2 pi/2])
+
 subplot(3,2,3);
 plot(1:length(OVERCONSTRAINEDNESS),mean_AOE_ERROR)
 title('Number of Trajectories vs Mean AOE Error');
@@ -83,3 +83,68 @@ plot(1:length(OVERCONSTRAINEDNESS),mean_FOC_ERROR);
 title('Number of Trajectories vs Median Focal Length Error');
 xlabel('No. Trajectories');
 ylabel('Median Length Error (mm)');
+
+
+
+%% Plot Scatter Graphs
+figure;
+subplot(3,2,1);
+plot(1:length(OVERCONSTRAINEDNESS),OVERCONSTRAINEDNESS)
+title('Number of Trajectories vs Number of Overconstraining Equations');
+xlabel('No. Trajectories');
+ylabel('No. Overconstraining Eqns');
+subplot(3,2,2);
+hold on;
+for i=1:size(GLOBAL_ANGLE_ERROR,1)
+    scatter(1:10, GLOBAL_ANGLE_ERROR(i,:),24,D_ERROR(i,:),'*');
+end
+title('Number of Trajectories vs Mean Normal Angle Error');
+xlabel('No. Trajectories');
+ylabel('Mean Normal Angle Error (radians)');
+axis([ 1 length(OVERCONSTRAINEDNESS) -pi pi])
+c = colorbar;
+ylabel(c,'D Err');
+
+subplot(3,2,3);
+hold on;
+for i=1:size(AOE_ERROR,1)
+    scatter(1:10, AOE_ERROR(i,:),24,D_ERROR(i,:),'*');
+end
+title('Number of Trajectories vs Mean AOE Error');
+xlabel('No. Trajectories');
+ylabel('Mean AOE Error (radians)');
+axis([ 1 length(OVERCONSTRAINEDNESS) -pi pi])
+c = colorbar;
+ylabel(c,'D Err');
+
+subplot(3,2,4);
+hold on;
+for i=1:size(YAW_ERROR,1)
+    scatter(1:10, YAW_ERROR(i,:),24,D_ERROR(i,:),'*');
+end
+title('Number of Trajectories vs Mean Yaw Error');
+xlabel('No. Trajectories');
+ylabel('Mean Yaw Error (radians)');
+axis([ 1 length(OVERCONSTRAINEDNESS) -pi pi])
+c = colorbar;
+ylabel(c,'D Err');
+
+subplot(3,2,5);
+hold on;
+for i=1:size(D_ERROR,1)
+    scatter(1:10, D_ERROR(i,:),24,'*b');
+end
+title('Number of Trajectories vs Mean Depth Error');
+xlabel('No. Trajectories');
+ylabel('Mean D Error (mm)');
+
+subplot(3,2,6);
+hold on;
+for i=1:size(FOC_ERROR,1)
+    scatter(1:10, log10(FOC_ERROR(i,:)),24,D_ERROR(i,:),'*');
+end
+title('Number of Trajectories vs Log Focal Length Error');
+xlabel('No. Trajectories');
+ylabel('D Err');
+c = colorbar;
+ylabel(c,'D Err');

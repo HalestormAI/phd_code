@@ -74,7 +74,7 @@ parfor j=1:size(x0s,1),
             if ~validn,
                 fR(2) = 1;
             end
-            % If d is invalid
+            % If alpha is invalid
             if ~validalpha,
                 fR(3) = 1;
             end
@@ -82,9 +82,9 @@ parfor j=1:size(x0s,1),
             if baddist,
                 fR(4) = 1;
             end
-            if x_iter(4) > 0,
-                fR(5) = 1;
-            end
+%             if x_iter(4) > 0,
+%                 fR(5) = 1;
+%             end
 
         catch err,
             if strcmp(err.identifier, 'IJH:ITERATE:IMAGINARY'),

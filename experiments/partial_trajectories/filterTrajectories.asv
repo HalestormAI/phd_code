@@ -10,9 +10,9 @@ function [acceptable,v_dists] = filterTrajectories( im_usable, THRESHOLD, MIN_LE
     for p = 1:length(im_usable),
         endpointDists = vector_dist( im_usable{p}(:,2:end-1) )
         length(endpointDists)
+        THRESHOLD
         if ~isempty(find(endpointDists > THRESHOLD,1))
-            vecParts = SplitVec(endpointDists > THRESHOLD);
-            vecParts{1}
+            vecParts = SplitVec(endpointDists > THRESHOLD);           
             
             [cIds,vIds] = getIdsForParts( vecParts );
             
