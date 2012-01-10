@@ -8,10 +8,10 @@ y1 = p(2,1);
 x2 = p(1,2);
 y2 = p(2,2);
 
-a     = x(1)
-b     = x(2)
-c     = x(3)
-alpha = x(4)
+a     = x(1);
+b     = x(2);
+c     = x(3);
+alpha = x(4);
 % l     = x(5);
 
 ratio = x(4+idx);
