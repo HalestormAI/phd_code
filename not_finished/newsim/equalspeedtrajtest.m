@@ -26,10 +26,10 @@ if  ~exist('baseTraj','var')
 end
 
 drawPlane(basePlane);
-drawcoords(traj2imc(baseTraj,FPS,1),'',0,'k');
+cellfun( @(x) drawcoords(traj2imc(x,12,1),'',0,'k'), baseTraj);
 planeBounds = minmax(basePlane);
 axis([planeBounds(1,:),planeBounds(2,:),-250000/2,250000/2]);
-
+pause;
 NUM_EQNS = cell(size(PLANE_PARAMS,2),1);
 
 SPEEDDIST_EST = cell(size(PLANE_PARAMS,2),1);
