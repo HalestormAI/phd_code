@@ -29,7 +29,7 @@ drawPlane(basePlane);
 cellfun( @(x) drawcoords(traj2imc(x,12,1),'',0,'k'), baseTraj);
 planeBounds = minmax(basePlane);
 axis([planeBounds(1,:),planeBounds(2,:),-250000/2,250000/2]);
-pause;
+
 NUM_EQNS = cell(size(PLANE_PARAMS,2),1);
 
 SPEEDDIST_EST = cell(size(PLANE_PARAMS,2),1);
@@ -126,19 +126,6 @@ for p=1:size(PLANE_PARAMS,2)
         error('Not enough info for a ground-truth.')
     end
     est_traj = cellfun(@(x) find_real_world_points(x,iter2plane(x_iters_good{MINIDX}(1:4))), tobeoptimised_traj,'uniformoutput',false);
-
-
-    mu_gt  = findLengthDist( cell2mat(gt_traj),0);
-    mu_est = findLengthDist(cell2mat(est_traj),0);
-
-
-    gt_norm = cellfun( @(x) x ./ mu_gt, gt_traj,'uniformoutput',false);
-    est_norm = cellfun( @(x) x ./ mu_est, est_traj,'uniformoutput',false);
-    SPEEDDIST_EST{p} = cellfun(@(x) mean(vector_dist(x)), est_norm);
-    SPEEDDIST_GT{p} = cellfun(@(x) mean(vector_dist(x)), gt_norm);
-    if NUM_DONE == 1
-        one_iter_time = toc;
-    end
 
     all_x0s{p} = tobeoptimised_x0;
     all_xiters{p} = x_iter;
