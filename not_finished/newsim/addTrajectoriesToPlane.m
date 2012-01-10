@@ -28,7 +28,6 @@
         DRN_VAR = 2.5;
     end
     
-    
     NORM_SPEEDS = normrnd( MEAN_SPEED, STD_SPEED, 1, MAX_TRAJ );
 
     %% Find edges of world-plane
