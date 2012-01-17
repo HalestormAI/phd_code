@@ -11,15 +11,15 @@ cs = [C(:,ids);ones(1,NUM_POINTS)]';
 % 
 
 % % Use singular value decomposition to get coeffs
-% [U,S,V] = svd( cs );
-% n = V(1:3,end);
-% n = n/norm(n);
+[U,S,V] = svd( cs );
+n = V(1:3,end);
+n = n/norm(n);
 % d = V(4,end);
 
 % Alternative method: Cross product
-A = C(:,1)-C(:,2);
-B = C(:,3)-C(:,1);
-n = cross(A,B)./norm(cross(A,B));
+% A = C(:,1)-C(:,2);
+% B = C(:,3)-C(:,1);
+% n = cross(A,B)./norm(cross(A,B));
 if n(3) > 0,
     n = n.*-1;
 end

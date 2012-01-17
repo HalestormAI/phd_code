@@ -1,7 +1,9 @@
     function [traj,startframes,camTraj] = addTrajectoriesToPlane( ...
         worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, ...
         STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns ) 
-
+    % Inputs:
+    % worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, 
+    %    STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns
 
     %% Param check
     if nargin < 2,
@@ -9,7 +11,7 @@
     end
     if nargin < 3 || isempty(MAX_TRAJ),
         MAX_TRAJ = 10;
-    elseif nargin >= 8
+    elseif nargin >= 9
         MAX_TRAJ = length(startPoints);
     end
     if nargin < 4 || isempty(NUM_FRAMES),
@@ -55,7 +57,7 @@
             
             this_spd = NORM_SPEEDS(num_trajectories+1);
             
-            if nargin < 8
+            if nargin < 9
                 [traj{num_trajectories+1}(:,1),prevdrn{num_trajectories+1}] = initialiseNewPoint( );
             else
                 traj{num_trajectories+1}(:,1) = startPoints{num_trajectories+1};
@@ -118,7 +120,7 @@
         RR = randperm(4);
         
         % Add some type 1 noise
-        t2n = rand*2;
+        t2n = 0;%rand*2;
         if RR(1) == 1,
             % Start at the top of the plane
             start(1) = planeBoundaries(1,1)+rand(1)*planeBoundaries(1,2);
