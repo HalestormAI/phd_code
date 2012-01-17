@@ -1,5 +1,5 @@
 % How do we do with no speed variation?
-NUM_PLANES = 250;
+NUM_PLANES = 1;
 
 % Generate a set of random camera positions in the form (thetas ; psis ; ds )
 if ~exist('PLANE_PARAMS','var')
