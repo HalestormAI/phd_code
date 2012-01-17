@@ -7,7 +7,7 @@ theta = pi-acos( N(3) );
 if theta == 0
     psi = asin( -N(1) );
 else
-    psi = asin( -N(1) / ( sin(theta) ) );
+    psi = asin( -N(1) / sin(theta) );
 end
 
 if(nargin == 2 && asVec == 1)
