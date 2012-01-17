@@ -1,0 +1,11 @@
+if ~exist('expdir','var')
+    if exist
+    expdir = timedinputdlg('Enter Experiment Title:','Enter Experiment Title',1,{datestr(now,'dd-mm-yy_HH-MM-SS')},struct('TimeOut',10));
+    if iscell(expdir)
+        expdir = cell2mat(expdir);
+    end
+end
+if ~exist(expdir,'dir')
+    mkdir(expdir);
+end
+cd(expdir);

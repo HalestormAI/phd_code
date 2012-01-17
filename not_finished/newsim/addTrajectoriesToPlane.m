@@ -9,7 +9,7 @@
     end
     if nargin < 3 || isempty(MAX_TRAJ),
         MAX_TRAJ = 10;
-    elseif nargin >= 8
+    elseif nargin >= 9
         MAX_TRAJ = length(startPoints);
     end
     if nargin < 4 || isempty(NUM_FRAMES),
@@ -31,11 +31,7 @@
     NORM_SPEEDS = normrnd( MEAN_SPEED, STD_SPEED, 1, MAX_TRAJ );
 
     %% Find edges of world-plane
-    mins = min(worldPlane,[],2);
-    maxs = max(worldPlane,[],2);
-    planeBoundaries = [         mins(1),         maxs(1); 
-                                mins(2),         maxs(2);
-                        worldPlane(3,1), worldPlane(3,1)];
+    planeBoundaries = minmax(worldPlane);
 
     traj    = cell(MAX_TRAJ,1);
     prevdrn = cell(MAX_TRAJ,1);
@@ -51,11 +47,11 @@
         
     waitbar(t / NUM_FRAMES, h, sprintf('Frame: %d (%d%%).',t, round(100*t / NUM_FRAMES)));
         % 25% chance of spawn provided we have room
-        if rand <= 0.25 && num_trajectories < MAX_TRAJ,
+        if rand <= 1 && num_trajectories < MAX_TRAJ,
             
             this_spd = NORM_SPEEDS(num_trajectories+1);
             
-            if nargin < 8
+            if nargin < 9
                 [traj{num_trajectories+1}(:,1),prevdrn{num_trajectories+1}] = initialiseNewPoint( );
             else
                 traj{num_trajectories+1}(:,1) = startPoints{num_trajectories+1};
@@ -118,7 +114,8 @@
         RR = randperm(4);
         
         % Add some type 1 noise
-        t2n = rand*2;
+%         t2n = rand*2;
+        t2n = 0;
         if RR(1) == 1,
             % Start at the top of the plane
             start(1) = planeBoundaries(1,1)+rand(1)*planeBoundaries(1,2);
@@ -150,4 +147,4 @@
         end
     end
 
-    end
+end

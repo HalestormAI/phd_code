@@ -18,7 +18,7 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
     if nargin < 4,
         colour = 'k';
     end
-    if nargin < 5 || isempty(lw),
+    if nargin < 5,
         lw = 1;
     end
     if nargin < 6,
@@ -34,6 +34,7 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
     hold on
     
     if iscell(imcoords)
+        error('coop
         cellfun(@(x) drawcoords( x, ttl, newfig, colour, lw, marker ), imcoords);
     else
         imcoords = ( imcoords );
