@@ -21,6 +21,11 @@ all_timeToSolve = cell(NUM_PLANES,1);
 BASEPATH = strcat('jacobi_comparison_',datestr(now,'HH-MM-SS'));
 mkdir( BASEPATH );
 cd( BASEPATH );
+
+if matlabpool('size') == 0
+    matlabpool open 3;
+end
+
 for pId = 1:NUM_PLANES
 
     %% Experiment Parameters
