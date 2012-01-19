@@ -1,6 +1,9 @@
-for i=1:10
+pass_results = find(exitflag > 0);
+pass_ids = post_SIDS(exitflag > 0);
+
+for i=1:min(10,length(find(exitflag > 0)))
     
-    iter = x_iter{post_SIDS(i)}(1:4);
+    iter = x_iter{pass_ids(i)}(1:4);
     est_plane = find_real_world_points(imPlane,iter2plane(iter));
     f = drawPlane( est_plane );
     

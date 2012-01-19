@@ -59,7 +59,7 @@ drawbadestimates;
 
 ALL_NS = cell2mat(cellfun(@(x) abc2n(x(1:3)), x_iter(exitflag > 0),'uniformoutput',false));
 ALL_ANGLE_ERRORS = cellfun( @(x) acos(dot(x',GT_N)),num2cell(ALL_NS,2));
-figure;scatter(log10(sum(cell2mat(fval(exitflag > 0)).^2,2)),ALL_ANGLE_ERRORS);
+f = figure;scatter(log10(sum(cell2mat(fval(exitflag > 0)).^2,2)),ALL_ANGLE_ERRORS);
 xlabel('log_{10}(fval)');
 ylabel('Plane-Normal Error (radians)');
 saveas( f,'fval_vs_angle.fig' )
