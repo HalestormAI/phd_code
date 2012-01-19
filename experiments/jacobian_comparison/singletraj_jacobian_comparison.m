@@ -1,23 +1,26 @@
 
-ALPHAS = -10.^(-3:1:-1);
-THETAS = 2:5:90;
+ALPHAS = -10.^(-3:0.25:-1);
+THETAS = 1:5:90;
 PSIS   = -60:5:60;
 DS = 1:2:20;
 
 NUM_PLANES = 50;
 
-PLANE_PARAMS = [randi(90,1,NUM_PLANES)            ;
-                randi(120,1,NUM_PLANES) - 60      ; 
-                rand(1,NUM_PLANES) * 18 + 2       ;
-                randi(length(ALPHAS),1,NUM_PLANES)];
-
+PLANE_PARAMS = [randi(90,1,NUM_PLANES)                    ;
+                randi(120,1,NUM_PLANES) - 60              ; 
+                rand(1,NUM_PLANES) * 18 + 2               ;
+                ALPHAS(randi(length(ALPHAS),1,NUM_PLANES))]
+            
+            pause
 all_x_iters     = cell(NUM_PLANES,1);
 all_fval        = cell(NUM_PLANES,1);
 all_exitflag    = cell(NUM_PLANES,1);
 all_output      = cell(NUM_PLANES,1);
 all_timeToSolve = cell(NUM_PLANES,1);
 
-            
+BASEPATH = strcat('jacobi_comparison_',datestr(now,'HH-MM-SS'));
+mkdir( BASEPATH );
+cd( BASEPATH );
 for pId = 1:NUM_PLANES
 
     %% Experiment Parameters
@@ -32,9 +35,7 @@ for pId = 1:NUM_PLANES
     GT_ITER = [n2abc(GT_N,GT_D)',GT_ALPHA];
 
     %% Set up dirs and filenames
-    ROOT_DIR = sprintf('compare_jacobian_t=%d,p=%d,a=%.4f,d=%d_%s', ...
-                        GT_T,GT_P,GT_ALPHA,GT_D,datestr(now,'HH-MM-SS') ...
-                      );
+    ROOT_DIR = sprintf('t=%d,p=%d,a=%.4f,d=%2.3f',GT_T,GT_P,GT_ALPHA,GT_D);
     addpath( cd ); 
     mkdir( ROOT_DIR )
     cd( ROOT_DIR );
@@ -61,8 +62,8 @@ for pId = 1:NUM_PLANES
     pF = drawPlane( imPlane );
     cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
     saveas(pF, 'trajectory.fig');
-
-    allfigs = figure;
+    close(pF);
+    
 
     %% Run scripts
     fsolve_options
@@ -115,6 +116,7 @@ for pId = 1:NUM_PLANES
     all_fval        = fval;
     all_exitflag    = exitflag;
     all_output      = output;
+    cd ../
 end
 
 cd ../
