@@ -1,7 +1,7 @@
 DEFAULT_FOLDER = datestr(now,'dd-mm-yy_HH-MM-SS');
 
 if ~exist('expdir','var')
-    if exist('timedinputdlg') == 2
+    if exist('setdefaultbutton') == 2
         expdir = timedinputdlg('Enter Experiment Title:','Enter Experiment Title',1,{DEFAULT_FOLDER},struct('TimeOut',10));
     else
         expdir = inputdlg('Enter Experiment Title:','Enter Experiment Title',1,{DEFAULT_FOLDER});
