@@ -31,7 +31,7 @@ X2 = alpha*Z2*x2;
 Y1 = alpha*Z1*y1;
 Y2 = alpha*Z2*y2;
 
-out = sqrt( (X1-X2)^2 + (Y1-Y2)^2 + (Z1-Z2)^2 ) - l;
+out = ( (X1-X2)^2 + (Y1-Y2)^2 + (Z1-Z2)^2 ) - l;
 
 end
 

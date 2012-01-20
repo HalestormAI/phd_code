@@ -5,7 +5,7 @@ mkdir( ROOT_DIR )
 cd( ROOT_DIR );
 
 fixed_nms = strcat('fixed_',['d,f';'t,d';'t,f';'t,p';'p,f';'p,d']);
-method_nms = ['n_d';'abc'];
+method_nms = ['abc';'n_d'];
 
 %% Experiment Parameters
 
@@ -17,10 +17,10 @@ DS = 1:1:20;
 NUM_TRAJECTORIES = 1;
 GT_T = 32;
 GT_P = -16;
-GT_D = 18;
+GT_D = 10;
 
 GT_N = normalFromAngle( GT_T,GT_P );
-GT_ALPHA = ALPHAS(2);
+GT_ALPHA = ALPHAS(10);
 
 
 %% Generate Trajectories & Plane
@@ -44,40 +44,52 @@ saveas(pF, 'trajectory.fig');
 allfigs = figure;
 
 %% Run scripts
-for METHOD = 1:2
-    mthd_root = strcat('method_',method_nms(METHOD,:));
-    mkdir(mthd_root);
-    cd(mthd_root);
+
+for FIXED_VARS = 1:6
+    f = figure;
+    for METHOD = 1:2
+        sp = subplot(1,2,METHOD);
+        mthd_root = strcat('method_',method_nms(METHOD,:));
+        mkdir(mthd_root);
+        cd(mthd_root);
+
+        if METHOD == 1
+            X0_FUNC = @generateNormalSet;
+            ERROR_FUNC = @traj_iter_func;
+            GT_ITER = [n2abc(GT_N,GT_D)',GT_ALPHA];
+            MARKER_COLOUR = 'ob';
+        else
+            X0_FUNC = @generateNormalSet_nd;
+            ERROR_FUNC = @traj_iter_func_nd;
+            GT_ITER = [GT_N',GT_D,GT_ALPHA];
+            MARKER_COLOUR = 'or';
+        end
+
+        gridfn = strcat('fine_grid_',method_nms(METHOD,:),'.mat');
+        if exist(gridfn,'file')
+           load( gridfn, 'grid', 'gridVars');
+        else
+            [grid,gridVars] = X0_FUNC( ALPHAS,DS,THETAS,PSIS );
+            save( gridfn, 'grid', 'gridVars')
+        end
     
-    if METHOD == 1
-        X0_FUNC = @generateNormalSet;
-        ERROR_FUNC = @traj_iter_func;
-        GT_ITER = [n2abc(GT_N,GT_D)',GT_ALPHA];
-        MARKER_COLOUR = 'ob';
-    else
-        X0_FUNC = @generateNormalSet_nd;
-        ERROR_FUNC = @traj_iter_func_nd;
-        GT_ITER = [GT_N',GT_D,GT_ALPHA];
-        MARKER_COLOUR = 'or';
-    end
-    
-    gridfn = strcat('fine_grid_',method_nms(METHOD,:),'.mat');
-    if exist(gridfn,'file')
-       load( gridfn, 'grid', 'gridVars');
-    else
-        [grid,gridVars] = X0_FUNC( ALPHAS,DS,THETAS,PSIS );
-        save( gridfn, 'grid', 'gridVars')
-    end
-    
-    for FIXED_VARS = 1:6
         
-        sp = subplot(2,6,FIXED_VARS+(6*(METHOD-1)));
         
         expdir = fixed_nms(FIXED_VARS,:);
         examine_problem_space;
+        
+        title(strrep(sprintf('%s problem space for %s',method_nms(METHOD,:), fixed_nms(FIXED_VARS,:)),'_',' '));
+        cd ../
     end
-cd ../
+    
+        sp = subplot(1,2,1);
+        ax = axis;
+        sp = subplot(1,2,2);
+        axis(ax);   
+    saveas(f,sprintf('fixed_%s_problemspace_comparison.fig',fixed_nms(FIXED_VARS,:)));
+    close all;
 end
+save expdata.mat
 saveas(allfigs,'all_errors_comparison.fig');
 
 % pf = figure;

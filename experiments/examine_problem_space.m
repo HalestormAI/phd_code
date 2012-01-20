@@ -37,6 +37,8 @@ end
 
 GT_ERR = sum(ERROR_FUNC([GT_ITER,1], imTraj).^2);
 
+DRAW_ALPHAS = -log10(abs(ALPHAS));
+DRAW_GT_ALPHA = -log10(abs(GT_ALPHA));
 %% Plot
 if FIXED_VARS == 1
     % FIXED D and F
@@ -49,11 +51,11 @@ if FIXED_VARS == 1
     ylabel('Psi (Degrees)');
 elseif FIXED_VARS == 2
     % FIXED Theta and D
-    lim = [minmax(PSIS);minmax(ALPHAS);log10(minmax(err'))];
+    lim = [minmax(PSIS);minmax(DRAW_ALPHAS);log10(minmax(err'))];
 
 %     f = figure;
-    scatter3(touse_gridVars(:,2),(touse_gridVars(:,3)),log10(err), 24, MARKER_COLOUR);
-    plotCross( [GT_P, GT_ALPHA, log10(GT_ERR)], lim );
+    scatter3(touse_gridVars(:,2),(-log10(abs(touse_gridVars(:,3)))),log10(err), 24, MARKER_COLOUR);
+    plotCross( [GT_P, DRAW_GT_ALPHA, log10(GT_ERR)], lim );
     xlabel('Psi (degrees)');
     ylabel('f');
 elseif FIXED_VARS == 3
@@ -67,13 +69,13 @@ elseif FIXED_VARS == 3
     ylabel('d');
 elseif FIXED_VARS == 4
     % FIXED Theta and Psi
-    lim = [minmax(ALPHAS);minmax(DS);log10(minmax(err'))];
+    lim = [minmax(DRAW_ALPHAS);minmax(DS);log10(minmax(err'))];
     
 %     f = figure;
-    scatter3(touse_gridVars(:,3),touse_gridVars(:,4),log10(err), 24, MARKER_COLOUR);
-    plotCross( [GT_ALPHA, GT_D, log10(GT_ERR)], lim );
-    xlabel('Theta (Degrees)');
-    ylabel('Psi (Degrees)');
+    scatter3(-log10(abs(touse_gridVars(:,3))),touse_gridVars(:,4),log10(err), 24, MARKER_COLOUR);
+    plotCross( [DRAW_GT_ALPHA, GT_D, log10(GT_ERR)], lim );
+    xlabel('f)');
+    ylabel('d');
 elseif FIXED_VARS == 5
     % FIXED Psi and F
     lim = [minmax(THETAS);minmax(DS);log10(minmax(err'))];
@@ -88,8 +90,8 @@ elseif FIXED_VARS == 6
     lim = [minmax(THETAS);minmax(ALPHAS);log10(minmax(err'))];
     
 %     f = figure;
-    scatter3(touse_gridVars(:,1),touse_gridVars(:,3),log10(err), 24, MARKER_COLOUR);
-    plotCross( [GT_T, GT_ALPHA, log10(GT_ERR)], lim );
+    scatter3(touse_gridVars(:,1),-log10(abs(touse_gridVars(:,3))),log10(err), 24, MARKER_COLOUR);
+    plotCross( [GT_T, DRAW_GT_ALPHA, log10(GT_ERR)], lim );
     xlabel('Theta (Degrees)');
     ylabel('f');
 end
