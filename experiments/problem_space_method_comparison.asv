@@ -44,37 +44,43 @@ saveas(pF, 'trajectory.fig');
 allfigs = figure;
 
 %% Run scripts
-for METHOD = 1:2
-    mthd_root = strcat('method_',method_nms(METHOD,:));
-    mkdir(mthd_root);
-    cd(mthd_root);
+
+for FIXED_VARS = 1:6
+    f = figure;
+    for METHOD = 1:2
+        sp = subplot(1,2,METHOD);
+        mthd_root = strcat('method_',method_nms(METHOD,:));
+        mkdir(mthd_root);
+        cd(mthd_root);
+
+        if METHOD == 1
+            X0_FUNC = @generateNormalSet;
+            ERROR_FUNC = @traj_iter_func;
+            GT_ITER = [n2abc(GT_N,GT_D)',GT_ALPHA];
+            MARKER_COLOUR = 'ob';
+        else
+            X0_FUNC = @generateNormalSet_nd;
+            ERROR_FUNC = @traj_iter_func_nd;
+            GT_ITER = [GT_N',GT_D,GT_ALPHA];
+            MARKER_COLOUR = 'or';
+        end
+
+        gridfn = strcat('fine_grid_',method_nms(METHOD,:),'.mat');
+        if exist(gridfn,'file')
+           load( gridfn, 'grid', 'gridVars');
+        else
+            [grid,gridVars] = X0_FUNC( ALPHAS,DS,THETAS,PSIS );
+            save( gridfn, 'grid', 'gridVars')
+        end
     
-    if METHOD == 1
-        X0_FUNC = @generateNormalSet;
-        ERROR_FUNC = @traj_iter_func;
-        GT_ITER = [n2abc(GT_N,GT_D)',GT_ALPHA];
-    else
-        X0_FUNC = @generateNormalSet_nd;
-        ERROR_FUNC = @traj_iter_func_nd;
-        GT_ITER = [GT_N',GT_D,GT_ALPHA];
-    end
-    
-    gridfn = strcat('fine_grid_',method_nms(METHOD,:),'.mat');
-    if exist(gridfn,'file')
-       load( gridfn, 'grid', 'gridVars');
-    else
-        [grid,gridVars] = X0_FUNC( ALPHAS,DS,THETAS,PSIS );
-        save( gridfn, 'grid', 'gridVars')
-    end
-    
-    for FIXED_VARS = 1:6
+        
+        
         expdir = fixed_nms(FIXED_VARS,:);
         examine_problem_space;
-        close all;
     end
 cd ../
 end
-
+saveas(allfigs,'all_errors_comparison.fig');
 
 % pf = figure;
 % ff  = zeros(12,1);
