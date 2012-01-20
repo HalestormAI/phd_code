@@ -4,14 +4,18 @@ THETAS = 1:5:90;
 PSIS   = -60:5:60;
 DS = 1:2:20;
 
-NUM_PLANES = 50;
 
-PLANE_PARAMS = [randi(90,1,NUM_PLANES)                    ;
-                randi(120,1,NUM_PLANES) - 60              ; 
-                rand(1,NUM_PLANES) * 18 + 2               ;
-                ALPHAS(randi(length(ALPHAS),1,NUM_PLANES))]
-            
-            pause
+
+if exists('param_file','var')
+    load(param_file,'PLANE_PARAMS');
+    NUM_PLANES = size(PLANE_PARAMS,2);
+else
+    NUM_PLANES = 50;
+    PLANE_PARAMS = [randi(90,1,NUM_PLANES)            ;
+                    randi(120,1,NUM_PLANES) - 60      ; 
+                    rand(1,NUM_PLANES) * 18 + 2       ;
+                    randi(length(ALPHAS),1,NUM_PLANES)];
+end
 all_x_iters     = cell(NUM_PLANES,1);
 all_fval        = cell(NUM_PLANES,1);
 all_exitflag    = cell(NUM_PLANES,1);
