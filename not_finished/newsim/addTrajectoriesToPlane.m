@@ -44,10 +44,23 @@
                
     num_trajectories = 0;
 
-    h = waitbar(0,'Starting...', 'Name', sprintf('%d Frames', NUM_FRAMES));
+    scrnsz = get(0,'Screensize');
+    if length(find(scrnsz(3:4)==1)) ~= 2
+        h = waitbar(0,'Starting...', 'Name', sprintf('%d Frames', NUM_FRAMES));
+    end
     for t = 1:NUM_FRAMES,
         
-    waitbar(t / NUM_FRAMES, h, sprintf('Frame: %d (%d%%).',t, round(100*t / NUM_FRAMES)));
+        if length(find(scrnsz(3:4)==1)) ~= 2
+            waitbar(t / NUM_FRAMES, h, sprintf('Frame: %d (%d%%).',t, round(100*t / NUM_FRAMES)));
+        else
+            if mod(t,50) == 0
+                if t > 50
+                    fprintf('\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b');
+                end
+                fprintf('Frame %3d of %3d (%3d%%)\n', t, NUM_FRAMES, ...
+                        round(100*t/NUM_FRAMES));
+            end
+        end
         % 25% chance of spawn provided we have room
         if rand <= 1 && num_trajectories < MAX_TRAJ,
             
@@ -105,7 +118,9 @@
         drnchg(num_trajectories+1:end) = [];
     end
         
-    delete(h)
+    if length(find(scrnsz(3:4)==1)) ~= 2
+        delete(h);
+    end
     if nargin < 2  || isempty(rotation)
         camTraj = [];
     else

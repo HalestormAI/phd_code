@@ -4,9 +4,10 @@ THETAS = 1:5:90;
 PSIS   = -60:5:60;
 DS = 1:2:20;
 
+NUM_PLANES = 50;
 
 
-if exists('param_file','var')
+if exist('param_file','var')
     load(param_file,'PLANE_PARAMS');
     NUM_PLANES = size(PLANE_PARAMS,2);
 else
@@ -16,6 +17,7 @@ else
                     rand(1,NUM_PLANES) * 18 + 2       ;
                     randi(length(ALPHAS),1,NUM_PLANES)];
 end
+            
 all_x_iters     = cell(NUM_PLANES,1);
 all_fval        = cell(NUM_PLANES,1);
 all_exitflag    = cell(NUM_PLANES,1);
@@ -68,10 +70,10 @@ for pId = 1:NUM_PLANES
     traj = imTraj{1};
 
 
-    pF = drawPlane( imPlane );
-    cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
-    saveas(pF, 'trajectory.fig');
-    close(pF);
+%    pF = drawPlane( imPlane );
+%    cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
+%    saveas(pF, 'trajectory.fig');
+%    close(pF);
     
 
     %% Run scripts
@@ -121,10 +123,10 @@ for pId = 1:NUM_PLANES
         all_timeToSolve{pId}(METHOD) = toc(solveTic);
 
     end
-    all_x_iters     = x_iter;
-    all_fval        = fval;
-    all_exitflag    = exitflag;
-    all_output      = output;
+    all_x_iters{pId}     = x_iter;
+    all_fval{pId}        = fval;
+    all_exitflag{pId}    = exitflag;
+    all_output{pId}      = output;
     cd ../
 end
 
