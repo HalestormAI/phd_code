@@ -1,6 +1,6 @@
-    function [traj,startframes,camTraj] = addTrajectoriesToPlane( ...
+    function [traj,startframes,camTraj,speeds,t2noises] = addTrajectoriesToPlane( ...
         worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, ...
-        STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns ) 
+        STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, startPoints, startDrns ) 
     % Inputs:
     % worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, 
     %    STD_SPEED, WALK_SPD_VAR, DRN_VAR, startPoints, startDrns
@@ -11,7 +11,7 @@
     end
     if nargin < 3 || isempty(MAX_TRAJ),
         MAX_TRAJ = 10;
-    elseif nargin >= 9
+    elseif nargin >= 10
         MAX_TRAJ = length(startPoints);
     end
     if nargin < 4 || isempty(NUM_FRAMES),
@@ -29,8 +29,12 @@
     if nargin < 8 || isempty(DRN_VAR)
         DRN_VAR = 2.5;
     end
+    if nargin < 9 || isempty(HEIGHT_VAR)
+        HEIGHT_VAR = 0;
+    end
     
     NORM_SPEEDS = normrnd( MEAN_SPEED, STD_SPEED, 1, MAX_TRAJ );
+    t2noises = normrnd( 0, HEIGHT_VAR,1, MAX_TRAJ );
 
     %% Find edges of world-plane
     planeBoundaries = minmax(worldPlane);
@@ -66,8 +70,8 @@
             
             this_spd = NORM_SPEEDS(num_trajectories+1);
             
-            if nargin < 9
-                [traj{num_trajectories+1}(:,1),prevdrn{num_trajectories+1}] = initialiseNewPoint( );
+            if nargin < 10
+                [traj{num_trajectories+1}(:,1),prevdrn{num_trajectories+1}] = initialiseNewPoint( t2noises(num_trajectories+1) );
             else
                 traj{num_trajectories+1}(:,1) = startPoints{num_trajectories+1};
                 prevdrn{num_trajectories+1} = startDrns{num_trajectories + 1};
@@ -126,13 +130,14 @@
     else
         camTraj = cellfun(@(x) rotation(1:3,1:3)*x,traj,'uniformoutput',false);
     end
-    function [start ,prevdrn] = initialiseNewPoint( )
+    function [start ,prevdrn] = initialiseNewPoint( t2n )
     % Pick a side of the plane to start at
         RR = randperm(4);
         
-        % Add some type 1 noise
-        t2n = 0;%rand*2;
-;
+        if nargin < 1
+            t2n = 0;
+        end
+
         if RR(1) == 1,
             % Start at the top of the plane
             start(1) = planeBoundaries(1,1)+rand(1)*planeBoundaries(1,2);
