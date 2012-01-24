@@ -1,5 +1,5 @@
 %% Set up dirs and filenames
-ROOT_DIR = strcat('compare_problemspace_',datestr(now,'HH-MM-SS'));
+ROOT_DIR = strcat('compare_problemspace_initspd_0.5_',datestr(now,'HH-MM-SS'));
 
 mkdir( ROOT_DIR )
 cd( ROOT_DIR );
@@ -35,7 +35,7 @@ camPlane = rotation(1:3,1:3)*basePlane;
 camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
 
 imPlane = wc2im(camPlane,GT_ALPHA);
-imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),1,1), camTraj,'uniformoutput',false);
+imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),2,1), camTraj,'uniformoutput',false);
 
 pF = drawPlane( imPlane );
 cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
@@ -90,7 +90,7 @@ for FIXED_VARS = 1:6
     close all;
 end
 save expdata.mat
-saveas(allfigs,'all_errors_comparison.fig');
+% saveas(allfigs,'all_errors_comparison.fig');
 
 % pf = figure;
 % ff  = zeros(12,1);
