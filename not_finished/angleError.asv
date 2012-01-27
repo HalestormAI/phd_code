@@ -1,0 +1,18 @@
+function angle = angleError( n1, n2, mirr, unit )
+% Returns the angle difference, in degrees, between two normal
+% column-vectors n1 and n2
+%
+% Input:
+%
+%   n1        The first column vector
+%   n2        The second column vector
+%  [mirr      Allow mirroring (e.g. the error plot looks thus: /\).
+%  Default: 0.
+%  *unit      
+
+angle = acosd(dot(n1,n2) / ( norm(n1)*norm(n2) ) ) ;
+
+if nargin < 3 && mirr == 1,
+    angle = pi/2 - abs(pi/2 - angle);
+end
+
