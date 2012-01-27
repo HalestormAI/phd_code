@@ -6,17 +6,10 @@ DS = 1:2:20;
 
 NUM_PLANES = 50;
 
-
-if exist('param_file','var')
-    load(param_file,'PLANE_PARAMS');
-    NUM_PLANES = size(PLANE_PARAMS,2);
-else
-    NUM_PLANES = 50;
-    PLANE_PARAMS = [randi(90,1,NUM_PLANES)            ;
-                    randi(120,1,NUM_PLANES) - 60      ; 
-                    rand(1,NUM_PLANES) * 18 + 2       ;
-                    randi(length(ALPHAS),1,NUM_PLANES)];
-end
+PLANE_PARAMS = [randi(90,1,NUM_PLANES)                    ;
+                randi(120,1,NUM_PLANES) - 60              ; 
+                rand(1,NUM_PLANES) * 18 + 2               ;
+                ALPHAS(randi(length(ALPHAS),1,NUM_PLANES))]
             
 all_x_iters     = cell(NUM_PLANES,1);
 all_fval        = cell(NUM_PLANES,1);
@@ -30,15 +23,6 @@ cd( BASEPATH );
 
 if matlabpool('size') == 0
     matlabpool open 3;
-end
-
-
-gridfn = 'fine_grid.mat';
-if exist(gridfn,'file')
-   load( gridfn, 'x0grid', 'gridVars');
-else
-    [x0grid,gridVars] = generateNormalSet( ALPHAS,DS,THETAS,PSIS );
-    save( gridfn, 'x0grid', 'gridVars')
 end
 
 for pId = 1:NUM_PLANES
@@ -88,6 +72,15 @@ for pId = 1:NUM_PLANES
     %% Run scripts
     fsolve_options
 
+
+    gridfn = 'fine_grid.mat';
+    if exist(gridfn,'file')
+       load( gridfn, 'x0grid', 'gridVars');
+    else
+        [x0grid,gridVars] = generateNormalSet( ALPHAS,DS,THETAS,PSIS );
+        save( gridfn, 'x0grid', 'gridVars')
+    end
+
     x_iter      =  cell(size(x0grid,1),2);
     fval        =  cell(size(x0grid,1),2);
     exitflag    = zeros(size(x0grid,1),2);
@@ -123,10 +116,10 @@ for pId = 1:NUM_PLANES
         all_timeToSolve{pId}(METHOD) = toc(solveTic);
 
     end
-    all_x_iters{pId}     = x_iter;
-    all_fval{pId}        = fval;
-    all_exitflag{pId}    = exitflag;
-%    all_output{pId}      = output;
+    all_x_iters     = x_iter;
+    all_fval        = fval;
+    all_exitflag    = exitflag;
+    all_output      = output;
     cd ../
 end
 

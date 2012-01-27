@@ -24,7 +24,7 @@ X2 = x2*alpha*Z2;
 Y1 = y1*alpha*Z1;
 Y2 = y2*alpha*Z2;
 
-out = ((X1-X2)^2 + (Y1-Y2)^2 + (Z1-Z2)^2) - l;
+out = ((X1-X2)^2 + (Y1-Y2)^2 + (Z1-Z2)^2) - l.^2;
 end
 
 
