@@ -4,6 +4,8 @@
         if nargin < 5 || isempty(func_handle)
             func_handle = @traj_dist_eqn;
         end
+        
+        
     
         tF = zeros(1,length(traj)/2);
         for i=1:2:length(traj)
