@@ -1,17 +1,19 @@
     function [traj,startframes,camTraj,speeds,t2noises] = addTrajectoriesToPlane( ...
         worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, ...
-        STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, startPoints, startDrns ) 
+        STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, INNER_HEIGHT_VAR, startPoints, startDrns ) 
     % Inputs:
     % worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, 
     %    STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, startPoints, startDrns
 
+    
+    NODISPLAY = 1;
     %% Param check
     if nargin < 2,
         error('Need initial world-plane and rotation to camera plane');
     end
     if nargin < 3 || isempty(MAX_TRAJ),
         MAX_TRAJ = 10;
-    elseif nargin >= 10
+    elseif nargin >= 11
         MAX_TRAJ = length(startPoints);
     end
     if nargin < 4 || isempty(NUM_FRAMES),
@@ -32,6 +34,9 @@
     if nargin < 9 || isempty(HEIGHT_VAR)
         HEIGHT_VAR = 0;
     end
+    if nargin < 10 || isempty(HEIGHT_VAR)
+        INNER_HEIGHT_VAR = 0;
+    end
     
     NORM_SPEEDS = normrnd( MEAN_SPEED, STD_SPEED, 1, MAX_TRAJ );
     t2noises = normrnd( 0, HEIGHT_VAR,1, MAX_TRAJ );
@@ -43,26 +48,35 @@
     prevdrn = cell(MAX_TRAJ,1);
     speeds  = cell(MAX_TRAJ,1);
     drnchg  = cell(MAX_TRAJ,1);
+    hgtvar  = cell(MAX_TRAJ,1);
     
     startframes = [];
                
     num_trajectories = 0;
 
     scrnsz = get(0,'Screensize');
-    if length(find(scrnsz(3:4)==1)) ~= 2
+    if length(find(scrnsz(3:4)==1)) ~= 2 && ~NODISPLAY
         h = waitbar(0,'Starting...', 'Name', sprintf('%d Frames', NUM_FRAMES));
     end
     for t = 1:NUM_FRAMES,
         
-        if length(find(scrnsz(3:4)==1)) ~= 2
+        if length(find(scrnsz(3:4)==1)) ~= 2 && ~NODISPLAY
             waitbar(t / NUM_FRAMES, h, sprintf('Frame: %d (%d%%).',t, round(100*t / NUM_FRAMES)));
         else
-            if mod(t,50) == 0
-                if t > 50
-                    fprintf('\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b');
-                end
-                fprintf('Frame %3d of %3d (%3d%%)\n', t, NUM_FRAMES, ...
+            if mod(t,200) == 0
+                
+                str = sprintf('Frame %4d of %4d (%3d%%)\n', t, NUM_FRAMES, ...
                         round(100*t/NUM_FRAMES));
+                    
+                lenStr = length(str);
+                 if t > 200
+                     blankstr = '';
+                     for bb=1:lenStr
+                         blankstr = strcat(blankstr,'\b');
+                     end
+                     fprintf(blankstr);
+                 end
+                 fprintf('%s',str)
             end
         end
         % 25% chance of spawn provided we have room
@@ -70,16 +84,18 @@
             
             this_spd = NORM_SPEEDS(num_trajectories+1);
             
-            if nargin < 10
+            if nargin < 11
                 [traj{num_trajectories+1}(:,1),prevdrn{num_trajectories+1}] = initialiseNewPoint( t2noises(num_trajectories+1) );
             else
                 traj{num_trajectories+1}(:,1) = startPoints{num_trajectories+1};
                 prevdrn{num_trajectories+1} = startDrns{num_trajectories + 1};
             end
             startframes(num_trajectories+1) = t;
+            
             s = normrnd(this_spd,WALK_SPD_VAR,1,NUM_FRAMES-(t-1));
             speeds{num_trajectories+1} = s;
             drnchg{num_trajectories+1} = normrnd(0,DRN_VAR,1,NUM_FRAMES-(t-1));
+            hgtvar{num_trajectories+1} = normrnd(0,INNER_HEIGHT_VAR,1,NUM_FRAMES-(t-1));
             num_trajectories = num_trajectories + 1;
         end
         
@@ -101,7 +117,7 @@
                 % find location of new point on plane
                 v(1) = spd*cos(deg2rad(drn));
                 v(2) = spd*sin(deg2rad(drn));
-                v(3) = 0;
+                v(3) = hgtvar{trajId}(t-t0+1); % Add a few cm variation in height, taken at random from normal distribution
                 newpos = traj{trajId}(:,end) + v';
                 
                 % If still within the boundaries of the plane,
@@ -122,7 +138,7 @@
         drnchg(num_trajectories+1:end) = [];
     end
         
-    if length(find(scrnsz(3:4)==1)) ~= 2
+    if length(find(scrnsz(3:4)==1)) ~= 2 && ~NODISPLAY
         delete(h);
     end
     if nargin < 2  || isempty(rotation)
