@@ -5,8 +5,12 @@
 #pragma package <opencv>
 #endif
 
-#include "cv.h"
-#include "highgui.h"
+/*#include "cv.h"
+#include "highgui.h"*/
+
+#include "opencv2/video/tracking.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 #include <iostream>
 #include <fstream>
 #include <ctype.h>

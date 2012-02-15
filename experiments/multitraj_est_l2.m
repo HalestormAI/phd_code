@@ -6,20 +6,20 @@ setup_exp
 
 
 NUM_TRAJECTORIES = 10;
-ALPHAS = -10.^(-3:0.25:-1);
-THETAS = 1:10:90;
-PSIS   = -60:10:60;
-DS = 1:4:20;
+ALPHAS = -10.^(-3:0.5:-1);
+THETAS = 1:20:90;
+PSIS   = -60:20:60;
+DS = 1:5:20;
 
 if exist('param_file','var')
     load(param_file,'PLANE_PARAMS');
     NUM_PLANES = size(PLANE_PARAMS,2);
 else
-    NUM_PLANES = 1;
-    PLANE_PARAMS = [randi(90,1,NUM_PLANES)            ;
-                    randi(120,1,NUM_PLANES) - 60      ; 
-                    rand(1,NUM_PLANES) * 18 + 2       ;
-                    randi(length(ALPHAS),1,NUM_PLANES)];
+    NUM_PLANES = 10;
+    PLANE_PARAMS = [ randi(90,1,NUM_PLANES)            ;
+                     randi(120,1,NUM_PLANES) - 60      ; 
+                     rand(1,NUM_PLANES) * 18 + 2       ;
+                    -rand(1,NUM_PLANES).*0.01];
     save plane_params.mat PLANE_PARAMS;
 end
 
@@ -29,6 +29,12 @@ all_fval        = cell(NUM_PLANES,1);
 all_exitflag    = cell(NUM_PLANES,1);
 all_output      = cell(NUM_PLANES,1);
 all_timeToSolve = cell(NUM_PLANES,1);
+all_baseTraj    = cell(NUM_PLANES,1);
+all_camTraj     = cell(NUM_PLANES,1);
+all_imTraj      = cell(NUM_PLANES,1);
+all_basePlane   = cell(NUM_PLANES,1);
+all_camPlane    = cell(NUM_PLANES,1);
+all_imPlane     = cell(NUM_PLANES,1);
 
 
 if matlabpool('size') == 0
@@ -47,6 +53,8 @@ x0TrajGrid = generateTrajectoryInitGrid( NUM_TRAJECTORIES, x0grid );
 
 for pId = 1:NUM_PLANES
 
+    fprintf('Estimating Plane %d of %d\n', pId, NUM_PLANES);
+    
     %% Experiment Parameters
     GT_T	 = PLANE_PARAMS(1,pId);
     GT_P     = PLANE_PARAMS(2,pId);
@@ -64,7 +72,7 @@ for pId = 1:NUM_PLANES
 
     %% Generate Trajectories & Plane
     basePlane = createPlane( GT_D, 0, 0, 1 );
-    baseTraj = addTrajectoriesToPlane( basePlane, [], NUM_TRAJECTORIES, 2000, 1, 0.2, 0, 10);
+    baseTraj = addTrajectoriesToPlane( basePlane, [], NUM_TRAJECTORIES, 2000, 1, 0, 0, 10);
 
     rotX = makehgtform('xrotate',-deg2rad(GT_T));
     rotZ = makehgtform('zrotate',-deg2rad(GT_P));
@@ -76,6 +84,13 @@ for pId = 1:NUM_PLANES
     imPlane = wc2im(camPlane,GT_ALPHA);
     imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),1,1), camTraj,'uniformoutput',false);
 
+    all_baseTraj{pId}  = baseTraj;
+    all_camTraj{pId}   = camTraj;
+    all_imTraj{pId}    = imTraj;
+    all_basePlane{pId} = basePlane;
+    all_camPlane{pId} = camPlane;
+    all_imPlane{pId} = imPlane;
+    
 %    pF = drawPlane( imPlane );
 %    cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
 %    saveas(pF, 'trajectory.fig');
@@ -106,7 +121,55 @@ for pId = 1:NUM_PLANES
     all_exitflag{pId}    = exitflag;
 %     cd ../
 end
+
+
+bestiter   = cell(length(all_x_iters),1);
+estLengths = cell(length(all_x_iters),1);
+gtLengths  = cell(length(all_x_iters),1);
+
+f = figure;
+offset = 0;
+for i=1:length(all_x_iters)    
+    GT_T	 = PLANE_PARAMS(1,i);
+    GT_P     = PLANE_PARAMS(2,i);
+    GT_D     = PLANE_PARAMS(3,i);
+    GT_ALPHA = PLANE_PARAMS(4,i);
+
+    GT_N = normalFromAngle( GT_T,GT_P );
+    GT_ITER = [n2abc(GT_N,GT_D)',GT_ALPHA];
+    if ~isempty(all_fval{i})
+        
+        goodfval  = all_fval{i}(all_exitflag{i} > 0);
+        gooditers = all_x_iters{i}(all_exitflag{i} > 0);
+        
+        [~,MINIDX] = min(cellfun(@(x) sum(x.^2),goodfval));
+        bestiter{i} = gooditers{MINIDX};
+    
+        estLengths{i} = bestiter{i}(5:end) ./ max(bestiter{i}(5:end));
+        gtLengths{i} = cellfun(@(x) mean(vector_dist(x)), all_camTraj{i});
+        gtLengths{i} = gtLengths{i}' ./ max(gtLengths{i});
+        compLengths = [estLengths{i};gtLengths{i}];
+    end
+    
+    if ~mod(i-1,12) && i > 1 && i <= NUM_PLANES
+        saveas(f, sprintf('length_comparison_all_%d',ceil((offset+1)./12)));
+        offset = offset + 12;
+        f = figure;
+    end
+    
+    if ~isempty(all_fval{i})
+        subplot(3,4,i-offset);
+        bar(compLengths');
+%     saveas(f, sprintf('length_comparison_%d',i));
+    end
+    
+end
+saveas(f, sprintf('length_comparison_all_%d',ceil((offset+1)./12)));
+
 save allexp_data;
+
+clear expdir;
+
 cd ../
 
 rmpath(CDIR);

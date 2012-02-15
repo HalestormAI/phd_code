@@ -1,13 +1,25 @@
-function [theta, psi] = anglesFromN( N, asVec )
+function [theta, psi] = anglesFromN( N, asVec, units )
+
+if nargin < 3
+    asFunc = @asin;
+    acFunc = @acos;
+    sFunc  = @sin;
+    offset = pi;
+elseif strcmp(units,'degrees')
+    asFunc = @asind;
+    acFunc = @acosd;
+    sFunc  = @sind;
+    offset = 180;
+end
 
 
 N = N ./ norm(N);
 % "pi -"  is fix for us finding the angle pointing DOWN due to neg Z
-theta = pi-acos( N(3) );
+theta = offset-acFunc( N(3) );
 if theta == 0
-    psi = asin( -N(1) );
+    psi = asFunc( -N(1) );
 else
-    psi = asin( -N(1) / sin(theta) );
+    psi = asFunc( -N(1) / sFunc(theta) );
 end
 
 if(nargin == 2 && asVec == 1)
