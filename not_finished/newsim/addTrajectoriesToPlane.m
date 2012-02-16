@@ -3,7 +3,8 @@
         STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, INNER_HEIGHT_VAR, startPoints, startDrns ) 
     % Inputs:
     % worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, 
-    %    STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, startPoints, startDrns
+    %    STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR,  INNER_HEIGHT_VAR,
+    %    startPoints, startDrns
 
     
     NODISPLAY = 1;

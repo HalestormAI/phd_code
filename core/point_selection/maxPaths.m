@@ -59,8 +59,9 @@ while ~found_one,
         distances(chosenPath_id,:);
         m_d = mean(distances(chosenPath_id,:));
         s_d = std(distances(chosenPath_id,:));
+%         [abs( distances(chosenPath_id,:)  - m_d )  ALPHA*s_d ]
         is_ok = abs( distances(chosenPath_id,:)  - m_d ) < ALPHA*s_d;
-        if sum(is_ok) == 3,
+        if sum(is_ok) == NUM_RANDOMS,
             found_one = 1;
             break;
         elseif DEBUG
@@ -73,6 +74,15 @@ while ~found_one,
         % Increase leniency and try again
       %  fprintf('Increading leniency from %f to %f\n', ALPHA, ALPHA+ALPHA_INC);
         ALPHA = ALPHA + ALPHA_INC;
+        if ALPHA > 10
+            ALPHA_INC = 5;
+        end
+        if ALPHA > 200
+            used_coords = hullPoints(:,chosenPath);
+            plot( used_coords(1,:), used_coords(2,:), 'r', 'LineWidth', 2  )
+            error('This is never gonna work');
+        end
+            
     end
 end
 

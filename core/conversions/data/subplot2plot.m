@@ -1,5 +1,6 @@
 currSub = gca;
 
 newfig = figure;
-axis;
-copyobj( allchild(currSub), gca);
+% axis;
+c = copyobj( currSub, newfig);
+set(c,'OuterPosition',[ .05 .05  .9 .9 ]);
