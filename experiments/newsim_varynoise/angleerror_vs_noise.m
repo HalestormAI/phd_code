@@ -4,14 +4,14 @@ addpath( CDIR );
 setup_exp
 
 NOISE_PARAMS     = 0:0.2:2;
-HEIGHT_PARAMS    = 0:0.2:2;
+HEIGHT_PARAMS    = 0:0.2:0;
 NUM_NOISE        = length(NOISE_PARAMS);
 NUM_HEIGHT       = length(HEIGHT_PARAMS);
 
 NUM_TRAJECTORIES = 5;
-ALPHAS           = -10.^(-3:0.5:-1);
-THETAS           = 1:20:90;
-PSIS             = -60:20:60;
+ALPHAS           = -10.^(-3:0.1:-1);
+THETAS           = 1:10:90;
+PSIS             = -60:10:60;
 DS               = 1:5:30;
 
 if exist('param_file','var')
@@ -117,7 +117,7 @@ for pId = 1:NUM_PLANES
             fval        =  cell(size(x0grid,1),1);
             exitflag    = zeros(size(x0grid,1),1);
 
-            for b=1:length(x0TrajGrid)
+           parfor b=1:length(x0TrajGrid)
         %                 fprintf('\tInitial Estimate %d of %d\n',b, length(tobeoptimised_x0));
                 [ x_iter{b}, fval{b}, exitflag(b)] = fsolve(@(x) traj_iter_func(x, imTraj),x0TrajGrid(b,:),options);
 
@@ -144,6 +144,14 @@ for pId = 1:NUM_PLANES
         end
     end
 end
+
+bestangles = reshape(all_bestangleerr(:,1,:),size(all_bestangleerr,1),size(all_bestangleerr,3))'
+figure;
+errorbar( NOISE_PARAMS, mean(bestangles), std(bestangles),'rx' );
+axis([0 2 -0.2 pi/2] )
+grid on
+xlabel('Standard Deviation Speed Noise (mean = 1)');
+ylabel('Mean Angle Error Between Est and GT Planes (radians)');
 
 
 % f = figure;
