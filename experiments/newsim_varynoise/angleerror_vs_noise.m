@@ -3,8 +3,8 @@ addpath( CDIR );
 
 setup_exp
 
-NOISE_PARAMS     = 0:0.5:2;
-HEIGHT_PARAMS    = 0:0.05:0.5;
+NOISE_PARAMS     = 0:0.2:2;
+HEIGHT_PARAMS    = 0:0.2:2;
 NUM_NOISE        = length(NOISE_PARAMS);
 NUM_HEIGHT       = length(HEIGHT_PARAMS);
 
@@ -18,7 +18,7 @@ if exist('param_file','var')
     load(param_file,'PLANE_PARAMS');
     NUM_PLANES = size(PLANE_PARAMS,2);
 else
-    NUM_PLANES = 20;
+    NUM_PLANES = 100;
     PLANE_PARAMS = [ randi(90,1,NUM_PLANES)       ;
                      randi(120,1,NUM_PLANES) - 60 ; 
                      rand(1,NUM_PLANES) * 18 + 10 ;
@@ -93,7 +93,9 @@ for pId = 1:NUM_PLANES
         %     cd( ROOT_DIR );
 
             %% Generate Trajectories & Plane
-            baseTraj = addTrajectoriesToPlane( basePlane, [], NUM_TRAJECTORIES, 2000, 1, NOISE_PARAMS(nId), .1, 10, 1, HEIGHT_PARAMS(nId2));
+            baseTraj = addTrajectoriesToPlane( basePlane, [], ...
+                NUM_TRAJECTORIES, 2000, 1, NOISE_PARAMS(nId), 0, 10, ...
+                HEIGHT_PARAMS(nId2), 0);
 
             camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
 
@@ -115,7 +117,7 @@ for pId = 1:NUM_PLANES
             fval        =  cell(size(x0grid,1),1);
             exitflag    = zeros(size(x0grid,1),1);
 
-            parfor b=1:length(x0TrajGrid)
+            for b=1:length(x0TrajGrid)
         %                 fprintf('\tInitial Estimate %d of %d\n',b, length(tobeoptimised_x0));
                 [ x_iter{b}, fval{b}, exitflag(b)] = fsolve(@(x) traj_iter_func(x, imTraj),x0TrajGrid(b,:),options);
 
@@ -144,32 +146,32 @@ for pId = 1:NUM_PLANES
 end
 
 
-f = figure;
-offset =0;
-
-NUM_ROWS = 2;
-NUM_COLUMNS = 2;
-NUM_CELLS = NUM_ROWS*NUM_COLUMNS;
-for i=1:NUM_NOISE    
-    
-    if (~mod(i-1,NUM_CELLS) && i > 1 && i <= NUM_NOISE) || i == NUM_NOISE
-        saveas(f, sprintf('angle_error_vs_height_%d.fig',ceil((offset+1)./NUM_CELLS)));
-        if i < NUM_NOISE
-            offset = offset + NUM_CELLS;
-            f = figure;
-        end
-    end
-    
-    subplot(NUM_ROWS,NUM_COLUMNS,i-offset);
-    ba = reshape(all_bestangleerr(i,:,:),size(all_bestangleerr,2),size(all_bestangleerr,3));
-    
-    errorbar( HEIGHT_PARAMS, mean(ba,2), std(ba,0,2),'rx' );
-    xlabel('Per-Trajectory Height Std Dev');
-    ylabel(sprintf('Mean angle error over %d planes (radians)',NUM_PLANES));
-    title(sprintf('Inter-Traj Spd SD: %.1f',NOISE_PARAMS(i)));
-    grid on;
-    axis([0 2 -0.2 pi/2])
-end
+% f = figure;
+% offset =0;
+% 
+% NUM_ROWS = 2;
+% NUM_COLUMNS = 2;
+% NUM_CELLS = NUM_ROWS*NUM_COLUMNS;
+% for i=1:NUM_NOISE    
+%     
+%     if (~mod(i-1,NUM_CELLS) && i > 1 && i <= NUM_NOISE) || i == NUM_NOISE
+%         saveas(f, sprintf('angle_error_vs_height_%d.fig',ceil((offset+1)./NUM_CELLS)));
+%         if i <= NUM_NOISE
+%             offset = offset + NUM_CELLS;
+%             f = figure;
+%         end
+%     end
+%     
+%     subplot(NUM_ROWS,NUM_COLUMNS,i-offset);
+%     ba = reshape(all_bestangleerr(i,:,:),size(all_bestangleerr,2),size(all_bestangleerr,3));
+%     
+%     errorbar( HEIGHT_PARAMS, mean(ba,2), std(ba,0,2),'rx' );
+%     xlabel('Per-Trajectory Height Std Dev');
+%     ylabel(sprintf('Mean angle error over %d planes (radians)',NUM_PLANES));
+%     title(sprintf('Inter-Traj Spd SD: %.1f',NOISE_PARAMS(i)));
+%     grid on;
+%     axis([0 0.5 -0.2 pi/2])
+% end
 % saveas(f, sprintf('angle_error_vs_height_%d.fig',ceil((offset+1)./12)));
 
 % saveas(f, 'angle_error_vs_noise.fig')

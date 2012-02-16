@@ -47,8 +47,8 @@ allfigs = figure;
 
 for FIXED_VARS = 1:6
     f = figure;
-    for METHOD = 1:2
-        sp = subplot(1,2,METHOD);
+    for METHOD = 1:1
+%         sp = subplot(1,2,METHOD);
         mthd_root = strcat('method_',method_nms(METHOD,:));
         mkdir(mthd_root);
         cd(mthd_root);
