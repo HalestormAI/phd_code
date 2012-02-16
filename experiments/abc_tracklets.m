@@ -117,19 +117,19 @@
 
 
 f = figure;
-subplot(1,2,1)
+% subplot(1,2,1)
 scatter(1:NUM_PLANES, all_bestangleerr, 24,'*b');
 xlabel('Plane ID');
 ylabel('Angle Error Between Est and GT Plane Normals (radians)');
-subplot(1,2,2)
-scatter(1:NUM_PLANES, cellfun(@min,all_fval), 24,'*b');
-saveas(f, 'error_results.fig');
-xlabel('Plane ID');
-ylabel('Function evaluation error at the end of optimisation');
+% subplot(1,2,2)
+% scatter(1:NUM_PLANES, cellfun(@min,all_fval), 24,'*b');
+% saveas(f, 'error_results.fig');
+% xlabel('Plane ID');
+% ylabel('Function evaluation error at the end of optimisation');
 
-save allexp_data;
-
-clear expdir;
-
-cd ../
-rmpath(CDIR);
+% save allexp_data;
+% 
+% clear expdir;
+% 
+% cd ../
+% rmpath(CDIR);
