@@ -3,22 +3,22 @@ addpath( CDIR );
 
 setup_exp
 
-NOISE_PARAMS     = 0:0.2:2;
+NOISE_PARAMS     = 0:0.1:1;
 HEIGHT_PARAMS    = 0:0.2:0;
 NUM_NOISE        = length(NOISE_PARAMS);
 NUM_HEIGHT       = length(HEIGHT_PARAMS);
 
 NUM_TRAJECTORIES = 5;
-ALPHAS           = -10.^(-3:0.1:-1);
-THETAS           = 1:10:90;
-PSIS             = -60:10:60;
+ALPHAS           = -10.^(-3:0.25:-1);
+THETAS           = 1:15:90;
+PSIS             = -60:15:60;
 DS               = 1:5:30;
 
 if exist('param_file','var')
     load(param_file,'PLANE_PARAMS');
     NUM_PLANES = size(PLANE_PARAMS,2);
 else
-    NUM_PLANES = 100;
+    NUM_PLANES = 20;
     PLANE_PARAMS = [ randi(90,1,NUM_PLANES)       ;
                      randi(120,1,NUM_PLANES) - 60 ; 
                      rand(1,NUM_PLANES) * 18 + 10 ;
@@ -82,7 +82,7 @@ for pId = 1:NUM_PLANES
     all_imPlane{pId} = imPlane;
     
     for nId2 = 1:NUM_HEIGHT
-            fprintf('%d\tHeight Value %.1f (%d of %d)\n', pId, HEIGHT_PARAMS(nId2), nId2, NUM_HEIGHT);
+        fprintf('%d\tHeight Value %.1f (%d of %d)\n', pId, HEIGHT_PARAMS(nId2), nId2, NUM_HEIGHT);
         for nId = 1:NUM_NOISE
             fprintf('%d\t%d\tNoise Value %.2f (%d of %d)\n\t\t', pId, nId2, NOISE_PARAMS(nId), nId, NUM_NOISE);
 
@@ -94,8 +94,8 @@ for pId = 1:NUM_PLANES
 
             %% Generate Trajectories & Plane
             baseTraj = addTrajectoriesToPlane( basePlane, [], ...
-                NUM_TRAJECTORIES, 2000, 1, NOISE_PARAMS(nId), 0, 10, ...
-                HEIGHT_PARAMS(nId2), 0);
+                NUM_TRAJECTORIES, 2000, 1, 0, NOISE_PARAMS(nId), 10, ...
+                0, 0);
 
             camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
 
@@ -150,7 +150,7 @@ figure;
 errorbar( NOISE_PARAMS, mean(bestangles), std(bestangles),'rx' );
 axis([0 2 -0.2 pi/2] )
 grid on
-xlabel('Standard Deviation Speed Noise (mean = 1)');
+xlabel('Standard Deviation Inner Speed Noise (mean speed = 1)');
 ylabel('Mean Angle Error Between Est and GT Planes (radians)');
 
 
