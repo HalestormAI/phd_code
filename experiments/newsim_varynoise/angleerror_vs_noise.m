@@ -4,9 +4,7 @@ addpath( CDIR );
 setup_exp
 
 NOISE_PARAMS     = 0:0.1:1;
-HEIGHT_PARAMS    = 0:0.2:0;
 NUM_NOISE        = length(NOISE_PARAMS);
-NUM_HEIGHT       = length(HEIGHT_PARAMS);
 
 NUM_TRAJECTORIES = 5;
 ALPHAS           = -10.^(-3:0.25:-1);
@@ -27,16 +25,16 @@ else
 end
 
 
-all_x_iters      =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_fval         =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_exitflag     =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_output       =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_timeToSolve  =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_baseTraj     =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_camTraj      =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_imTraj       =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_bestiter     =  cell(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
-all_bestangleerr = zeros(NUM_NOISE,NUM_HEIGHT,NUM_PLANES);
+all_x_iters      =  cell(NUM_NOISE,NUM_PLANES);
+all_fval         =  cell(NUM_NOISE,NUM_PLANES);
+all_exitflag     =  cell(NUM_NOISE,NUM_PLANES);
+all_output       =  cell(NUM_NOISE,NUM_PLANES);
+all_timeToSolve  =  cell(NUM_NOISE,NUM_PLANES);
+all_baseTraj     =  cell(NUM_NOISE,NUM_PLANES);
+all_camTraj      =  cell(NUM_NOISE,NUM_PLANES);
+all_imTraj       =  cell(NUM_NOISE,NUM_PLANES);
+all_bestiter     =  cell(NUM_NOISE,NUM_PLANES);
+all_bestangleerr = zeros(NUM_NOISE,NUM_PLANES);
 all_basePlane    =  cell(NUM_PLANES,1);
 all_camPlane     =  cell(NUM_PLANES,1);
 all_imPlane      =  cell(NUM_PLANES,1);
@@ -54,6 +52,7 @@ else
     save( gridfn, 'x0grid', 'gridVars')
 end
 
+fsolve_options
 x0TrajGrid = generateTrajectoryInitGrid( NUM_TRAJECTORIES, x0grid );
 
 for pId = 1:NUM_PLANES
@@ -80,74 +79,70 @@ for pId = 1:NUM_PLANES
     all_basePlane{pId} = basePlane;
     all_camPlane{pId} = camPlane;
     all_imPlane{pId} = imPlane;
-    
-    for nId2 = 1:NUM_HEIGHT
-        fprintf('%d\tHeight Value %.1f (%d of %d)\n', pId, HEIGHT_PARAMS(nId2), nId2, NUM_HEIGHT);
-        for nId = 1:NUM_NOISE
-            fprintf('%d\t%d\tNoise Value %.2f (%d of %d)\n\t\t', pId, nId2, NOISE_PARAMS(nId), nId, NUM_NOISE);
+    for nId = 1:NUM_NOISE
+        fprintf('%d\tNoise Value %.2f (%d of %d)\n\t\t', pId, NOISE_PARAMS(nId), nId, NUM_NOISE);
 
-            %% Set up dirs and filenames
-        %     ROOT_DIR = sprintf('t=%d,p=%d,a=%.4f,d=%2.3f',GT_T,GT_P,GT_ALPHA,GT_D);
-        %     addpath( cd ); 
-        %     mkdir( ROOT_DIR )
-        %     cd( ROOT_DIR );
+        %% Set up dirs and filenames
+    %     ROOT_DIR = sprintf('t=%d,p=%d,a=%.4f,d=%2.3f',GT_T,GT_P,GT_ALPHA,GT_D);
+    %     addpath( cd ); 
+    %     mkdir( ROOT_DIR )
+    %     cd( ROOT_DIR );
 
-            %% Generate Trajectories & Plane
-            baseTraj = addTrajectoriesToPlane( basePlane, [], ...
-                NUM_TRAJECTORIES, 2000, 1, 0, NOISE_PARAMS(nId), 10, ...
-                0, 0);
+        %% Generate Trajectories & Plane
+        baseTraj = addTrajectoriesToPlane( basePlane, [], ...
+            NUM_TRAJECTORIES, 2000, 1, 0, NOISE_PARAMS(nId), 10, ...
+            0, 0);
 
-            camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
+        camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
 
-            imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),1,1), camTraj,'uniformoutput',false);
+        imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),1,1), camTraj,'uniformoutput',false);
 
-            all_baseTraj{nId, nId2, pId}  = baseTraj;
-            all_camTraj{nId, nId2, pId}   = camTraj;
-            all_imTraj{nId, nId2, pId}    = imTraj;
+        all_baseTraj{nId, pId}  = baseTraj;
+        all_camTraj{nId, pId}   = camTraj;
+        all_imTraj{nId, pId}    = imTraj;
 
-        %    pF = drawPlane( imPlane );
-        %    cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
-        %    saveas(pF, 'trajectory.fig');
-        %    close(pF);
+    %    pF = drawPlane( imPlane );
+    %    cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
+    %    saveas(pF, 'trajectory.fig');
+    %    close(pF);
 
-            %% Optimise
-            fsolve_options
+        %% Optimise
 
-            x_iter      =  cell(size(x0grid,1),1);
-            fval        =  cell(size(x0grid,1),1);
-            exitflag    = zeros(size(x0grid,1),1);
+        x_iter      =  cell(size(x0grid,1),1);
+        fval        =  cell(size(x0grid,1),1);
+        exitflag    = zeros(size(x0grid,1),1);
 
-           parfor b=1:length(x0TrajGrid)
-        %                 fprintf('\tInitial Estimate %d of %d\n',b, length(tobeoptimised_x0));
-                [ x_iter{b}, fval{b}, exitflag(b)] = fsolve(@(x) traj_iter_func(x, imTraj),x0TrajGrid(b,:),options);
+       parfor b=1:length(x0TrajGrid)
+    %                 fprintf('\tInitial Estimate %d of %d\n',b, length(tobeoptimised_x0));
+            [ x_iter{b}, fval{b}, exitflag(b)] = fsolve(@(x) traj_iter_func(x, imTraj),x0TrajGrid(b,:),options);
 
-                if ~checkPlaneValidity( iter2plane(x_iter{b}(1:4)) ) && exitflag(b) > 0
-                    exitflag(b) = -25;
-                end
-
-                angleErrors(b) = angleError( GT_N, abc2n(x_iter{b}(1:3)),1,'radians' );
+            if ~checkPlaneValidity( iter2plane(x_iter{b}(1:4)) ) && exitflag(b) > 0
+                exitflag(b) = -25;
             end
 
-            all_fval{nId, nId2, pId}        = cellfun(@(x) sum(x.^2),fval);
-
-            [minfval,MINIDX] = min(all_fval{nId, nId2, pId});
-
-            fprintf('\t\t  Minimum fval: %4.6f\n', minfval);
-
-            all_bestiter{nId, nId2, pId}     = x_iter{MINIDX}; 
-            all_bestangleerr(nId, nId2, pId) = angleErrors(MINIDX);
-            fprintf('\t\t  Minimum angle err: %1.4f radians (%3.2f)\n',all_bestangleerr(nId,pId),rad2deg(all_bestangleerr(nId,pId)));
-
-            all_x_iters{nId, nId2, pId}     = x_iter;
-            all_exitflag{nId, nId2, pId}    = exitflag;
-        %     cd ../
+            angleErrors(b) = angleError( GT_N, abc2n(x_iter{b}(1:3)),1,'radians' );
         end
+
+        all_fval{nId, pId}        = cellfun(@(x) sum(x.^2),fval);
+
+        [minfval,MINIDX] = min(all_fval{nId, pId});
+
+        fprintf('\t  Minimum fval: %4.6f\n', minfval);
+
+        all_bestiter{nId, pId}     = x_iter{MINIDX}; 
+        all_bestangleerr(nId, pId) = angleErrors(MINIDX);
+        fprintf('\t  Minimum angle err: %1.4f radians (%3.2f)\n',all_bestangleerr(nId,pId),rad2deg(all_bestangleerr(nId,pId)));
+
+        all_x_iters{nId, pId}     = x_iter;
+        all_exitflag{nId, pId}    = exitflag;
+    %     cd ../
     end
 end
 
-bestangles = reshape(all_bestangleerr(:,1,:),size(all_bestangleerr,1),size(all_bestangleerr,3))'
+% bestangles = reshape(all_bestangleerr(:,1,:),size(all_bestangleerr,1),size(all_bestangleerr,3))'
+
 figure;
-errorbar( NOISE_PARAMS, mean(bestangles), std(bestangles),'rx' );
+errorbar( NOISE_PARAMS, mean(all_bestangleerr, 2), std(all_bestangleerr, 0 , 2),'rx' );
 axis([0 2 -0.2 pi/2] )
 grid on
 xlabel('Standard Deviation Inner Speed Noise (mean speed = 1)');
