@@ -14,6 +14,7 @@ DS               = 1:5:30;
 
 if exist('param_file','var')
     load(param_file,'PLANE_PARAMS');
+    disp('**Loading Params From File**');
     NUM_PLANES = size(PLANE_PARAMS,2);
 else
     NUM_PLANES = 20;
@@ -29,7 +30,6 @@ all_x_iters      =  cell(NUM_NOISE,NUM_PLANES);
 all_fval         =  cell(NUM_NOISE,NUM_PLANES);
 all_exitflag     =  cell(NUM_NOISE,NUM_PLANES);
 all_output       =  cell(NUM_NOISE,NUM_PLANES);
-all_timeToSolve  =  cell(NUM_NOISE,NUM_PLANES);
 all_baseTraj     =  cell(NUM_NOISE,NUM_PLANES);
 all_camTraj      =  cell(NUM_NOISE,NUM_PLANES);
 all_imTraj       =  cell(NUM_NOISE,NUM_PLANES);
@@ -39,6 +39,13 @@ all_basePlane    =  cell(NUM_PLANES,1);
 all_camPlane     =  cell(NUM_PLANES,1);
 all_imPlane      =  cell(NUM_PLANES,1);
 
+if exist('trajFile.mat','file')
+    load trajFile;
+    GIVENTRAJ = 1;
+    disp('**Loading Trajectories From File**');
+else
+    GIVENTRAJ = 0;
+end
 
 if matlabpool('size') == 0
     matlabpool open 3;
@@ -46,6 +53,7 @@ end
 
 gridfn = 'fine_grid.mat';
 if exist(gridfn,'file')
+    disp('**Loading Grid From File**');
    load( gridfn, 'x0grid', 'gridVars');
 else
     [x0grid,gridVars] = generateNormalSet( ALPHAS,DS,THETAS,PSIS );
@@ -71,35 +79,52 @@ for pId = 1:NUM_PLANES
     rotX = makehgtform('xrotate',-deg2rad(GT_T));
     rotZ = makehgtform('zrotate',-deg2rad(GT_P));
     rotation = rotZ*rotX;
-    
-    basePlane = createPlane( GT_D, 0, 0, 1 );
-    camPlane = rotation(1:3,1:3)*basePlane;
-    imPlane = wc2im(camPlane,GT_ALPHA);
-    
-    all_basePlane{pId} = basePlane;
-    all_camPlane{pId} = camPlane;
-    all_imPlane{pId} = imPlane;
+
+    if ~GIVENTRAJ
+        basePlane = createPlane( GT_D, 0, 0, 1 );
+        camPlane = rotation(1:3,1:3)*basePlane;
+        imPlane = wc2im(camPlane,GT_ALPHA);
+
+        all_basePlane{pId} = basePlane;
+        all_camPlane{pId} = camPlane;
+        all_imPlane{pId} = imPlane;
+
+    else
+
+        basePlane = all_basePlane{pId};
+        camPlane = all_camPlane{pId};
+        imPlane = all_imPlane{pId};
+    end
     for nId = 1:NUM_NOISE
         fprintf('%d\tNoise Value %.2f (%d of %d)\n\t\t', pId, NOISE_PARAMS(nId), nId, NUM_NOISE);
 
+       
+        if ~GIVENTRAJ 
+            %% Generate Trajectories & Plane
+            baseTraj = addTrajectoriesToPlane( basePlane, [], ...
+                NUM_TRAJECTORIES, 2000, 1, NOISE_PARAMS(nId), 0, 10, ...
+                0, 0);
+
+            camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
+
+            imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),1,1), camTraj,'uniformoutput',false);
+
+            all_baseTraj{nId, pId}  = baseTraj;
+            all_camTraj{nId, pId}   = camTraj;
+            all_imTraj{nId, pId}    = imTraj;
+        else
+
+            baseTraj = all_baseTraj{nId, pId};
+            camTraj = all_camTraj{nId, pId};
+            imTraj = all_imTraj{nId, pId};
+        end 
+        
         %% Set up dirs and filenames
     %     ROOT_DIR = sprintf('t=%d,p=%d,a=%.4f,d=%2.3f',GT_T,GT_P,GT_ALPHA,GT_D);
     %     addpath( cd ); 
     %     mkdir( ROOT_DIR )
     %     cd( ROOT_DIR );
 
-        %% Generate Trajectories & Plane
-        baseTraj = addTrajectoriesToPlane( basePlane, [], ...
-            NUM_TRAJECTORIES, 2000, 1, 0, NOISE_PARAMS(nId), 10, ...
-            0, 0);
-
-        camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
-
-        imTraj = cellfun(@(x) traj2imc(wc2im(x,GT_ALPHA),1,1), camTraj,'uniformoutput',false);
-
-        all_baseTraj{nId, pId}  = baseTraj;
-        all_camTraj{nId, pId}   = camTraj;
-        all_imTraj{nId, pId}    = imTraj;
 
     %    pF = drawPlane( imPlane );
     %    cellfun( @(x) drawcoords(x,'',0,'k'),imTraj);
@@ -141,7 +166,7 @@ end
 
 % bestangles = reshape(all_bestangleerr(:,1,:),size(all_bestangleerr,1),size(all_bestangleerr,3))'
 
-figure;
+f = figure;
 errorbar( NOISE_PARAMS, mean(all_bestangleerr, 2), std(all_bestangleerr, 0 , 2),'rx' );
 axis([0 2 -0.2 pi/2] )
 grid on
@@ -177,7 +202,7 @@ ylabel('Mean Angle Error Between Est and GT Planes (radians)');
 % end
 % saveas(f, sprintf('angle_error_vs_height_%d.fig',ceil((offset+1)./12)));
 
-% saveas(f, 'angle_error_vs_noise.fig')
+saveas(f, 'angle_error_vs_noise.fig')
 
 save allexp_data;
 

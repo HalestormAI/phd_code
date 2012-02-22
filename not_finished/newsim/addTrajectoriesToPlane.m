@@ -39,7 +39,9 @@
         INNER_HEIGHT_VAR = 0;
     end
     
-    NORM_SPEEDS = normrnd( MEAN_SPEED, STD_SPEED, 1, MAX_TRAJ );
+    % Implement skewed gaussian
+%     NORM_SPEEDS = randsn( MEAN_SPEED*5, MEAN_SPEED/2, STD_SPEED.*MEAN_SPEED, 1, MAX_TRAJ);
+    NORM_SPEEDS = normrnd( MEAN_SPEED*100, STD_SPEED*100, 1, MAX_TRAJ )./100;
     t2noises = normrnd( 0, HEIGHT_VAR,1, MAX_TRAJ );
 
     %% Find edges of world-plane
