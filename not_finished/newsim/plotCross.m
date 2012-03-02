@@ -15,14 +15,22 @@ function grp = plotCross( cntr, lim, colourSpec, labels )
     end
     hold on;
     grp = hggroup;
-    l1 = plot3( [cntr(1),cntr(1)], [cntr(2),cntr(2)], lim(3,:), colourSpec );
-    l2 = plot3( lim(1,:), [cntr(2),cntr(2)], [cntr(3),cntr(3)], colourSpec );
-    l3 = plot3( [cntr(1),cntr(1)], lim(2,:), [cntr(3),cntr(3)], colourSpec );
     
+    if length(cntr) == 3
+        l1 = plot3( [cntr(1),cntr(1)], [cntr(2),cntr(2)], lim(3,:), colourSpec );
+        l2 = plot3( lim(1,:), [cntr(2),cntr(2)], [cntr(3),cntr(3)], colourSpec );
+        l3 = plot3( [cntr(1),cntr(1)], lim(2,:), [cntr(3),cntr(3)], colourSpec );
+        set([l1,l2,l3], 'Parent', grp);
+    elseif length(cntr) == 2
+        l1 = plot( [cntr(1),cntr(1)], lim(2,:), colourSpec );
+        l2 = plot( lim(1,:), [cntr(2),cntr(2)], colourSpec );
+        set([l1,l2], 'Parent', grp);
+    end
     if nargin >= 4
         xlabel(labels(1,:))
         ylabel(labels(2,:))
-        zlabel(labels(3,:))
+        if length(cntr) == 3
+            zlabel(labels(3,:))
+        end
     end
-    set([l1,l2,l3], 'Parent', grp);
 end
