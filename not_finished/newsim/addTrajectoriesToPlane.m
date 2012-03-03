@@ -97,7 +97,7 @@
             
             s = normrnd(this_spd,WALK_SPD_VAR,1,NUM_FRAMES-(t-1));
             speeds{num_trajectories+1} = s;
-            drnchg{num_trajectories+1} = normrnd(0,DRN_VAR,1,NUM_FRAMES-(t-1));
+            drnchg{num_trajectories+1} = normrnd(0,rad2deg(DRN_VAR),1,NUM_FRAMES-(t-1));
             hgtvar{num_trajectories+1} = normrnd(0,INNER_HEIGHT_VAR,1,NUM_FRAMES-(t-1));
             num_trajectories = num_trajectories + 1;
         end

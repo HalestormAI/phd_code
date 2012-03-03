@@ -3,14 +3,14 @@ addpath( CDIR );
 
 setup_exp
 
-NOISE_PARAMS     = 0:0.1:1;
+NOISE_PARAMS     = 0:.1:1;
 NUM_NOISE        = length(NOISE_PARAMS);
 
 NUM_TRAJECTORIES = 5;
-ALPHAS           = -10.^(-3:0.25:-1);
-THETAS           = 1:15:90;
-PSIS             = -60:15:60;
-DS               = 1:5:30;
+ALPHAS           = -10.^(-3:0.5:-1);
+THETAS           = 1:10:90;
+PSIS             = -60:10:60;
+DS               = 1:2:20;
 
 if exist('param_file','var')
     load(param_file,'PLANE_PARAMS');
@@ -20,7 +20,7 @@ else
     NUM_PLANES = 20;
     PLANE_PARAMS = [ randi(90,1,NUM_PLANES)       ;
                      randi(120,1,NUM_PLANES) - 60 ; 
-                     rand(1,NUM_PLANES) * 18 + 10 ;
+                     rand(1,NUM_PLANES) * 18 + 2 ;
                     -randi(10,1,NUM_PLANES).*0.001];
     save plane_params.mat PLANE_PARAMS;
 end
@@ -43,6 +43,10 @@ if exist('trajFile.mat','file')
     load trajFile;
     GIVENTRAJ = 1;
     disp('**Loading Trajectories From File**');
+elseif exist('trajfile','var')
+    load(trajfile);
+    disp('**Loading Trajectories From File**');
+    GIVENTRAJ = 1;
 else
     GIVENTRAJ = 0;
 end
@@ -102,7 +106,7 @@ for pId = 1:NUM_PLANES
         if ~GIVENTRAJ 
             %% Generate Trajectories & Plane
             baseTraj = addTrajectoriesToPlane( basePlane, [], ...
-                NUM_TRAJECTORIES, 2000, 1, NOISE_PARAMS(nId), 0, 10, ...
+                NUM_TRAJECTORIES, 2000, 1, 0, 0, NOISE_PARAMS(nId), ...
                 0, 0);
 
             camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
@@ -133,22 +137,26 @@ for pId = 1:NUM_PLANES
 
         %% Optimise
 
-        x_iter      =  cell(size(x0grid,1),1);
-        fval        =  cell(size(x0grid,1),1);
-        exitflag    = zeros(size(x0grid,1),1);
-
+        x_iter       =  cell(size(x0grid,1),1);
+        fval         =  cell(size(x0grid,1),1);
+        exitflag     = zeros(size(x0grid,1),1);
+        invalidAlpha = zeros(size(x0grid,1),1);
+        
        parfor b=1:length(x0TrajGrid)
     %                 fprintf('\tInitial Estimate %d of %d\n',b, length(tobeoptimised_x0));
             [ x_iter{b}, fval{b}, exitflag(b)] = fsolve(@(x) traj_iter_func(x, imTraj),x0TrajGrid(b,:),options);
-
-            if ~checkPlaneValidity( iter2plane(x_iter{b}(1:4)) ) && exitflag(b) > 0
-                exitflag(b) = -25;
+            
+            if x_iter{b}(4) >= 0
+                invalidAlpha(b) = 1;
             end
 
             angleErrors(b) = angleError( GT_N, abc2n(x_iter{b}(1:3)),1,'radians' );
         end
 
-        all_fval{nId, pId}        = cellfun(@(x) sum(x.^2),fval);
+        all_fval{nId, pId} = cellfun(@(x) sum(x.^2),fval);
+        
+        all_fval{nId,pId}(logical(invalidAlpha)) = Inf;
+        
 
         [minfval,MINIDX] = min(all_fval{nId, pId});
 
@@ -168,9 +176,9 @@ end
 
 f = figure;
 errorbar( NOISE_PARAMS, mean(all_bestangleerr, 2), std(all_bestangleerr, 0 , 2),'rx' );
-axis([0 2 -0.2 pi/2] )
+axis([0 1.05 -0.2 pi/2] )
 grid on
-xlabel('Standard Deviation Inner Speed Noise (mean speed = 1)');
+xlabel('Standard Deviation in Direction (radians)');
 ylabel('Mean Angle Error Between Est and GT Planes (radians)');
 
 
@@ -204,6 +212,7 @@ ylabel('Mean Angle Error Between Est and GT Planes (radians)');
 
 saveas(f, 'angle_error_vs_noise.fig')
 
+save trajFile all_*Plane all_*Traj;
 save allexp_data;
 
 clear expdir;
