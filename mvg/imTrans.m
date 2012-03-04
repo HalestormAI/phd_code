@@ -168,7 +168,7 @@ newim = interp2(x,y,double(im),xi,yi); % Interpolate values from source image.
 
 
 %% Plot bounding region
-%P = [region(3) region(4) region(4) region(3)
+%P = [region(3) region(4) region(4) region(3)imTraj
 %     region(1) region(1) region(2) region(2)
 %      1    1    1    1   ];
 %B = round(homoTrans(T,P));
