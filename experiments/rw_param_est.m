@@ -16,6 +16,11 @@ else
     vid_name = strcat(vid_name,datestr(now( ),'HH-MM-SS'));
     load( vid_path, 'imTraj', 'H', 'frame' );
 end
+
+imTraj_offset = imTraj;
+
+imTraj = recentreImageTrajectories( imTraj, frame );
+
 expdir = vid_name;
 
 setup_exp;
