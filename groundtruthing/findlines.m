@@ -9,11 +9,8 @@ function lines = findlines( I1, drawit)
     d = zeros(1,length(lines));
     for i=1:length(lines)
         d(i) = vector_dist(lines(i).point1,lines(i).point2);
+        lHom(i) = hcross([lines(i).point1;1],[lines(2).point1;1]);
     end
-
-    longestLines = find(d > median(d));
-    
-    
     
 
     if nargin > 1 && drawit
