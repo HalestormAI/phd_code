@@ -22,6 +22,6 @@ else
     psi = asFunc( -N(1) / sFunc(theta) );
 end
 
-if(nargin == 2 && asVec == 1)
+if(nargin >= 2 && asVec == 1)
     theta = [theta ,psi];
 end
