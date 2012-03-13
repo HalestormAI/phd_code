@@ -1,0 +1,3 @@
+function traj = imc2traj( imc )
+% Relies on traj2imc(traj,1,1) hvaing been used or we lose resolution...
+traj = cellfun(@(x) x(:,[1:2:end,end]), imc,'uniformoutput',false);

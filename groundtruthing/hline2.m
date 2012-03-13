@@ -17,7 +17,7 @@
 %
 %  April 2000
 
-function hline2(a,b,c)
+function l = hline2(a,b,c)
 
 col = 'blue';  % default colour
 style = '-';
@@ -64,4 +64,4 @@ else
     error('Bad arguments passed to hline');
 end
 
-line([p1(1) p2(1)], [p1(2) p2(2)], 'color', col,'LineStyle',style);
+l = line([p1(1) p2(1)], [p1(2) p2(2)], 'color', col,'LineStyle',style);
