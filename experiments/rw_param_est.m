@@ -17,6 +17,9 @@ else
     load( vid_path, 'imTraj', 'H', 'frame' );
 end
 
+traj = imc2traj(imTraj);
+imTraj = cellfun(@(x) traj2imc(x,25,1), traj,'uniformoutput',false);
+
 imTraj_offset = imTraj;
 
 imTraj = recentreImageTrajectories( imTraj, frame );
