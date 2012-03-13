@@ -67,24 +67,8 @@ estAlpha = x_iter{minid}(4);
 
 % Draw RW lengths in histograms
 gtTraj = cellfun( @(x) H*makeHomogenous(x),useTraj,'uniformoutput',false);
-lengths = cellfun(@vector_dist,gtTraj,'uniformoutput',false);
-figure;
-maxFD = 0;
-for I=1:length(lengths)
-    subplot(2,3,I);
-    [hL,hX] = hist(lengths{I}./mean(lengths{I}));
-    norm_hL = hL./sum(hL);
-    if max(norm_hL) > maxFD,
-        maxFD = max(norm_hL);
-    end
-    bar( hX, norm_hL );
-    axis([ 0 2 0 1]);
-    xlabel('Normalised Length');
-    ylabel('Frequency Density');
-    title(sprintf('Trajectory contains %d vectors',length(lengths{I})));
-end
-set(findall(gcf,'Type','axes'),'YLim',[0 maxFD])
-suplabel('Distributions of normalised vector speeds for used trajectories','t')
+
+drawTrajectorySpeedHists(gtTraj);
 
 figure;hist(cellfun(@(x) mean(vector_dist(x)),useTraj));
 xlabel('Trajectory Mean Speed');ylabel('Frequency')
