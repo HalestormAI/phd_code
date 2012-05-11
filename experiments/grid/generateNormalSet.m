@@ -1,9 +1,9 @@
 function [x0s,vars] = generateNormalSet( alphas, ds, thetas, psis )
 if nargin < 1,
-    alphas = [-10.^(-3:1),10.^(-3:1)];
+    alphas = [10.^(-3:.25:3)];
 end
 if nargin < 2,
-ds     = 1:10;
+ds     = 1:5:50;
 end
 if nargin < 3,
     thetas = 5:10:85;
