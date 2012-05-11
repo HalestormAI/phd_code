@@ -1,11 +1,12 @@
+I1 = frame;
 % close all
 
 if ~exist( 'needfresh','var' )
     needfresh = 1;
 end
 
-NUM_PARALLEL = 4;
-NUM_SETS = 1;
+NUM_PARALLEL = 3;
+NUM_SETS = 3;
 % Get translation S.T. image centre is at [0;0]
 im_sz = size( I1 );
 im_sz = im_sz(2:-1:1)';
@@ -42,8 +43,8 @@ figure;
 image(imPos(1,:),imPos(2,:),I1);
 hold on;
 
+intersects = cell(NUM_SETS,1);
 for d=1:NUM_SETS
-    intersects = cell(NUM_SETS,1);
     if NUM_PARALLEL > 2
         % Eigen decomposition on each direction to find intersects of points
         a = lines{d}(1,:)';
@@ -79,8 +80,19 @@ if NUM_SETS == 1
     
     intersects{2} = intersects{1}+[10000;0;0];
     vanishing_line = hcross(intersects{2},intersects{1});
-else
+elseif NUM_SETS == 2
     vanishing_line  = hcross(intersects{1}(:,1), intersects{2}(:,1));
+else
+    intersects_mat = cell2mat(intersects');
+    a = intersects_mat(1,:)';
+    b = intersects_mat(2,:)';
+    c = intersects_mat(3,:)';
+    M = [ sum([a.*a a.*b a.*c]);
+          sum([b.*a b.*b b.*c]);
+          sum([c.*a c.*b c.*c]); ];
+    [eigVec,eigVal] = eig(M);
+    [~,MINEIG] = min(diag(eigVal));
+    vanishing_line = eigVec(:,MINEIG)./eigVec(3,MINEIG);
 end
 % vanishing_line2 = hcross(intersects{3}(:,1), intersects{4}(:,1));
 
@@ -91,15 +103,36 @@ set(vl_handle ,'LineWidth',2);
 % set(vl_handle2,'LineWidth',2);
 set(gca,'color','k')
 axis auto;
-return
 
 
-[intersects,l_inf] = findVanishingPoints( lines, I1);
 P = eye(3);
-P(3,:) = l_inf';
+P(3,:) = vanishing_line';
 P_t = maketform( 'projective',P' );
 
-I3 = imtransform( I1, P_t, 'bicubic','size',size(I1));
+I2 = imtransform( I1, P_t, 'bicubic','size',size(I1));
+% figure; image(imPos(1,:),imPos(2,:), I2);
+
+a = vanishing_line(1);
+b = vanishing_line(2);
+c = vanishing_line(3);
+
+asqplbsq = (a^2+b^2);
+E = (a^2*c+b^2)/asqplbsq;
+F = (a*b*(c-1))/asqplbsq;
+G = (a^2+b^2*c)/asqplbsq;
+
+calib_data.a = a;
+calib_data.b = b;
+calib_data.c = c;
+calib_data.H = [  E  F  a;
+                  F  G  b;
+                 -a -b  c ];
+    
+             
+figure;
+scatter(intersects_mat(1,:), intersects_mat(2,:), 'r*')
+
+return
 
 %% Conics - We have 2 pairs of lines, l(1):a,b and l(2):a,b
 % We need at least two conditions to find the intersection of the 
@@ -113,7 +146,7 @@ else
 end
 while ~done,
     f = figure,
-    im_handle = image(imPos(1,:),imPos(2,:),I3);%imagesc( I3 );
+    im_handle = image(imPos(1,:),imPos(2,:),I2);%imagesc( I3 );
     axis image;
     title('Need 2 sets of orthangonal lines');
 
@@ -126,7 +159,7 @@ while ~done,
         p2.setColor( colors(1) );
         endpoints = [p1.getPosition',p2.getPosition'];
         ps_p{1}(:,j) = [p1.getPosition';p2.getPosition'];
-        l{j} = cross( [endpoints(:,1);1], [endpoints(:,2);1] );
+        l{j} = cross( [endpoints(:,1);1], [endpoints(:,2);1] )
     %      lines{i}(:,j) = lines{i}(:,j) ./ lines{i}(3,j);
         hline2( l{j}, colors(1) )
     end
@@ -198,8 +231,8 @@ circle( [c_alpha2,c_beta2],r2,1000,'-r' );
 
 H = A*P;
 H_t = maketform( 'projective',H );
-I4 = imtransform( I1, H_t, 'bicubic','size',size(I1));
+I3 = imtransform( I2, H_t, 'bicubic','size',size(I1));
 figure,
-im_handle = image(imPos(1,:),imPos(2,:),I4);%imagesc( I4 );
+im_handle = image(imPos(1,:),imPos(2,:),I3);%imagesc( I4 );
 axis image;
 title('Affine Transformed')

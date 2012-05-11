@@ -30,7 +30,7 @@
         WALK_SPD_VAR = 0.1*MEAN_SPEED;
     end
     if nargin < 8 || isempty(DRN_VAR)
-        DRN_VAR = 2.5;
+        DRN_VAR = deg2rad(10);
     end
     if nargin < 9 || isempty(HEIGHT_VAR)
         HEIGHT_VAR = 0;

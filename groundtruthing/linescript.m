@@ -1,5 +1,5 @@
 % Load in image, convert to grey and equalise histogram
-I1 = imread('/home/ian/PhD/bgsubtraction/students003_bgframe.jpg');
+I1 = imread('/home/cserv2_a/soc_ug/sc06ijh/PhD/year3/bgsub_frames/cap1-soc_carpark_bgframe.jpg');
 I1g = rgb2gray(I1);
 I1ge = histeq(I1g);
 
@@ -17,9 +17,12 @@ figure;hist(vertcat(lines.theta),18);
 
 % This is a cludge that only works when we have exactly 2 principle directions
 done = 0;
+centres = gmeans(vertcat(lines.theta));
+K = length(centres)
+
 while ~done
     try
-        labels = kmeans(vertcat(lines.theta),2);
+        labels = kmeans(vertcat(lines.theta),K);
         done = 1;
     catch err
         disp('KMeans failed this time');

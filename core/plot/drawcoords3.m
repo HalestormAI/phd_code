@@ -32,11 +32,15 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, camera, marke
         f = gcf;
     end
     hold on
-    thegroup = hggroup;
-    for i=1:2:size(coords3,2)
-        if i+1 <= size(coords3,2)
-            lines = plot3( coords3(1,i:i+1), coords3(2,i:i+1), coords3(3,i:i+1), sprintf('-%s%s', marker, colour) );
-            set(lines, 'Parent', thegroup )
+    if iscell(coords3)
+        cellfun(@(x) drawcoords3( x, ttl, 0, colour, camera, marker ), coords3);
+    else
+        thegroup = hggroup;
+        for i=1:2:size(coords3,2)
+            if i+1 <= size(coords3,2)
+                lines = plot3( coords3(1,i:i+1), coords3(2,i:i+1), coords3(3,i:i+1), sprintf('-%s%s', marker, colour) );
+                set(lines, 'Parent', thegroup )
+            end
         end
     end
     

@@ -30,13 +30,25 @@ function makeCpp( fn, DBG, vsn, ocvver )
     
     function domex( fn, vsn, ocvver )
         if ocvver == 2
-            incdir = strcat( ...
-                 ' -I/usr/not-backed-up/',vsn,'/modules/video/include')
+%             incdir = strcat( ...
+%                  ' -I/usr/not-backed-up/',vsn,'/modules/core/include');
+%             incdir = strcat( incdir, ...
+%                  ' -I/usr/not-backed-up/',vsn,'/modules/features2d/include');
+%             incdir = strcat( incdir, ...
+%                  ' -I/usr/not-backed-up/',vsn,'/modules/video/include');
+%             incdir = strcat( incdir, ...
+%                  ' -I/usr/not-backed-up/',vsn,'/modules/imgproc/include');
+%             incdir = strcat( incdir, ...
+%                  ' -I/usr/not-backed-up/',vsn,'/modules/highgui/include')
+%             libdir = strcat('-L/usr/not-backed-up/',vsn,'/build/lib')
+
+        incdir = '-I/usr/not-backed-up/OpenCV-2.3.1/modules/core/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/features2d/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/video/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/img    proc/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/highgui/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/flann/include';
+        libdir = '-L/usr/not-backed-up/OpenCV-2.3.1/build/lib';
         else
             incdir = strcat('-I/usr/not-backed-up/',vsn,'/include/opencv')
-        end
         libdir = strcat('-L/usr/not-backed-up/',vsn,'/lib')
-
-        mex( fn, incdir, libdir, '-lcv', '-lcvaux', '-lcxcore', '-lhighgui', '-lstdc++', DEBUG);
+        end
+incdir
+        mex( fn, incdir, libdir, '-lopencv_core231', '-lopencv_imgproc231', '-lopencv_video231', '-lopencv_features2d231', '-lopencv_highgui231', DEBUG);
     end
 end
