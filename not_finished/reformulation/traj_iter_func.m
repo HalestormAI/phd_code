@@ -19,7 +19,7 @@ function F = traj_iter_func( x, trajectories, func_handle, inner_func_handle )
         curLength = curLength+lengths(t);
     end
     
-    if x(4) > 0
-         F = F.^2;
-    end
+%     if x(4) > 0
+%          F = F.^2;
+%     end
 end

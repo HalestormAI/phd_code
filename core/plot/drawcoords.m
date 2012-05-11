@@ -34,7 +34,7 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
     hold on
     
     if iscell(imcoords)
-        cellfun(@(x) drawcoords( x, ttl, newfig, colour, lw, marker ), imcoords);
+        cellfun(@(x) drawcoords( x, ttl, 0, colour, lw, marker ), imcoords);
     else
         imcoords = ( imcoords );
         thegroup = hggroup;

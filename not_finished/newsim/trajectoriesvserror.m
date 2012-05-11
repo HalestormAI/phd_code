@@ -3,7 +3,7 @@
 % Measurements in mm...
 
 
-NUM_PLANES = 1000;
+NUM_PLANES = 50;
 
 % Generate a set of random camera positions in the form (thetas ; psis ; ds )
 if ~exist('PLANE_PARAMS','var')
@@ -25,7 +25,7 @@ if ~exist('basePlane','var')
     [basePlane,camPlane,rotation] = createPlane( 10000, 0, 0, 25 );
 end
 if  ~exist('baseTraj','var')
-    [baseTraj] = addTrajectoriesToPlane( basePlane, rotation, 20, 2000, 1500/FPS, 0 );
+    [baseTraj] = addTrajectoriesToPlane( basePlane, rotation, 10, 2000, 1, 0 );
 end
 
 
@@ -49,7 +49,7 @@ fid = fopen('progress.txt', 'a');
 fprintf(fid, 'Base params sorted, starting loop\n');
 fclose( fid );
 
-TOTAL_RUNS = size(PLANE_PARAMS,2)*length(baseTraj);
+TOTAL_RUNS = size(PLANE_PARAMS,2);%*length(baseTraj);
 
 h = waitbar(0,'Starting...', 'Name', sprintf('%d iterations', TOTAL_RUNS));
 one_iter_time = 1;
@@ -76,7 +76,7 @@ for p=1:size(PLANE_PARAMS,2)
     N = normalFromAngle( 180-theta, psi );
     D = d;
     
-    for i = 1:length(baseTraj);
+    for i =length(baseTraj):length(baseTraj);
         try
             tic;
             NUM_DONE = (p-1)*length(baseTraj) + i;
@@ -87,8 +87,8 @@ for p=1:size(PLANE_PARAMS,2)
 
             trajectories = baseTraj(tperm(1:i));
 
-            traj_im = cellfun( @(x) traj2imc(x, FPS), trajectories, 'uniformoutput',false );
-            tobeoptimised_traj = filterTrajectories( traj_im, 5, 5 );
+            tobeoptimised_traj = cellfun( @(x) traj2imc(x, FPS), trajectories, 'uniformoutput',false );
+%             tobeoptimised_traj = filterTrajectories( traj_im, 5, 5 );
 
             NUM_EQNS{p}(i) = sum(cellfun(@length,tobeoptimised_traj));
 

@@ -18,7 +18,7 @@ function f = drawTrajectorySpeedHists( traj, traj2 )
         
         if nargin ==2
             [hL2] = hist(lengths{I}./mean(lengths2{I}),hX);
-            norm_hL2 = hL./sum(hL2);
+            norm_hL2 = hL2./sum(hL2);
         
             if max(norm_hL2) > maxFD,
                 maxFD = max(norm_hL2);

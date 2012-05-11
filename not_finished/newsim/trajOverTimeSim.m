@@ -1,6 +1,8 @@
 NUM_FRAMES = 151;
 
 f = drawPlane( worldPlane,'',1,'r' );
+axis equal;
+ax = axis;
 fnum = 1;
 
 for t=1:1:NUM_FRAMES
@@ -13,7 +15,7 @@ for t=1:1:NUM_FRAMES
         end
     end
             
-    axis equal;
+    axis(ax);
     if mod(t,2) == 1
         M(fnum) = getframe;
         fnum = fnum + 1;
