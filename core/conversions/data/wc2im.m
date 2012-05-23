@@ -17,5 +17,8 @@ function [ imc ] = wc2im( wc, alpha )
 %         c(2) = wc(2,i) / (alpha*wc(3,i))
 %         imc(:,i) = c;
 %     end
-imc = wc(1:2,:) .* repmat((ones(1,size(wc,2)) ./ ( alpha.*wc(3,:))),2,1);
+%imc = wc(1:2,:) .* repmat((ones(1,size(wc,2)) ./ ( alpha.*wc(3,:))),2,1);
+
+imc(1,:) = wc(1,:) ./ (alpha*wc(3,:));
+imc(2,:) = wc(2,:) ./ (alpha*wc(3,:));
 end

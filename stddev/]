@@ -1,0 +1,20 @@
+% Set up constants for iterator
+NOFIG = 1;
+NOSAVE = 1;
+
+% Focal Length Range
+FOCAL_LENGTHS = [-100:10:100];
+
+TRUE_F = 1;
+
+gradients = ones(length(FOCAL_LENGTHS),1);
+
+for f=1:length(FOCAL_LENGTHS)
+    exp_constants = [d,FOCAL_LENGTHS(f)];
+    iterator;
+    theta_varies = (mean(ssd_errors,2));
+    [max_error, max_id] = max(theta_varies);
+    [min_error, min_id] = min(theta_varies);
+    gradients(f) = (max_error - min_error) /  ( max_id - min_id);
+    clear exp_constants;
+end

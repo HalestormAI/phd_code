@@ -14,7 +14,7 @@ if strcmp(base,'degrees'),
     psi   = deg2rad(psi);
 end
 
-N = -[ sin(psi)*sin(theta);
+N =  -[ sin(psi)*sin(theta);
        cos(psi)*sin(theta);
        cos(theta)
      ];
