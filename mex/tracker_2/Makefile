@@ -1,10 +1,10 @@
 # Compile and link flags
-CXX          =  mex
+CXX          = mex
 CFLAGS       = -Wall -g
 
 # Compilation (add flags as needed)
 #CXXFLAGS    +=  -I/usr/not-backed-up/OpenCV-2.3.1/modules/core/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/features2d/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/video/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/imgproc/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/highgui/include -I/usr/not-backed-up/OpenCV-2.3.1/modules/flann/include #`pkg-config opencv --cflags`
-CXXFLAGS    += -I/usr/local/matlab-R2011a/extern/include
+CXXFLAGS    += -I/usr/local/MATLAB/R2011b/extern/include
 
 # Linking (add flags as needed)
 #LDFLAGS     += -L/usr/not-backed-up/OpenCV-2.3.1/build/lib

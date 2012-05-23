@@ -1,9 +1,6 @@
-set(MATLAB_MEX_LIBS
-    libmex.so
-    libmx.so
-    libmat.so )
+project( Tracker )
+find_package( OpenCV REQUIRED )
 
-foreach(item ${MATLAB_MEX_LIBS} )
-    configure_file(${MATLAB_ROOT}/bin/glnx86/${item} 
-    ${CMAKE_CURRENT_BINARY_DIR}/${item} COPYONLY )
-endforeach(item)
+add_executable( Tracker Tracker )
+target_link_libraries( Tracker ${OpenCV_LIBS} )
+set(CMAKE_CXX_FLAGS "-O333")

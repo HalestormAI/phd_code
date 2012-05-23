@@ -24,10 +24,10 @@
         MEAN_SPEED = 1;
     end
     if nargin < 6 || isempty(STD_SPEED),
-        STD_SPEED = 0.1*MEAN_SPEED;
+        STD_SPEED = 0; %0.1*MEAN_SPEED;
     end
     if nargin < 7 || isempty(WALK_SPD_VAR)
-        WALK_SPD_VAR = 0.1*MEAN_SPEED;
+        WALK_SPD_VAR = 0;%0.1*MEAN_SPEED;
     end
     if nargin < 8 || isempty(DRN_VAR)
         DRN_VAR = deg2rad(10);

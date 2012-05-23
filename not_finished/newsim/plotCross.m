@@ -1,15 +1,20 @@
 function grp = plotCross( cntr, lim, colourSpec, labels )
     % INPUT:
     %   cntr [x,y,z]       Cross Centre
-    %   lim [ minx maxx    Limits for lines
-    %         miny maxy
-    %         minz maxz]
+    %   *lim [ minx maxx   Limits for lines
+    %          miny maxy
+    %          minz maxz]
     %   *colourSpec        Colour specification
     %   *labels            The x,y,z labels for the figure. Vertical array
     %                      of strings.
     %
     % OUTPUT:
     %   grp                Handle for the group of lines.
+    
+    if nargin < 2 || isempty(lim)
+        lim = reshape(axis',2,3)'
+    end
+    
     if nargin < 3
         colourSpec = 'm-';
     end
