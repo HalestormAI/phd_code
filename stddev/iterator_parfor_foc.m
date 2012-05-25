@@ -1,4 +1,4 @@
-function [ssd_errors,best_combo_ids,minError,bestGuess,DISTS] = iterator_parfor( exp_constants, plane_details, thetas, psis )
+function [ssd_errors,best_combo_ids,minError,bestGuess,bestFoc] = iterator_parfor_foc( D, plane_details, thetas, psis,focals )
 
 varStruct = plane_details;
 struct2vars;
@@ -8,6 +8,9 @@ if nargin < 3
 end
 if nargin < 4
     psis = -60:10:60;
+end
+if nargin < 5
+    focals = 10.^(-4:4);
 end
 
 fsolve_options;
@@ -19,10 +22,11 @@ stds = cell( length(thetas), length( psis ) );
 
 for t = 1:length(thetas)
     for p = 1:length(psis)
-%        [errors{t,p},means{t,p},stds{t,p}] = errorfunc( [thetas(t),psis(p)], exp_constants, trajectories );
-        ang = [thetas(t),psis(p)];
-        [angles{t,p},errors{t,p}] = fsolve(@(x) errorfunc(x,exp_constants, trajectories), ...
-                                 [thetas(t),psis(p)], ...
+        for f = 1:length(focals)
+            ang = [thetas(t),psis(p)];
+            scl = [D, focals(f)];
+        [angles{t,p},errors{t,p}] = fsolve(@(x) errorfunc(x(1:2),[D,x(3)], trajectories), ...
+                                 [thetas(t),psis(p),focals(f)], ...
                                  options...
                                 );
         ssd_errors(t,p) = sum(errors{t,p}.^2);

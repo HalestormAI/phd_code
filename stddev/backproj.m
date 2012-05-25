@@ -1,13 +1,13 @@
-function rectTraj = backproj( params, constants, traj )
+function rectTraj = backproj( orientation, scales, traj )
     
-    % TODO: Perform back projection onto camera plane using estimated & constants.
+    % TODO: Perform back projection onto camera plane using estimated & scales.
   
-    % params consists of theta and psi
-    abc   = normalFromAngle( -params(1), -params(2),'degrees' );
-    %params;
+    % orientation consists of theta and psi
+    abc   = normalFromAngle( -orientation(1), -orientation(2),'degrees' );
+    %orientation;
 
-    d     = constants(1);
-    alpha = constants(2);
+    d     = scales(1);
+    alpha = scales(2);
 
     rectTraj = zeros(3,size(traj,2));
 
