@@ -1,4 +1,4 @@
-function [E,meanLength,stdLength] = errorfunc( params, constants, trajectories, DEBUG )
+function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories, DEBUG )
 
     if nargin < 4
         DEBUG = false;
@@ -12,7 +12,7 @@ function [E,meanLength,stdLength] = errorfunc( params, constants, trajectories, 
 
     longEnough = trajectories(lengths>3);
 
-    rectTrajectories = cellfun(@(x) backproj(params, constants, x), longEnough,'uniformoutput', false);
+    rectTrajectories = cellfun(@(x) backproj(orientation, scales, x), longEnough,'uniformoutput', false);
 
     for i=1:length(rectTrajectories)
         lengths = vector_dist(rectTrajectories{i});
@@ -32,7 +32,7 @@ function [E,meanLength,stdLength] = errorfunc( params, constants, trajectories, 
     meanLength(badScores) = [];
 
     if DEBUG
-        DEBUG_p = backproj(params,constants,DEBUG);
+        DEBUG_p = backproj(orientation,scales,DEBUG);
         drawPlane( DEBUG_p );
         drawcoords3(traj2imc(rectTrajectories,1,1),'',0);
     end
