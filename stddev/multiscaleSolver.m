@@ -1,10 +1,14 @@
-function [ output_params, finalError ] = multiscaleSolver( D, plane_details, MAX_LEVEL, STEP )
+function [ output_params, finalError ] = multiscaleSolver( D, plane_details, MAX_LEVEL, STEP, TOL )
 
 if nargin < 3
     MAX_LEVEL = 3;
 end
 if nargin < 4
     STEP = 10;
+end
+
+if nargin < 5
+    TOL = 1e-6;
 end
 
 minErrors = zeros(MAX_LEVEL,1);
@@ -38,6 +42,9 @@ for level=1:MAX_LEVEL
         level
         level = level -1;
         break;
+    elseif minErrors(level) < TOL
+        disp('Error below tolerance, ending now.');
+        break
     end
     
 end
