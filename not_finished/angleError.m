@@ -20,7 +20,8 @@ else
     error('Invalid unit choice given');
 end
 
-angle = cfunc(dot(n1,n2) / ( norm(n1)*norm(n2) ) ) ;
+
+angle = real(cfunc(dot(n1,n2) / ( norm(n1)*norm(n2) ) ));
 
 if nargin >= 3 && mirr == 1,
     angle = fixDiff - abs(fixDiff - angle);

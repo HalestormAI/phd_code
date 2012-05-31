@@ -105,7 +105,10 @@
         for trajId = 1:num_trajectories,
             % check if it's still active: is the last point inside the
             % plane?
-            carryon = inpolygon(traj{trajId}(1,end),traj{trajId}(2,end),worldPlane(1,:),worldPlane(2,:));
+%             carryon = inpolygon(traj{trajId}(1,end),traj{trajId}(2,end),worldPlane(1,:),worldPlane(2,:));
+            
+            carryon = onPlane( traj{trajId}(:,end), worldPlane );
+            
             if ~carryon
                 continue;
             end
@@ -125,7 +128,8 @@
                 
                 % If still within the boundaries of the plane,
                 % save into trajectory for this time-step
-                stillin = inpolygon(newpos(1),newpos(2),worldPlane(1,:),worldPlane(2,:));
+%                 stillin = inpolygon(newpos(1),newpos(2),worldPlane(1,:),worldPlane(2,:));
+                stillin = onPlane( newpos, worldPlane );
                 if ~stillin,
                     continue;
                 end
@@ -187,5 +191,22 @@
             prevdrn = 0;
         end
     end
+
+        function on = onPlane( point, plane )
+            
+            mins = min(plane,[],2);
+            maxs = max(plane,[],2);
+            
+            on = 1;
+            
+            if find(point < mins, 1, 'first')
+                on = 0;
+                return;
+            elseif find(point > maxs, 1, 'last')
+                on = 0;
+                return;
+            end 
+            
+        end
 
 end
