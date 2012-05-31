@@ -194,8 +194,10 @@
 
         function on = onPlane( point, plane )
             
-            mins = min(plane,[],2);
-            maxs = max(plane,[],2);
+            point(3,:) = [];
+
+            mins = min(plane(1:2,:),[],2);
+            maxs = max(plane(1:2,:),[],2);
             
             on = 1;
             
