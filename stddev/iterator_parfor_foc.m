@@ -1,4 +1,4 @@
-function [ssd_errors,minerror,bestAngles,E_focal,inits] = iterator_parfor_foc( D, plane_details, thetas, psis,focals )
+function [ssd_errors,minerror,E_angles,E_focal,inits] = iterator_parfor_foc( D, plane_details, thetas, psis,focals )
 
 varStruct = plane_details;
 struct2vars;
@@ -35,7 +35,7 @@ for i=1:size(inits,1);
     f = inits(i,3);
     errors{i} = errorfunc([t,p],[D,f], trajectories);
     ssd_errors(i) = sum(errors{i}.^2);
-    if ~mod(i,50)
+    if ~mod(i,500)
         fprintf('Completed %d of %d rows (%.3f%%)\n', i,length(inits),100*(i/length(inits)));
     end
 end
@@ -49,7 +49,7 @@ E_focal = inits(min_err_id,3);
 fprintf('True (Theta, Psi, f) = ( %g, %g, %g )\n', GT_theta, GT_psi, GT_focal);
 fprintf('Best (Theta, Psi, f) = ( %g, %g, %g )\n', E_theta, E_psi, E_focal);
 
-bestAngles = [E_theta,E_psi];
+E_angles = [E_theta,E_psi];
 
 % estParams = [thetas(best_combo_ids(1)),psis(best_combo_ids(2))];
 % rectTraj = cellfun(@(x) backproj(estParams, exp_constants, x), trajectories, 'uniformoutput', false );
