@@ -21,6 +21,8 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
         stdLength(i) = std(lengths);
         E(i) = stdLength(i) / meanLength(i);
         if isnan(E(i))
+            orientation,scales
+            lengths
             fprintf('Mean Length: %.3f\n',meanLength(i));
             error('ERROR IS NaN');
         end
