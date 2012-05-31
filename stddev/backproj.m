@@ -1,10 +1,7 @@
 function rectTraj = backproj( orientation, scales, traj )
-    
-    % TODO: Perform back projection onto camera plane using estimated & scales.
-  
+      
     % orientation consists of theta and psi
     abc   = normalFromAngle( -orientation(1), -orientation(2),'degrees' );
-    %orientation;
 
     d     = scales(1);
     alpha = scales(2);

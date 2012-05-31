@@ -23,6 +23,38 @@ function [worldPlane,camPlane,imPlane,rotation] = createCameraPlane( params, con
     rotation = zRot*xRot;
 
     camPlane = rotation*worldPlane;
+    
+    % Find any elements on camPlane with Z >= 0
+    newPlane = NaN*ones(3,4);
+    
+    potentialLines = [4,1,2,3;
+                      2,3,4,1];
+    for p=1:4
+        
+        if camPlane(3,p) >= 0 % if point l is off the plane
+            
+            good = potentialLines(2,p);
+            
+            if(camPlane(3,good) == camPlane(3,p))
+                good = potentialLines(1,p);
+            end
+           
+            % Get the direction
+            p1 = camPlane(:,good);
+            
+            plotter = [p1,camPlane(:,p)];
+            
+            plot3(plotter(1,:),plotter(2,:), plotter(3,:));
+            
+            line = camPlane(:,p) - p1;
+            newPlane(:,p) = p1+line.*((0-p1(3))/line(3));
+            scatter3(newPlane(1,p),newPlane(2,p),newPlane(3,p),'mo');
+
+        else
+            newPlane(:,p) = camPlane(:,p);
+        end
+    end
+    camPlane = newPlane;
 
     imPlane(1,:) = camPlane(1,:) ./ (constants(2).*camPlane(3,:));
     imPlane(2,:) = camPlane(2,:) ./ (constants(2).*camPlane(3,:));

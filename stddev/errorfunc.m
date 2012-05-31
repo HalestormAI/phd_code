@@ -3,7 +3,6 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
     if nargin < 4
         DEBUG = false;
     end
-
     E = Inf*ones(length(trajectories),1); % Play on the safe side :)
     meanLength = zeros(length(trajectories),1);
     stdLength = zeros(length(trajectories),1);
@@ -21,7 +20,7 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
         E(i) = stdLength(i) / meanLength(i);
         if isnan(E(i))
             fprintf('Mean Length: %.3f\n',meanLength(i));
-%            error('ERROR IS NaN');
+            error('ERROR IS NaN');
         end
     end
 
