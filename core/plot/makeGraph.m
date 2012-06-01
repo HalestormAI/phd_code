@@ -36,6 +36,7 @@ widths  = ones(size(pieces,1),1).*gap/2;
 
 % Set rectangle position vector
 positions = [ col_idx, means-std_devs, widths, heights];
+positions(~positions(:,4),4) = 0.0001;
 
 % Make axis max and min (vertical is .5 SD either side of range)
 figure,
