@@ -32,6 +32,7 @@ imTrajs       = cell(NUM_EXPS,length(orientations));
 params        = cell(NUM_EXPS,length(orientations));
 errors        = cell(NUM_EXPS,length(orientations));
 angleErrors   = cell(NUM_EXPS,length(orientations));
+fullErrors   = cell(NUM_EXPS,length(orientations));
 
 for h=1:NUM_EXPS
     stddev_h = stddev_hs(h);
@@ -44,7 +45,7 @@ for h=1:NUM_EXPS
         camTrajs{h,o}   = plane_details.camTraj;
         imTrajs{h,o}    = plane_details.trajectories;
 
-        [params{h,o},errors{h,o}] = multiscaleSolver( D, plane_details );
+        [params{h,o},errors{h,o},fullErrors{h,o}] = multiscaleSolver( D, plane_details );
 
         angleErrors{h,o} = angleError( normalFromAngle( params{h,o}(1), params{h,o}(2) ), GT_N, 1);
     end
