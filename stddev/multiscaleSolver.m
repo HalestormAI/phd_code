@@ -1,4 +1,4 @@
-function [ output_params, finalError ] = multiscaleSolver( D, plane_details, MAX_LEVEL, STEP, TOL )
+function [ output_params, finalError, fullErrors ] = multiscaleSolver( D, plane_details, MAX_LEVEL, STEP, TOL )
 
 if nargin < 3
     MAX_LEVEL = 3;
@@ -11,9 +11,10 @@ if nargin < 5
     TOL = 1e-6;
 end
 
-minErrors = zeros(MAX_LEVEL,1);
-E_angles  = zeros(MAX_LEVEL,2);
-E_focals  = zeros(MAX_LEVEL,1);
+fullErrors =  cell(MAX_LEVEL,1);
+minErrors  = zeros(MAX_LEVEL,1);
+E_angles   = zeros(MAX_LEVEL,2);
+E_focals   = zeros(MAX_LEVEL,1);
 
 for level=1:MAX_LEVEL
     if level == 1
@@ -35,7 +36,7 @@ for level=1:MAX_LEVEL
         focals(focals==0) = [];
     end
     
-    [~,minErrors(level),E_angles(level,:),E_focals(level)] = iterator_parfor_foc( D, plane_details,thetas,psis,focals);
+    [fullErrors{level},minErrors(level),E_angles(level,:),E_focals(level)] = iterator_parfor_foc( D, plane_details,thetas,psis,focals);
     
     if level > 1 && minErrors(level) > minErrors(level-1)
         disp('Iteration stopped due to error increase.');
