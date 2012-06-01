@@ -15,7 +15,6 @@ for t=1:length(thetas)
     end
 end
 
-orientation = [GT_theta, GT_psi];
 scale = [D,FOC];
 
 stddev    = 0;
@@ -54,4 +53,4 @@ end
 
 
 
-save heightvar_data
+save heightvar_data_withprior
