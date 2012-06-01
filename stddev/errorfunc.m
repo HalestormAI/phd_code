@@ -29,8 +29,7 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
         end
     end
 
-    E = E*priors( rectTrajectories );
-    
+    E = E.*priors( rectTrajectories );
     badScores = find( E == Inf );
 
     E(badScores) = [];
