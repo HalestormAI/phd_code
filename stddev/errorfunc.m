@@ -17,6 +17,7 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
                                                  longEnough,'uniformoutput', false);
     for i=1:length(rectTrajectories)
         lengths = vector_dist(rectTrajectories{i});
+        lengths(lengths == Inf) = 10e20; 
         meanLength(i) = mean(lengths);
         stdLength(i) = std(lengths);
         E(i) = stdLength(i) / meanLength(i);
