@@ -57,3 +57,5 @@ for h=1:NUM_EXPS
 end
 
 
+
+save heightvar_data
