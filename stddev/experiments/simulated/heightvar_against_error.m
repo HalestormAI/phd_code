@@ -15,11 +15,6 @@ for t=1:length(thetas)
     end
 end
 
-GT_theta = 75;
-GT_psi = -37;
-
-GT_N = normalFromAngle( GT_theta, GT_psi );
-
 orientation = [GT_theta, GT_psi];
 scale = [D,FOC];
 
@@ -43,6 +38,7 @@ for h=1:NUM_EXPS
     stddev_h = stddev_hs(h);
     for o=1:length(orientations)
         plane_details = createPlaneDetails( orientations(o,:), scale, [stddev,stddev_w, stddev_h] );
+        GT_N = normalFromAngle( orientations(o,1), orientations(o,2) );
 
         camPlanes{h,o}  = plane_details.camPlane;
         imPlanes{h,o}   = plane_details.imPlane;

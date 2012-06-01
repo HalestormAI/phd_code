@@ -29,6 +29,8 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
         end
     end
 
+    E = E*priors( rectTrajectories );
+    
     badScores = find( E == Inf );
 
     E(badScores) = [];
@@ -39,6 +41,13 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
         DEBUG_p = backproj(orientation,scales,DEBUG);
         drawPlane( DEBUG_p );
         drawcoords3(traj2imc(rectTrajectories,1,1),'',0);
+    end
+    
+    function P = priors( traj )
+         stds = cellfun(@(x) std(vector_dist(x)), traj);
+         means = cellfun(@(x) mean(vector_dist(x)), traj);
+         
+         P = stds ./ means;
     end
 
 end
