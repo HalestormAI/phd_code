@@ -19,7 +19,7 @@ E_focals   = zeros(MAX_LEVEL,1);
 for level=1:MAX_LEVEL
     if level == 1
         thetas = 1:STEP:89;
-        psis = -60:STEP:60;
+        psis = -90:STEP:90;
         focals = 10.^(-4:4);
     else
         STEP = STEP/10;
