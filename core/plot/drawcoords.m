@@ -22,7 +22,7 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
         lw = 1;
     end
     if nargin < 6,
-        marker = 'o';
+        marker = '-o';
     end
 
     if newfig > 0,
@@ -40,7 +40,7 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
         thegroup = hggroup;
         for i=1:2:size(imcoords,2)
             if ischar(colour),
-                lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('-%s%s', marker, colour), 'LineWidth',lw );
+                lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s%s', marker, colour), 'LineWidth',lw );
             elseif size(colour,1) == (length(imcoords)/2),
                 lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s-', marker), 'Color', colour(cid2mpid(i),:) );
             else

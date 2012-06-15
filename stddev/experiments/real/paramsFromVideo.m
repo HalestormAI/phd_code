@@ -1,12 +1,14 @@
-function plane_details = paramsFromVideo( vidname )
+function plane_details = paramsFromVideo( vidname, FPS )
+
+    if nargin < 2
+        FPS = 15;
+    end
 
     load(vidname);
 
-    lengths = cellfun(@(x) size(x,2), trajectories);
-    longestIds = (find(lengths>300));
-    chosen = longestIds(randi(length(longestIds),1,20));
-
-    plane_details.trajectories = traj2imc(trajectories(chosen),10,1);
+    trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
+    split = splitTrajectories(trajectories_lgt2,1);
+    [plane_details.trajectories,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 50, frame);
     
     plane_details.camTraj = cellfun(@(x) H*makeHomogenous(x),plane_details.trajectories,'uniformoutput',false);
 
@@ -23,7 +25,7 @@ function plane_details = paramsFromVideo( vidname )
     [plane_details.GT_theta,plane_details.GT_psi] = anglesFromN(plane_details.GT_N,0,'degrees');
 
     plane_details.GT_focal= 1;
+    
 
-    clear trajectories allCamPoints allImPoints limits;
     
 end
