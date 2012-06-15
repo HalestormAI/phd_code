@@ -30,7 +30,7 @@ function [n,d] = planeFromPoints( C, NUM_POINTS )
     end
     
     d = mean(ds);
-    confidence = std(ds)/d
+    confidence = std(ds)/d;
 
 %     if confidence > 0.001
 %         break

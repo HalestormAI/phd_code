@@ -1,4 +1,4 @@
-function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, camera, marker )
+function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, lw, marker, camera )
 % Draw a set of 3D world coordinates on 3D plot
 %   Input:
 %       coords          A set of 3D coordinates
@@ -20,10 +20,13 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, camera, marke
         colour = 'k';
     end
     if nargin < 5,
-        camera = 0;
+        lw = 1;
     end
     if nargin < 6,
         marker = 'o';
+    end
+    if nargin < 7,
+        camera = 0;
     end
 
     if newfig > 0,
@@ -33,7 +36,7 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, camera, marke
     end
     hold on
     if iscell(coords3)
-        cellfun(@(x) drawcoords3( x, ttl, 0, colour, camera, marker ), coords3);
+        cellfun(@(x) drawcoords3( x, ttl, 0, colour, lw, marker ), coords3);
     else
         thegroup = hggroup;
         for i=1:2:size(coords3,2)
