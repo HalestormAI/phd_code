@@ -19,10 +19,11 @@ scale = [D,FOC];
 
 stddev    = 0;
 stddev_w  = 0;
+stddev_h  = 0;
 
-stddev_hs = 0:0.2:2;
+stddevs = 0:0.1:1;
 
-NUM_EXPS = length(stddev_hs);
+NUM_EXPS = length(stddevs);
 
 % Init loop parameters
 camPlanes     = cell(NUM_EXPS,length(orientations));
@@ -35,7 +36,7 @@ angleErrors   = cell(NUM_EXPS,length(orientations));
 fullErrors   = cell(NUM_EXPS,length(orientations));
 
 for h=1:NUM_EXPS
-    stddev_h = stddev_hs(h);
+    stddev = stddevs(h);
     for o=1:length(orientations)
         plane_details = createPlaneDetails( orientations(o,:), scale, [stddev,stddev_w, stddev_h] );
         GT_N = normalFromAngle( orientations(o,1), orientations(o,2) );

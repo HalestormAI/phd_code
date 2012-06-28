@@ -16,7 +16,7 @@ function makeCpp( fn, DBG, vsn, ocvver )
     try
         domex(fn, vsn, ocvver);
     catch err,
-        pushd( strcat(getenv('HOME'),'/PhD/groundplane_matlab/mex/') );
+        pushd( strcat(getenv('HOME'),'/PhD/repos/mex/') );
         
         try
             domex(fn, vsn, ocvver);
@@ -49,6 +49,6 @@ function makeCpp( fn, DBG, vsn, ocvver )
         libdir = strcat('-L/usr/not-backed-up/',vsn,'/lib')
         end
 incdir
-        mex( fn, incdir, libdir, '-lopencv_core231', '-lopencv_imgproc231', '-lopencv_video231', '-lopencv_features2d231', '-lopencv_highgui231', DEBUG);
+        mex( fn, incdir, libdir, '-lopencv_core', '-lopencv_imgproc', '-lopencv_video', '-lopencv_features2d', '-lopencv_highgui','-lboost_system','-lboost_filesystem', DEBUG);
     end
 end
