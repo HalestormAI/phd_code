@@ -12,5 +12,6 @@ function plane_details = createPlaneDetails( orientation, constants, noise )
     plane_details.GT_theta = orientation(1);
     plane_details.GT_psi = orientation(2);
     plane_details.GT_focal = constants(2);
+    plane_details.rotation = rot;
 
 end

@@ -1,4 +1,4 @@
-#include "Trajectory.hpp"
+#include "TrackerTrajectory.hpp"
 Trajectory::Trajectory( ) {
     
     this->positions = std::vector<cv::Point2f>( );

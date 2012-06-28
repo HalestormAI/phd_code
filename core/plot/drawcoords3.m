@@ -23,7 +23,7 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, lw, marker, c
         lw = 1;
     end
     if nargin < 6,
-        marker = 'o';
+        marker = '-o';
     end
     if nargin < 7,
         camera = 0;
@@ -41,7 +41,7 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, lw, marker, c
         thegroup = hggroup;
         for i=1:2:size(coords3,2)
             if i+1 <= size(coords3,2)
-                lines = plot3( coords3(1,i:i+1), coords3(2,i:i+1), coords3(3,i:i+1), sprintf('-%s%s', marker, colour) );
+                lines = plot3( coords3(1,i:i+1), coords3(2,i:i+1), coords3(3,i:i+1), sprintf('%s%s', marker, colour) );
                 set(lines, 'Parent', thegroup )
             end
         end

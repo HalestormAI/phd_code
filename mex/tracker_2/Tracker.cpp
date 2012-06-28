@@ -14,19 +14,24 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string>
+#include "boost/filesystem/operations.hpp"
+#include "boost/filesystem/path.hpp"
+#include "boost/progress.hpp"
 
 #include "mex.h"
 #include "matrix.h"
-#include "Trajectory.cpp"
+#include "TrackerTrajectory.cpp"
 
 #define FD_ORB 0
 #define FD_GFTT 1
 
 #define FD_ALGORITHM FD_GFTT
 
+
 int WINDOW_SIZE = 20;
-float MINIMUM_DISTANCE = 1;
-int MAX_POINTS = 1000;
+float MINIMUM_DISTANCE = 0.5;
+int MAX_POINTS = 500;
+int MINIMUM_TRAJECTORY_LENGTH = 4;
 
 bool need_to_init = 1;
 
@@ -86,16 +91,45 @@ int main( int argc, char** argv ) {
     cv::Mat prevImg, curImg;
     std::vector<cv::KeyPoint> prevOrbPt, curOrbPt;
     std::vector<cv::Point2f> prevPt, curPt;
-    cv::VideoCapture cap;
     
-    cap.open( argv[argc-1] );
-    if( !cap.isOpened( ) ) {
-        std::cout << "Failed to open stream: " << argv[1] << std::endl;
-        return -1;
+    // check if we have a file or directory
+    boost::filesystem::path vid_path( boost::filesystem::initial_path<boost::filesystem::path>() );
+    vid_path = boost::filesystem::system_complete( boost::filesystem::path( argv[argc-1] ) );
+    
+    cv::VideoCapture cap;
+    bool isVideo;
+        
+    
+    std::vector<std::string> filenames;
+    if( boost::filesystem::is_directory( vid_path ) ) {
+        isVideo = false;
+        // Generate vector of filename strings
+        
+        boost::filesystem::directory_iterator dir_iter( vid_path );
+        boost::filesystem::directory_iterator end_iter;
+                
+        for ( dir_iter; dir_iter != end_iter; ++dir_iter ) {
+            if( dir_iter->path( ).extension( ) == ".jpg" ) {
+                filenames.push_back( dir_iter->path( ).string( ) );
+            }
+        }
+        
+        sort( filenames.begin( ), filenames.end( ) );        
+        
+    } else {
+        isVideo = true;
+        cap.open( vid_path.string( ) );
+        
+        if( !cap.isOpened( ) ) {
+            std::cout << "Failed to open stream: " << argv[1] << std::endl;
+            return -1;
+        }
     }
 
-    if( open_display ) 
+    if( open_display ) {
         cv::namedWindow( "image", CV_WINDOW_NORMAL | CV_GUI_EXPANDED );
+        cv::namedWindow( "trajectories", CV_WINDOW_NORMAL | CV_GUI_EXPANDED );
+    }
     
     int frameNo = 0;
 
@@ -105,11 +139,19 @@ int main( int argc, char** argv ) {
 
     for(;;) {
         cv::Mat frame;
-        cap >> frame;
-        if( frameNo == 0 )
-            cap >> firstFrame;
-        if( frame.empty( ) )
-            break;
+        
+        if( isVideo ) {
+            cap >> frame;
+            if( frameNo == 0 )
+                cap >> firstFrame;
+            if( frame.empty( ) )
+                break;
+        } else {
+            if( frameNo == filenames.size( ) )
+                break;
+            
+            frame = cv::imread( filenames.at(frameNo) );
+        }
 
         frame.copyTo( curImg );
         cv::Mat prevPtImg, curPtImg, matchImg;
@@ -146,13 +188,13 @@ int main( int argc, char** argv ) {
                 float imDist = sqrt(pow(diffPt.x,2) + pow(diffPt.y,2) );
                 int posStatus = status.at(pos);
 
-                if( posStatus && imDist > MINIMUM_DISTANCE ) {
+                if( posStatus == 1 && imDist > MINIMUM_DISTANCE && imDist <= WINDOW_SIZE ) {
                     cv::line( curPtImg, *pIt, *it, cv::Scalar(0,0,255), 2, CV_AA);
                     openTraj.at(pos).addPosition( *pIt, frameNo );
                     tmpPts.push_back(*it);
                 } else {
                       need_to_init = 1;
-                      if( openTraj.at(pos).getPositions( ).size( ) > 0 ) {
+                      if( openTraj.at(pos).getPositions( ).size( ) > MINIMUM_TRAJECTORY_LENGTH ) {
                           openTraj.at(pos).close( );
                           doneTraj.push_back(openTraj.at(pos));
                       }
@@ -173,24 +215,28 @@ int main( int argc, char** argv ) {
             cv::Mat trajImg;
             frame.copyTo( trajImg );
             std::vector< Trajectory >::iterator tIter;
-            for( tIter = openTraj.begin( ); tIter != openTraj.end( ); tIter++ ) {
-                tIter->draw( trajImg );
-            }
             for( tIter = doneTraj.begin( ); tIter != doneTraj.end( ); tIter++ ) {
                 tIter->draw( trajImg );
             }
+            for( tIter = openTraj.begin( ); tIter != openTraj.end( ); tIter++ ) {
+                tIter->draw( trajImg );
+            }
 
-            std::stringstream trajFile,ptFile;
-            trajFile << (ROOT_DIR+"/orb_trajectories/frame_").c_str( );
-            trajFile << std::setw(8) << std::setfill( '0' ) << frameNo;
-            trajFile << std::setw(1) << ".png";
-            cv::imwrite(  trajFile.str( ), trajImg );
-
-            ptFile << ROOT_DIR+"/orb_salients/frame_";
-            ptFile << std::setw(8) << std::setfill( '0' ) << frameNo;
-            ptFile << std::setw(1) << ".png";
-            cv::imwrite(  ptFile.str( ), curPtImg );
+            if( open_display ) 
+                cv::imshow( "trajectories", trajImg );
             
+
+//             std::stringstream trajFile,ptFile;
+//             trajFile << (ROOT_DIR+"/orb_trajectories/frame_").c_str( );
+//             trajFile << std::setw(8) << std::setfill( '0' ) << frameNo;
+//             trajFile << std::setw(1) << ".png";
+//             cv::imwrite(  trajFile.str( ), trajImg );
+// 
+//             ptFile << ROOT_DIR+"/orb_salients/frame_";
+//             ptFile << std::setw(8) << std::setfill( '0' ) << frameNo;
+//             ptFile << std::setw(1) << ".png";
+//             cv::imwrite(  ptFile.str( ), curPtImg );
+//             
         } 
         
         // Move current frame data to previous frame data 
@@ -215,7 +261,9 @@ int main( int argc, char** argv ) {
             // Insert openTraj spaces
             std::vector<cv::Point2f>::iterator ptIt;
             for( ptIt = tmpPt.begin( ) ; ptIt != tmpPt.end( ); ptIt++ ) {
-                openTraj.push_back( Trajectory( ) );
+                Trajectory t = Trajectory( );
+                t.addPosition( *ptIt, frameNo );
+                openTraj.push_back( t );
             }
             // Copy new points onto end of prevPt vector.
             prevPt.insert(prevPt.end( ), tmpPt.begin( ), tmpPt.end( ));
@@ -247,6 +295,9 @@ int main( int argc, char** argv ) {
 //     }
 //     outFile.close( );
     //drawTrajectories( firstFrame,1 );
+        
+        cvDestroyWindow("image");
+        cvDestroyWindow("trajectories");
     return 0;
 }
 
@@ -261,8 +312,8 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     open_display = true;
     
     /* check for proper number of arguments */
-    if(nrhs!=1) 
-      mexErrMsgTxt("One input required - Video Path.");
+    if(nrhs>2) 
+      mexErrMsgTxt("One input required - Video Path. 1 Optional: Param Cell");
     else if(nlhs != 2) 
       mexErrMsgTxt("Wrong number of output arguments: 2 required.");
 

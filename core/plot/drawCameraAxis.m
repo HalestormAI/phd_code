@@ -7,8 +7,11 @@ function drawCameraAxis( scale,rotation, newfig )
     if nargin < 2 || isempty(rotation)
         rotate = eye(3);
     else
-        rotate = makehgtform('xrotate', rotation );
-        rotate = rotate(1:3,1:3);
+        rotatex = makehgtform('xrotate', -rotation(1) );
+        rotatez = makehgtform('zrotate', -rotation(2) );
+        rotatex = rotatex(1:3,1:3);
+        rotatez = rotatez(1:3,1:3);
+        rotate = rotatez*rotatex;
     end
     if nargin == 3 && newfig;
         figure;
@@ -28,7 +31,7 @@ function drawCameraAxis( scale,rotation, newfig )
         vectarrow( origin,lim(i,:) );
         
         textpos = lim(i,:).*0.5+scale/20;
-        text(textpos(1), textpos(2), textpos(3),strcat('\color{blue} ', textLabels{i}))
+        text(textpos(1), textpos(2), textpos(3),strcat('', textLabels{i}))
         hold on;
     end
     
