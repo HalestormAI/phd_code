@@ -28,13 +28,12 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
             error('ERROR IS NaN');
         end
     end
-
-    E = E.*priors( rectTrajectories );
-    badScores = find( E == Inf );
-
-    E(badScores) = [];
-    stdLength(badScores) = [];
-    meanLength(badScores) = [];
+    
+    toUse = E ~= Inf;
+    
+    E = E(toUse) + priors( rectTrajectories(toUse) );
+    stdLength(~toUse) = [];
+    meanLength(~toUse) = [];
 
     if DEBUG
         DEBUG_p = backproj(orientation,scales,DEBUG);
@@ -43,10 +42,13 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
     end
     
     function P = priors( traj )
-         stds = cellfun(@(x) std(vector_dist(x)), traj);
-         means = cellfun(@(x) mean(vector_dist(x)), traj);
-         
-         P = stds ./ means;
+        
+        speeds = cellfun(@vector_dist, traj,'un',0);
+        means = zeros(length(speeds),1);
+        for s=1:length(speeds)
+            means(s) = mean(speeds{s}(speeds{s} ~= Inf));
+        end
+        P = std(means);
     end
 
 end

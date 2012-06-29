@@ -34,7 +34,7 @@ function plane_details = paramsFromVideo( vidname, FPS )
     
     disp('DONE WITH C++');
 
-    [plane_details.GT_N,plane_details.D] = planeFromPoints( allCamPoints, 100 );
+    [plane_details.GT_N,plane_details.D] = planeFromPoints( allCamPoints, min(length(allCamPoints),100) );
     [plane_details.GT_theta,plane_details.GT_psi] = anglesFromN(plane_details.GT_N,0,'degrees');
 
     plane_details.GT_focal= 1;

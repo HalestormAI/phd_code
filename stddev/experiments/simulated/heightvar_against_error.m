@@ -1,9 +1,9 @@
 % Set up constants for iterator
 D = 3;
-FOC = 1;
+FOC = 1/3.5;
 
-thetas = 80:-20:10;
-psis = -50:25:50;
+thetas = 80:-25:10;
+psis = -50:50:50;
 
 orientations = zeros( length(thetas)*length(psis), 2 );
 
@@ -46,7 +46,15 @@ for h=1:NUM_EXPS
         camTrajs{h,o}   = plane_details.camTraj;
         imTrajs{h,o}    = plane_details.trajectories;
 
-        [params{h,o},errors{h,o},fullErrors{h,o}] = multiscaleSolver( D, plane_details );
+%         try
+            [params{h,o},errors{h,o},fullErrors{h,o}] = multiscaleSolver( D, plane_details );
+%         catch
+%             params{h,o} = [NaN,NaN,NaN];
+%             errors{h,o} = NaN;
+%             fullErrors{h,o} = [NaN,NaN];
+%             drawPlane(plane_details.camPlane);
+%             drawtraj(plane_details.camTraj,'',0);
+%         end
 
         angleErrors{h,o} = angleError( normalFromAngle( params{h,o}(1), params{h,o}(2) ), GT_N, 1);
     end
