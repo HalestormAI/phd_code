@@ -20,23 +20,18 @@ for level=1:MAX_LEVEL
     if level == 1
         thetas = 1:STEP:89;
         psis = -90:STEP:90;
-        focals = -1./(1:10);
-        FSTEP = 0.01;
+        focals = 10.^(-4:1);
     else
         STEP = STEP/10;
-        FSTEP = FSTEP/10;
-        range = (-9*STEP):2*STEP:(9*STEP);
-        frange = (-5*FSTEP):2*FSTEP:(5*FSTEP);
+        range = (-10*STEP):STEP:(10*STEP);
 
         thetas = E_angles(level-1,1) + range;
         psis = E_angles(level-1,2) + range;
-        focals = E_focals(level-1) + frange;
-%         if level==2
-%             focals = E_focals(level-1).*(-5:5);
-%         else
-%             focals = E_focals(level-1)+E_focals(1).*((-5:5)/10^(level-1));
-%         end
-
+        if level==2
+            focals = E_focals(level-1).*(-5:5);
+        else
+            focals = E_focals(level-1)+E_focals(1).*((-5:5)/10^(level-1));
+        end
         % Cludge to stop crash!
         focals(focals==0) = [];
     end

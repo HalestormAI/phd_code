@@ -1,6 +1,6 @@
 % Set up constants for iterator
-D = 3;
-FOC = 1/3.5;
+D = 10;
+FOC = 1;
 
 thetas = 80:-25:10;
 psis = -50:50:50;
