@@ -11,7 +11,7 @@ rectTrajectories = cellfun(@(x) backproj_c(output_params(1),output_params(2), ..
                                                             plane_details.D,output_params(3), x), ...
                                                             plane_details.trajectories,'uniformoutput', false);
 est_trajLengths = cellfun(@traj_speeds, rectTrajectories,'un',0)
-drawtrajlengths
+% drawtrajlengths
 
 save data;
 
