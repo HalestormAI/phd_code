@@ -1,4 +1,4 @@
-function vectarrow(p0,p1,colorspec)
+function outGrp = vectarrow(p0,p1,colorspec)
 %Arrowline 3-D vector plot.
 %   vectarrow(p0,p1) plots a line vector with arrow pointing from point p0
 %   to point p1. The function can plot both 2D and 3D vector with arrow
@@ -33,7 +33,7 @@ end
           x1 = p1(1);
           y1 = p1(2);
           z1 = p1(3);
-          plot3([x0;x1],[y0;y1],[z0;z1],colorspec);   % Draw a line between p0 and p1
+          lineHandle =  plot3([x0;x1],[y0;y1],[z0;z1],colorspec);   % Draw a line between p0 and p1
           
           p = p1-p0;
           alpha = 0.1;  % Size of arrow head relative to the length of the vector
@@ -55,7 +55,7 @@ end
             
           
           hold on
-          plot3(hu(:),hv(:),hw(:),colorspec)  % Plot arrow head
+          headHandle = plot3(hu(:),hv(:),hw(:),colorspec);  % Plot arrow head
           grid on
           xlabel('x')
           ylabel('y')
@@ -70,7 +70,7 @@ end
           y0 = p0(2);
           x1 = p1(1);
           y1 = p1(2);
-          plot([x0;x1],[y0;y1],colorspec);   % Draw a line between p0 and p1
+          lineHandle = plot([x0;x1],[y0;y1],colorspec);   % Draw a line between p0 and p1
           
           p = p1-p0;
           alpha = 0.1;  % Size of arrow head relative to the length of the vector
@@ -80,7 +80,7 @@ end
           hv = [y1-alpha*(p(2)-beta*(p(1)+eps)); y1; y1-alpha*(p(2)+beta*(p(1)+eps))];
           
           hold on
-          plot(hu(:),hv(:),colorspec)  % Plot arrow head
+          headHandle = plot(hu(:),hv(:),colorspec);  % Plot arrow head
           grid on
           xlabel('x')
           ylabel('y')
@@ -91,3 +91,8 @@ end
   else
       error('this function only accepts 2D or 3D vector')
   end
+  
+  outGrp = hggroup;
+  set(headHandle,'Parent',outGrp);
+  set(lineHandle,'Parent',outGrp);
+

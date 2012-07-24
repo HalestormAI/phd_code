@@ -34,6 +34,7 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, lw, marker, c
     else 
         f = gcf;
     end
+    
     hold on
     if iscell(coords3)
         cellfun(@(x) drawcoords3( x, ttl, 0, colour, lw, marker ), coords3);

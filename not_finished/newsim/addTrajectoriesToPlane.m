@@ -1,4 +1,4 @@
-    function [traj,startframes,camTraj,speeds,t2noises] = addTrajectoriesToPlane( ...
+    function [traj,startframes,camTraj,speeds,t2noises,endState] = addTrajectoriesToPlane( ...
         worldPlane, rotation, MAX_TRAJ, NUM_FRAMES, MEAN_SPEED, ...
         STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR, INNER_HEIGHT_VAR, startPoints, startDrns ) 
     % Inputs:
@@ -35,7 +35,7 @@
     if nargin < 9 || isempty(HEIGHT_VAR)
         HEIGHT_VAR = 0;
     end
-    if nargin < 10 || isempty(HEIGHT_VAR)
+    if nargin < 10 || isempty(INNER_HEIGHT_VAR)
         INNER_HEIGHT_VAR = 0;
     end
     
@@ -52,6 +52,8 @@
     speeds  = cell(MAX_TRAJ,1);
     drnchg  = cell(MAX_TRAJ,1);
     hgtvar  = cell(MAX_TRAJ,1);
+    
+    endState(MAX_TRAJ) = struct('spd',0,'drn',0,'pos',zeros(1,3));
     
     startframes = [];
                
@@ -125,6 +127,7 @@
                 v(2) = spd*sin(deg2rad(drn));
                 v(3) = hgtvar{trajId}(t-t0+1); % Add a few cm variation in height, taken at random from normal distribution
                 newpos = traj{trajId}(:,end) + v';
+                endState(trajId) = struct('spd',spd,'drn',drn,'pos',newpos);
                 
                 % If still within the boundaries of the plane,
                 % save into trajectory for this time-step
@@ -133,6 +136,7 @@
                 if ~stillin,
                     continue;
                 end
+                
                 prevdrn{trajId} = drn;
                 traj{trajId}(:,end+1) = newpos;
         end
@@ -143,7 +147,10 @@
         prevdrn(num_trajectories+1:end) = [];
         speeds(num_trajectories+1:end) = [];
         drnchg(num_trajectories+1:end) = [];
+        endState(num_trajectories+1:end) = [];
     end
+    
+    
         
     if length(find(scrnsz(3:4)==1)) ~= 2 && ~NODISPLAY
         delete(h);

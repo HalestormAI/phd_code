@@ -46,8 +46,8 @@ E_theta = inits(min_err_id,1);
 E_psi = inits(min_err_id,2);
 E_focal = inits(min_err_id,3);
 
-fprintf('True (Theta, Psi, f) = ( %g, %g, %g )\n', GT_theta, GT_psi, GT_focal);
-fprintf('Best (Theta, Psi, f) = ( %g, %g, %g )\n', E_theta, E_psi, E_focal);
+% fprintf('True (Theta, Psi, f) = ( %g, %g, %g )\n', GT_theta, GT_psi, GT_focal);
+% fprintf('Best (Theta, Psi, f) = ( %g, %g, %g )\n', E_theta, E_psi, E_focal);
 
 E_angles = [E_theta,E_psi];
 
