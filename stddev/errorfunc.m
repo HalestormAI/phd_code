@@ -16,10 +16,10 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
                                                  scales(1),scales(2), x), ...
                                                  longEnough,'uniformoutput', false);
     for i=1:length(rectTrajectories)
-        lengths = vector_dist(rectTrajectories{i});
+        lengths = vector_dist_c(rectTrajectories{i});
         lengths(lengths == Inf) = 10e20; 
         meanLength(i) = mean(lengths);
-        stdLength(i) = std(lengths);
+        stdLength(i) = mystd(lengths);
         E(i) = stdLength(i) / meanLength(i);
         if isnan(E(i))
             orientation,scales
@@ -43,7 +43,7 @@ function [E,meanLength,stdLength] = errorfunc( orientation, scales, trajectories
     
     function P = priors( traj )
         
-        speeds = cellfun(@vector_dist, traj,'un',0);
+        speeds = cellfun(@vector_dist_c, traj,'un',0);
         means = zeros(length(speeds),1);
         for s=1:length(speeds)
             means(s) = mean(speeds{s}(speeds{s} ~= Inf));

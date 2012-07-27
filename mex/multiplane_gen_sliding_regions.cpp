@@ -31,7 +31,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     double *mxd_minmax;
     mxArray *mx_centre, *mx_radius, *mx_trajs;
-    double window_size,x,y;
+    double window_size,step_size,x,y;
     const char **fnames;
     Point ctr;
     std::vector<Trajectory> alltraj;
@@ -59,10 +59,14 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     y = minmax.at(1,0);
     
+    if( nrhs < 4 )
+        step_size = window_size/2;
+    else
+        step_size = *((double*)mxGetPr(prhs[3]));
     
     // Load trajectories
     mexPrintf("Loading Trajectories\n");mexEvalString("drawnow");
-    if( nrhs == 3 ){
+    if( nrhs >= 3 ){
         Trajectory::loadAll( prhs[2], &alltraj );
     }
     
@@ -75,16 +79,15 @@ void mexFunction( int nlhs, mxArray *plhs[],
             centres.push_back( ctr );
             
             // Sort out trajectories
-            if( nrhs == 3 ) {
+            if( nrhs >= 3 ) {
                 std::vector<Trajectory> t;
                 trajForRegion( &alltraj, ctr, window_size, &t );
                 regionTraj.push_back( t );
             }
-            x += window_size/2;
+            x += step_size;
         }
-        y += window_size/2;
+        y += step_size;
     }
-    
     
     
     // Begin output
@@ -96,7 +99,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     fnames[0] = fn1;
     fnames[1] = fn2;
-    if( nrhs == 3 ){
+    if( nrhs >= 3 ){
         const char fn3[] = "traj";
         fnames[2] = fn3;
     }
@@ -104,7 +107,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
     plhs[0] = mxCreateStructMatrix(centres.size( ), 1, 3, fnames);
     mxFree((void *)fnames);
     
+    
     for(int i=0; i<centres.size( ); i++) {
+//         mexPrintf("\tOutput centre %d\n",i);mexEvalString("drawnow");
         mx_centre = mxCreateDoubleMatrix(2,1,mxREAL);
         centres.at(i).toMatrix( ).toDouble( mxGetPr(mx_centre) );
         
@@ -114,7 +119,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
         mxSetFieldByNumber(plhs[0], i, 0, mx_centre);
         mxSetFieldByNumber(plhs[0], i, 1, mx_radius);
         
-        if( nrhs == 3 ){
+//     mexPrintf("\tOutput traj %d\n",i);mexEvalString("drawnow");
+        if( nrhs >= 3 ){
             // TODO: Populate mx_traj
             mx_trajs = mxCreateCellMatrix(regionTraj.at(i).size( ), 1);
             

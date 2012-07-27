@@ -6,7 +6,7 @@ drns = num2cell(deg2rad(normrnd(0,10,10,2000)),2);
 
 traj = multiplane_add_trajectories({planes.world}',plane_params,speeds,drns);
 [planes,camTraj] = world2camera( planes, traj, [25,15]);
-[planes,imTraj] = camera2image( planes, camTraj, -1/720 );
+[planes,imTraj] = camera2image( planes, camTraj, 1/720 );
 figure;
 subplot(1,2,1);
 drawPlane(planes(1).camera,'',0);
