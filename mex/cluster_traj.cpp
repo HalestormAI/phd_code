@@ -163,7 +163,7 @@ void matching_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
     for( int m=0; m < M; m++ ) {
         for( int n=0; n < N; n++ ) {
             float dist = A->at(m).dist2D( B->at(n) );
-           float drn = 1;
+            float drn = 1;
             
             if( (m > 0) && (m < M-1) && (n > 0) && (n < N-1) )
                 drn = A->angleDiff( m, B, n );

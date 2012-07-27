@@ -12,7 +12,11 @@ function grp = plotCross( cntr, lim, colourSpec, labels )
     %   grp                Handle for the group of lines.
     
     if nargin < 2 || isempty(lim)
-        lim = reshape(axis',2,3)'
+        if length(cntr) == 3
+            lim = reshape(axis',2,3)'
+        else
+            lim = reshape(axis',2,2)'
+        end
     end
     
     if nargin < 3

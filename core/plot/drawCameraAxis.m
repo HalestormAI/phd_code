@@ -24,14 +24,14 @@ function drawCameraAxis( scale,rotation, newfig )
                              0  1  0;
                              0  0 -1];
                  
-    textLabels = {'X_c','Y_c','Z_c'};
+%     textLabels = {'$X_c$','$Y_c$','$Z_c$'};
 
     for i=1:3
         vector_dist(origin, lim(i,:))
         lineHandles(i) = vectarrow( origin,lim(i,:) );
         
-        textpos = lim(i,:).*0.5+scale/20;
-        text(textpos(1), textpos(2), textpos(3),strcat('', textLabels{i}))
+%         textpos = lim(i,:).*0.5+scale/20;
+%         text(textpos(1), textpos(2), textpos(3),strcat('', textLabels{i}))
         hold on;
     end
     
