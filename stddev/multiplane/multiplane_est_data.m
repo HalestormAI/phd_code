@@ -1,4 +1,13 @@
-NUM_ITERATIONS = 3;
+SMOOTHCOEFF    = 3;
+NEIGHBOURCOEFF = 100;
+LABELCOEFF     = 100;
+NUM_ITERATIONS = 1;
+
+MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
+MODE_CLUSTER_2 = 2; % Throw all into kmeans and cluster for 2 of them
+
+
+MODE = MODE_CLUSTER_2;
 
 % multiplane_sim_data;
 % 
@@ -23,28 +32,9 @@ NUM_ITERATIONS = 3;
 % tmpTraj(num:end) = [];
 % 
 % 
-% % multiplane_sim_data;
-% mm = minmax([imTraj{:}]);
-% regions = multiplane_gen_sliding_regions(mm, 250, imTraj, 75);
-% 
-% output_params = cell(length(regions),1);
-% finalError    = cell(length(regions),1);
-% fullErrors    = cell(length(regions),1);
-% inits         = cell(length(regions),1);
-% % 
-% % % Use only one trajectory
-% % for t=1:length(tmpTraj)
-% %     plane_details.trajectories = traj2imc(tmpTraj(t),1,1);
-% %     
-% %     % NEED TO MODIFY multiscaleSolver so that it looks at more than one position.
-% %     [ output_params{t}, finalError{t}, fullErrors{t}, inits{t} ] = multiplane_multiscaleSolver( 1, plane_details, 3, 10, 1e-12 );
-% % end
-% 
-
-% [output_mat(plane_ids==1,1:2)]'
-% [output_mat(plane_ids==2,1:2)]'
-
-% regions = multiplane_generate_regions( tmpTraj );
+% multiplane_sim_data;
+mm = minmax([imTraj{:}]);
+regions = multiplane_gen_sliding_regions(mm, 250, imTraj, 75);
 
 %% Now assign each trajectory a plane
 
@@ -70,7 +60,13 @@ for iteration = 1: NUM_ITERATIONS
     end
 
     disp('ESTIMATES');
-    output_mat = cell2mat(output_params)
+    output_mat = cell2mat(output_params);
+    
+    if MODE == MODE_CLUSTER_2
+        hypotheses = kmeans(output_mat,2);
+    else
+        hypotheses = output_mat;
+    end
 
     % Output estimation details.
     % [plane_ids,confidence] = multiplane_planeids_from_traj( planes, tmpTraj );
@@ -87,21 +83,21 @@ for iteration = 1: NUM_ITERATIONS
     
     
     % preprocess step - convert all angles from outputmat to normals
-    normals = zeros(3,size(output_mat,1));
-    for o = 1:size(output_mat)
-        normals(:,o) = normalFromAngle(output_mat(o,1),output_mat(o,2),'degrees');
+    normals = zeros(3,size(hypotheses,1));
+    for o = 1:size(hypotheses)
+        normals(:,o) = normalFromAngle(hypotheses(o,1),hypotheses(o,2),'degrees');
     end
     
     % ... build  matrix of cost for subtrajectory against plane estimate
-    labelCost = NaN.*ones(size(output_mat,1),length(subc));
-    smoothCost = zeros(size(output_mat,1));
-    for e=1:size(output_mat,1)
+    labelCost = NaN.*ones(size(hypotheses,1),length(subc));
+    smoothCost = zeros(size(hypotheses,1));
+    for e=1:size(hypotheses,1)
         for t=1:length(subc)
-            labelCost(e,t) = errorfunc( output_mat(e,1:2), [1,output_mat(e,3)], subc(t));
+            labelCost(e,t) = errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], subc(t));
         end
         
         % Build smooth cost: angle between planes.
-        for f=e:size(output_mat,1)
+        for f=e:size(hypotheses,1)
             n1 = normals(:,e);
             n2 = normals(:,f);
             smoothCost(e,f) = real(acos(dot(n1,n2) / (norm(n1)*norm(n2))));
@@ -154,11 +150,8 @@ for iteration = 1: NUM_ITERATIONS
 %     ylabel('Trajectory ID');
 %     title('Heatmap of image distance affinities between trajectories (red is better)');
 %     
-    SMOOTHCOEFF    = 1;
-    NEIGHBOURCOEFF = 100;
-    LABELCOEFF     = 100;
     
-    alphaObj = GCO_Create(length(subtraj),size(output_mat,1));
+    alphaObj = GCO_Create(length(subtraj),size(hypotheses,1));
     GCO_SetDataCost( alphaObj, LABELCOEFF.*labelCost );
     GCO_SetSmoothCost( alphaObj, SMOOTHCOEFF.*smoothCost );
     GCO_SetNeighbors( alphaObj, NEIGHBOURCOEFF .* distanceCost );
