@@ -41,5 +41,8 @@ public:
     float angleDiff( int aIdx, Trajectory *t, int bIdx );    
     void calibTsai( Etiseo::CameraModel *cam );
     
+    Trajectory subtrajectory( std::vector<int> ids );
+    
     static void loadAll( const mxArray *prhs, std::vector<Trajectory> *alltraj );
+    static void outputAll( std::vector<Trajectory> *traj, mxArray *out );
 };

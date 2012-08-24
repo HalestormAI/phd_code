@@ -1,11 +1,16 @@
 
-speeds = num2cell((normrnd(.1,0,10,2000)),2);
-drns = num2cell(deg2rad(normrnd(0,10,10,2000)),2);
+% Add noise here
+speeds = cell(10,1);
+for t=1:10
+    speeds{t} = normrnd(.1,.02,1,2000);
+end
+% speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
+drns = num2cell(deg2rad(normrnd(0,5,10,2000)),2);
 
 [planes,plane_params] = multiplane_make_planes( );
 
 traj = multiplane_add_trajectories({planes.world}',plane_params,speeds,drns);
-[planes,camTraj] = world2camera( planes, traj, [25,15]);
+[planes,camTraj] = world2camera( planes, traj, [-3,30]);
 [planes,imTraj] = camera2image( planes, camTraj, 1/720 );
 % figure;
 % subplot(1,2,1);

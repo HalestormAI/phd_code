@@ -84,12 +84,19 @@ void Trajectory::addPoint3D(float x, float y,float z) {
 }
 
 void Trajectory::addPoint(Point p) {
-    if( this->is3D ) {
+    if( p.is3D && this->is2D ) {
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidDim",
-                "This is a 2D trajectory - cannot add a 2D point.");
+                "This is a 2D trajectory - cannot add a 3D point.");
+    } else if( p.is2D && this->is3D ) {
+        mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidDim",
+                "This is a 3D trajectory - cannot add a 2D point.");
     }
     this->points.push_back( p );
-    this->is2D = true;
+    
+    if( p.is2D )
+        this->is2D = true;
+    else
+        this->is3D = true;
 }
 
 float Trajectory::angleDiff( int aIdx, Trajectory *t, int bIdx ) {
@@ -122,6 +129,22 @@ void Trajectory::calibTsai( Etiseo::CameraModel *cam ) {
     }
 }
 
+Trajectory Trajectory::subtrajectory( std::vector<int> ids )
+{
+    
+    Trajectory sub;
+    
+    std::vector<int>::iterator i;
+    
+    for( i = ids.begin( ); i != ids.end( ); i++ ) {
+        sub.addPoint( this->at( *i ) );
+    }
+    
+    return sub;
+}
+
+// STATIC METHODS
+
 void Trajectory::loadAll( const mxArray *prhs, std::vector<Trajectory> *alltraj ) {
     const mwSize *tDims = mxGetDimensions( prhs );
     const mwSize *trajDims;
@@ -145,4 +168,27 @@ void Trajectory::loadAll( const mxArray *prhs, std::vector<Trajectory> *alltraj 
     }
 }
 
+void Trajectory::outputAll( std::vector<Trajectory> *traj, mxArray *out ) 
+{
+    std::vector<Trajectory>::iterator j;
+    int cellCount = 0;
+    
+    for( j=traj->begin( ); j != traj->end( ); j++ ) {
+        mxArray *mx_traj = mxCreateDoubleMatrix(2,j->length( ),mxREAL);
+        double *mxd_traj = mxGetPr(mx_traj);
+        j->toDouble2D( mxd_traj );
+        mxSetCell( out, cellCount++, mx_traj );
+    }
+}
 
+/** TODO
+double errorfunc( double theta, 
+                  double psi, 
+                  double d, 
+                  double foc, 
+                  std::vector<Trajectory> trajectories )
+{
+    
+    vector<int> trajectoryLengths
+    
+}*/

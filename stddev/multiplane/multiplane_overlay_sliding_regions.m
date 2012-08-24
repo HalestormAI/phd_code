@@ -11,4 +11,6 @@ for r = 1:length(regions)
     set(circ,'Parent', grp );
 end
 
+view(0,90);
+axis equal;
 axis ij;

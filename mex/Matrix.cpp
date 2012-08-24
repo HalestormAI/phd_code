@@ -162,7 +162,7 @@ double Matrix::sum( ) const {
 /** Outside Functions **/
 
 Matrix pow( Matrix *m, double exp ) {
-    Matrix out;
+    Matrix out = Matrix( m->rows, m->cols );
     for( int i=0; i < m->rows; i++ )
         for( int j=0; j < m->cols; j++ )
             out.set(i,j,pow(m->at(i,j),exp));

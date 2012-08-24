@@ -1,4 +1,4 @@
-function [ output_params, finalError, fullErrors, inits ] = multiplane_multiscaleSolver( D, plane_details, MAX_LEVEL, STEP, TOL )
+function [ output_params, finalError, fullErrors, inits, E_angles, E_focals ] = multiplane_multiscaleSolver( D, plane_details, MAX_LEVEL, STEP, TOL )
 
 if nargin < 3
     MAX_LEVEL = 3;
@@ -19,19 +19,19 @@ inits      =  cell(MAX_LEVEL,1);
 
 for level=1:MAX_LEVEL
     if level == 1
-        thetas = 1:STEP:89;
-        psis = -90:STEP:90;
-        focals = 10.^(-4:1);
+        thetas = 1:STEP:89
+        psis = -90:STEP:90
+        focals = 10.^(-4:1)
     else
         STEP = STEP/10;
         range = (-10*STEP):STEP:(10*STEP);
 
-        thetas = E_angles(level-1,1) + range;
-        psis = E_angles(level-1,2) + range;
+        thetas = E_angles(level-1,1) + range
+        psis = E_angles(level-1,2) + range
         if level==2
-            focals = E_focals(level-1).*(-5:5);
+            focals = E_focals(level-1).*(-5:5)
         else
-            focals = E_focals(level-1)+E_focals(1).*((-5:5)/10^(level-1));
+            focals = E_focals(level-1)+E_focals(1).*((-5:5)/10^(level-1))
         end
         % Cludge to stop crash!
         focals(focals==0) = [];
