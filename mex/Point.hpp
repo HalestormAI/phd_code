@@ -8,6 +8,7 @@
 #include "matrix.h"
 #include "Matrix.hpp"
 #include <sstream>
+#include <iomanip>
 #include <vector> 
 class Point
 {

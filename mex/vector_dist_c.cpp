@@ -37,5 +37,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
         
         
         outputDbl[(int)floor(col/2.0)] = sqrt(xdiff+ydiff+zdiff);
+        
+        if( col + 2 >= numDim[1] ) {
+            break;
+        }
     }
 }

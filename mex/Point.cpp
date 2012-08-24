@@ -35,7 +35,7 @@ Point::Point( Matrix m ) {
 
 void Point::print2D( ) {
     std::stringstream ss;
-    ss << this->x << "\t" << this->y << std::endl;
+    ss << std::setw (10) << this->x << "\t" << this->y << std::endl;
     mexPrintf( ss.str( ).c_str( ) );
     mexEvalString("drawnow");
 }
