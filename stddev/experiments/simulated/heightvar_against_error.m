@@ -1,4 +1,5 @@
 % Set up constants for iterator
+
 D = 10;
 FOC = 1;
 
@@ -36,7 +37,7 @@ angleErrors   = cell(NUM_EXPS,length(orientations));
 fullErrors   = cell(NUM_EXPS,length(orientations));
 
 for h=1:NUM_EXPS
-    stddev = stddevs(h);
+    stddev_h = stddevs(h);
     for o=1:length(orientations)
         plane_details = createPlaneDetails( orientations(o,:), scale, [stddev,stddev_w, stddev_h] );
         GT_N = normalFromAngle( orientations(o,1), orientations(o,2) );

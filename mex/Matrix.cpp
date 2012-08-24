@@ -45,6 +45,7 @@ void Matrix::print( ) const {
         }
         mexPrintf( " ]\n" );
     }
+        mexPrintf( " \n" );
 }
 
 void Matrix::fromArray( double **m ) {
@@ -105,10 +106,14 @@ Matrix& Matrix::operator/=( const double& val ) {
 
 const Matrix Matrix::operator+( const  Matrix& m ) const {
     
-    if(this->cols != m.cols || this->rows != m.rows) 
+    if(this->cols != m.cols || this->rows != m.rows) {
+        std::stringstream errString;
+    this->print( );
+    m.print( );
+        errString << "Matrix sizes do not agree for addition (" << this->rows << " x " << this->cols << "  vs  " << m.rows << " x " << m.cols << ").\n";
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidSize",
-                "Matrix sizes do not agree.");
-    
+                errString.str( ).c_str() );
+    }
     Matrix out = Matrix(this->rows,this->cols);
 
     double sum_elems;
@@ -123,9 +128,13 @@ const Matrix Matrix::operator+( const  Matrix& m ) const {
 
 const Matrix Matrix::operator-( const  Matrix& m ) const {
     
-    if(this->cols != m.cols || this->rows != m.rows) 
+    if(this->cols != m.cols || this->rows != m.rows) {
+        std::stringstream errString;
+        errString << "Matrix sizes do not agree for subtraction (" << this->rows << " x " << this->cols << "  vs  " << m.rows << " x " << m.cols << ").\n";
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidSize",
-                "Matrix sizes do not agree.");
+                errString.str( ).c_str() );
+    }
+                //"Matrix sizes do not agree.");
     
     Matrix out = Matrix(this->rows,this->cols);
 
