@@ -35,7 +35,6 @@ Matrix SimTrajectory::drn2mat( int frameNo, Plane *plane ) {
         prevDrn = 0;
     
     // need to get sum of all directions up to now
-    
     newDrn = prevDrn + drn; // angle in radians
     
 //     mexPrintf(" Frame: %d\nPrev: %3.5f, Drn: %3.5f, New: %3.5f\n",frameNo,prevDrn, drn, newDrn);

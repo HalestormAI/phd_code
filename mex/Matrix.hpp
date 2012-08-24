@@ -4,6 +4,7 @@
 #include <map>
 #include <stdexcept>
 #include <math.h>
+#include <sstream>
 #include "mex.h"
 
 class Matrix
