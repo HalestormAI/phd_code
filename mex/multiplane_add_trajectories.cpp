@@ -39,7 +39,7 @@ bool simulateFrame( int t ) {
         if( i->second.isStarted( ) && !i->second.isFinished( ) ) {
 //             mexPrintf("Adding Frame\n"); mexEvalString("drawnow");
         
-        i->second.print3D( ); mexPrintf("\n\n");mexEvalString("drawnow");
+        //i->second.print3D( ); mexPrintf("\n\n");mexEvalString("drawnow");
              i->second.addFrame( &planes, t );
 //             mexPrintf("\tTrajectory is started but not finished\n");mexEvalString("drawnow");
         } else if( !i->second.isFinished( ) && probabilityGenerator( ENTER_PROB ) ) {

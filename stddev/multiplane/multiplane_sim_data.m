@@ -25,3 +25,10 @@ traj = multiplane_add_trajectories({planes.world}',plane_params,speeds,drns);
 % drawPlane(planes(2).image,'',0,'r');
 % drawtraj(imTraj,'',0,'k');
 % view(0,90);
+
+drawPlane(planes(1).world)
+drawPlane(planes(2).world,'',0,'r');
+drawPlane(planes(3).world,'',0,'b'); 
+axis equal
+axis ij
+drawtraj( traj,'',0,'b' )

@@ -31,6 +31,8 @@ Point::Point( Matrix m ) {
     this->Y = m.at(1,0);
     this->Z = m.at(2,0);
     this->isN = false;
+    this->is3D = true;
+    this->is2D = false;
 }
 
 void Point::print2D( ) {
