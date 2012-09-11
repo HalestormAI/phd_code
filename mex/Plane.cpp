@@ -61,21 +61,22 @@ void Plane::print( ) {
 }
 
 bool Plane::checkBounds( Point *p, bool notZ ) {
-    
-    bool xin = this->minboundaries.X-0.01 <= p->X && p->X <= this->maxboundaries.X+0.01;
-    bool yin = this->minboundaries.Y-0.01 <= p->Y && p->Y <= this->maxboundaries.Y+0.01;
-    bool zin = this->minboundaries.Z-0.01 <= p->Z && p->Z <= this->maxboundaries.Z+0.01;
+    float leeway = 0.01;
+    bool xin = this->minboundaries.X-leeway <= p->X && p->X <= this->maxboundaries.X+leeway;
+    bool yin = this->minboundaries.Y-leeway <= p->Y && p->Y <= this->maxboundaries.Y+leeway;
+    bool zin = this->minboundaries.Z-leeway <= p->Z && p->Z <= this->maxboundaries.Z+leeway;
     
     bool zwin = notZ ? true : zin;
     
     return xin && yin && zwin;
 }
 
-Plane* Plane::findPlane( std::vector<Plane> *planes, Point *pos ) {
+Plane* Plane::findPlane( std::vector<Plane> *planes, Point *pos, bool debug ) {
     Plane *curPlane = 0;
     
     std::vector<Plane>::iterator iter;
     for( iter = planes->begin( ); iter != planes->end( ); iter++ ) {
+        
         if( iter->checkBounds( pos, true ) ) {
             curPlane = &(*iter);
             break;

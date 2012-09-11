@@ -106,7 +106,8 @@ void SimTrajectory::addFrame( std::vector<Plane> *planes, int curFrame ) {
 Point SimTrajectory::changePlane( std::vector<Plane> *planes, Point *oldPos, Point *newPos, int curFrame ) {
     // Find new plane
     Plane* oldPlane = Plane::findPlane( planes, oldPos );
-    Plane* newPlane = Plane::findPlane( planes, newPos );
+    Plane* newPlane = Plane::findPlane( planes, newPos, 1 );
+        
     if( newPlane == 0 ) {
         Point p = Point( );
         return p;
@@ -167,6 +168,7 @@ void SimTrajectory::newStartingPoint( std::vector<Plane> *planes ) {
     int startEnd = 0;
     
     if( plane_id ) {
+        plane_id = planes->size( )-1;
         startEnd = 2;
         std::vector<double>::iterator it;
         

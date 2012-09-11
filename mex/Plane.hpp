@@ -34,7 +34,7 @@ public:
     
     bool checkBounds( Point *p, bool notZ=false );
     
-    static Plane* findPlane( std::vector<Plane> *planes, Point *pos );
+    static Plane* findPlane( std::vector<Plane> *planes, Point *pos, bool debug=false );
     static std::vector<Point> intersection( Plane *oldPlane, Plane *newPlane );
     static void anglesFromN( std::vector<float> n, float *theta, float *psi);
 };
