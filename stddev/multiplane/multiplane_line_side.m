@@ -1,4 +1,4 @@
-function side = multiplane_line_side( line_centre, line_angle, point, debug, debug_colour, debug_style )
+function [side,dbg_line] = multiplane_line_side( line_centre, line_angle, point, debug, debug_colour, debug_style )
     
     if nargin < 4
         debug = 0;
@@ -17,7 +17,7 @@ function side = multiplane_line_side( line_centre, line_angle, point, debug, deb
     if debug
         endPoint(:,1) = [ (300 - line_c)/line_m; 300 ];
         endPoint(:,2) = [ (-400 - line_c)/line_m; -400];
-        plot(endPoint(1,:), endPoint(2,:), strcat(debug_colour,debug_style),'LineWidth',2);
+        dbg_line = plot(endPoint(1,:), endPoint(2,:), strcat(debug_colour,debug_style),'LineWidth',2);
     end
     % x and y are given in point
     err = line_m*point(1,:) + line_c - point(2,:);
