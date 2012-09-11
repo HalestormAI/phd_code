@@ -26,23 +26,9 @@ public:
         this->theta = t;
         this->psi = p;
         this->foc = f;
-
-        this->inputs[0] = mxCreateDoubleMatrix( 1, 2, mxREAL );
-        this->inputs[1] = mxCreateDoubleMatrix( 1, 2, mxREAL );
-
-
-        // Build inputs for errorfunc
-        double orientation[] = { this->theta, this->psi };
-        memcpy((double*)mxGetPr(inputs[0]), orientation, 2 * sizeof(double) );
-
-        double scales[] = { 1, this->foc };
-        memcpy((double*)mxGetPr(inputs[1]), scales, 2 * sizeof(double) );
         
     }
     
-    mxArray* getInputs( ) {
-        return this->inputs;
-    }
     
     static std::vector<Hypothesis> loadHypotheses( const mxArray *hyparr )
     {
@@ -166,7 +152,6 @@ Matrix getError( std::vector<Trajectory> *traj, mxArray *inputs[] )
 {
     mxArray *outputs[3];
     
-    
 //     mexPrintf("\tOutputting Trajectories\n");mexEvalString("drawnow");
     Trajectory::outputAll( traj, inputs[2] );
     
@@ -189,23 +174,37 @@ Matrix getError( std::vector<Trajectory> *traj, mxArray *inputs[] )
 double errorForHypothesis( std::vector<Trajectory> traj,
                            Hypothesis hypothesis )
 {
-    mxArray *inputs;
+    mxArray *inputs[3];
     double err;
-    
     bool suitable = 0;
     
+    inputs[0] = mxCreateDoubleMatrix( 1, 2, mxREAL );
+    inputs[1] = mxCreateDoubleMatrix( 1, 2, mxREAL );
+
+
+    // Build inputs for errorfunc
+    double orientation[] = { hypothesis.theta, hypothesis.psi };
+    memcpy((double*)mxGetPr(inputs[0]), orientation, 2 * sizeof(double) );
+
+    double scales[] = { 1, hypothesis.foc };
+    memcpy((double*)mxGetPr(inputs[1]), scales, 2 * sizeof(double) );
+    
+    inputs[2] = mxCreateCellMatrix( traj.size( ), 1 );
+    
+    //double totalLength = 0;
     for( int t=0; t < traj.size( ); t++ )
     {
         if( traj.at(t).length( ) > 3 )
             suitable = 1;
+        
+        //totalLength += traj.at(t).length( );
     }
 
     
     if( traj.size( ) > 0 && suitable == 1 ) {
-        inputs = hypothesis.getInputs( traj.size( ) );
         
         Matrix err_mat = getError( &traj, inputs );
-        err = pow(&err_mat,2).sum( );
+        err = pow(&err_mat,2).sum( ) / (double)traj.size( );
     } else {
         err = 999999;
     }
