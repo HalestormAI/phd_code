@@ -1,5 +1,4 @@
 %% WARNING: UNFINISHED..........
-#
 
 SMOOTHCOEFF    = 1;
 NEIGHBOURCOEFF = 100;
@@ -69,29 +68,15 @@ GCO_SetDataCost( alphaObj, LABELCOEFF.*labelCost );
 GCO_SetSmoothCost( alphaObj, SMOOTHCOEFF.*smoothCost );
 GCO_SetNeighbors( alphaObj, NEIGHBOURCOEFF .* distanceCost );
 GCO_Expansion(alphaObj);
-labelling{iteration} = GCO_GetLabeling(alphaObj);
+labelling = GCO_GetLabeling(alphaObj);
 
-labels = unique(labelling{iteration});
+labels = unique(labelling);
 
-labelling{iteration}(logical([regions.empty])) = 0;
+labelling(logical([regions.empty])) = 0;
 
 % Get the planes for each label
 planeids = NaN.*ones(length(labels),1);
 for l=1:length(labels)
-    ids{l} = multiplane_planeids_from_traj( planes, subtraj(labelling{iteration} == labels(l)) );
+    ids{l} = multiplane_planeids_from_traj( planes, subtraj(labelling == labels(l)) );
     planeids(l) = mean(ids{l});
-end
-
-history(iteration).smoothCost   = smoothCost;
-history(iteration).distanceCost = distanceCost;
-history(iteration).labelCost    = labelCost;
-history(iteration).labelling    = labelling;
-history(iteration).regions      = regions;
-clear regions;
-
-% TODO: Get new trajectory segments for new regions.
-for l=1:length(labels)
-    %TODO regions(l).traj = multiplane_trajectories_for_region
-    regions(l).centre = mean([regions(l).traj{:}],2);
-    regions(l).radius = max( range( [regions(l).traj{:}],2 ) );
 end

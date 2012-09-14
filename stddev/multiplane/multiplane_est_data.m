@@ -5,13 +5,14 @@
 %         % its focal length
     
 
-NUM_ITERATIONS = 3;
+NUM_ITERATIONS = 2;
 
 MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
 MODE_CLUSTER_2 = 2; % Throw all into kmeans and cluster for 2 of them
+MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
 
-WINDOW_SIZE = 100;
-WINDOW_DISTANCE = 75;
+WINDOW_SIZE = 75;
+WINDOW_DISTANCE = 38;
 
 
 MODE = MODE_CLUSTER_2;
@@ -47,7 +48,7 @@ regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANC
 
 %% Now assign each trajectory a plane
 
-labelling = cell(NUM_ITERATIONS,1);
+% labelling = cell(NUM_ITERATIONS,1);
 
 for iteration = 1: NUM_ITERATIONS
     
@@ -81,6 +82,8 @@ for iteration = 1: NUM_ITERATIONS
     
     if MODE == MODE_CLUSTER_2
         [~,hypotheses] = kmeans(output_mat,2);
+    elseif MODE == MODE_CLUSTER_G
+        hypotheses = gmeans(output_mat,0.001,'pca','gamma');
     else
         hypotheses = output_mat;
     end
@@ -88,70 +91,86 @@ for iteration = 1: NUM_ITERATIONS
     % Output estimation details.
     % [plane_ids,confidence] = multiplane_planeids_from_traj( planes, tmpTraj );
     disp('GROUND TRUTH');
-    anglesFromN(planeFromPoints(planes(1).camera),1,'degrees')
-    anglesFromN(planeFromPoints(planes(2).camera),1,'degrees')
+    ground_truth(1,:) = anglesFromN(planeFromPoints(planes(1).camera),1,'degrees')
+    ground_truth(2,:) = anglesFromN(planeFromPoints(planes(2).camera),1,'degrees')
     
 %% Uncomment for alpha expansion
-    %   multiplane_alpha_expansion_script 
+    multiplane_alpha_expansion_script 
+    history(iteration).smoothCost   = smoothCost;
+    history(iteration).distanceCost = distanceCost;
+    history(iteration).labelCost    = labelCost;
+    history(iteration).labelling    = labelling;
+    history(iteration).regions      = regions;
 
+    regionTrajectories = produce_label_binary_imgs( imTraj, regions, labelling, planes, 0 );
+    
+    
+    clear regions;
+
+    % TODO: Get new trajectory segments for new regions.
+    for l=1:length(labels)
+        regions(l).traj = regionTrajectories{l};
+        regions(l).centre = mean([regions(l).traj{:}],2);
+        regions(l).radius = max( range( [regions(l).traj{:}],2 ) );
+    end
 
 
 %% Dividing line for plane
-    %% Find line with minimum error
-    linePoints(1,:) = mm(1,1):10:mm(1,2);
-    linePoints(2,:) = repmat(mean(mm(2,:)),1,length(linePoints(1,:)));
-    angles = -89:89;
-
-    [errors_1, errors_2] = multiplane_plane_dividing_line_c( imTraj, hypotheses, linePoints, angles );
-    %multiplane_script_plane_dividing_line( imTraj, hypotheses, linePoints, angles );
-    
-    minE1 = min(min(errors_1));
-    minE2 = min(min(errors_2));
-
-    if minE1 < minE2
-        assignmentError = errors_1;
-        [row,col] = find(errors_1 == minE1,1,'first');
-    else
-        assignmentError = errors_2;
-        [row,col] = find(errors_2 == minE2,1,'first');
-    end
-
-    centre = linePoints(:,row);
-    angle = angles(col);
-
-    [sideTrajectories, trajIds] = multiplane_split_trajectories_for_line( imTraj, centre, angle );
+%     %% Find line with minimum error
+%     linePoints(1,:) = mm(1,1):10:mm(1,2);
+%     linePoints(2,:) = repmat(mean(mm(2,:)),1,length(linePoints(1,:)));
+%     angles = -89:89;
+% 
+%     [errors_1, errors_2] = multiplane_plane_dividing_line_c( imTraj, hypotheses, linePoints, angles );
+%     %multiplane_script_plane_dividing_line( imTraj, hypotheses, linePoints, angles );
+%     
+%     minE1 = min(min(errors_1));
+%     minE2 = min(min(errors_2));
+% 
+%     if minE1 < minE2
+%         assignmentError = errors_1;
+%         [row,col] = find(errors_1 == minE1,1,'first');
+%     else
+%         assignmentError = errors_2;
+%         [row,col] = find(errors_2 == minE2,1,'first');
+%     end
+% 
+%     centre = linePoints(:,row);
+%     angle = angles(col);
+% 
+%     [sideTrajectories, trajIds] = multiplane_split_trajectories_for_line( imTraj, centre, angle );
         
-    
-    history(iteration).output_mat   = output_mat;
-    history(iteration).fullErrors   = fullErrors;
-    history(iteration).centre       = centre;
-    history(iteration).angle        = angle;
-    history(iteration).regions      = regions;
-    clear regions;
-    
-    for r=1:2
-        regions(r).traj = sideTrajectories{r};
-        regions(r).centre = mean(minmax([sideTrajectories{r}{:}]),2);
-        regions(r).radius = max(range([sideTrajectories{1}{:}],2));
-    end
+%     
+%     history(iteration).output_mat   = output_mat;
+%     history(iteration).fullErrors   = fullErrors;
+%     history(iteration).centre       = centre;
+%     history(iteration).angle        = angle;
+%     history(iteration).regions      = regions;
+%     clear regions;
+%     
+%     for r=1:2
+%         regions(r).traj = sideTrajectories{r};
+%         regions(r).centre = mean(minmax([sideTrajectories{r}{:}]),2);
+%         regions(r).radius = max(range([sideTrajectories{1}{:}],2));
+%     end
 end
 
 
     
-%% Make side-trajectory cells same order as hypotheses
+%% Make side-trajectory cells same order as hypotheses (Line split)
     % work out errors for both sides given the 2 hypotheses
-    side_errors = zeros(2,1);
-    for i=1:2
-        tmp_e1 = sum(errorfunc_traj( hypotheses(1,1:2), [5, hypotheses(1,3)], sideTrajectories{i} ).^2);
-        tmp_e2 = sum(errorfunc_traj( hypotheses(2,1:2), [5, hypotheses(2,3)], sideTrajectories{1-(i-1)+1} ).^2);
-        side_errors(i) = tmp_e1 + tmp_e2;
-    end
-    
-    % Choose the hypotheses->trajectory pairing that minimises error.
-    if side_errors(2) < side_errors(1)
-    hypotheses = hypotheses(2:-1:1,:)
-
-    end
+%     side_errors = zeros(2,1);
+%     for i=1:2
+%         tmp_e1 = sum(errorfunc_traj( hypotheses(1,1:2), [5, hypotheses(1,3)], sideTrajectories{i} ).^2);
+%         tmp_e2 = sum(errorfunc_traj( hypotheses(2,1:2), [5, hypotheses(2,3)], sideTrajectories{1-(i-1)+1} ).^2);
+%         side_errors(i) = tmp_e1 + tmp_e2;
+%     end
+%     
+%     % Choose the hypotheses->trajectory pairing that minimises error.
+%     if side_errors(2) < side_errors(1)
+%     hypotheses = hypotheses(2:-1:1,:)
+% 
+%     end
 
 %% Rectify using hypotheses
     % We can choose D as it merely sets scale, for comparison, set to the
