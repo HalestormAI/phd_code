@@ -1,5 +1,5 @@
 function [planes,plane_params] = multiplane_make_planes( drawit )
-    NUM_PLANES = 3;
+    NUM_PLANES = 2;
     yAngles = [0,25,0];
 
     SCALE = 5;
@@ -23,9 +23,9 @@ function [planes,plane_params] = multiplane_make_planes( drawit )
     T3 = repmat([planes(2).world(1,3);0;-planes(2).world(3,3)].*SCALE,1,4);
     
     
-    planes(3).world = rot{3}*([    repmat( (planes(2).world(1,3))/SCALE,1,2)    repmat( planes(2).world(1,3)/SCALE+1,1,2) ;
-                                   0    1    1    0 ;
-                                  repmat(planes(2).world(3,3)/SCALE,1,4)].*SCALE - T3)+T3;
+%     planes(3).world = rot{3}*([    repmat( (planes(2).world(1,3))/SCALE,1,2)    repmat( planes(2).world(1,3)/SCALE+1,1,2) ;
+%                                    0    1    1    0 ;
+%                                   repmat(planes(2).world(3,3)/SCALE,1,4)].*SCALE - T3)+T3;
 
     plane_params = cell(NUM_PLANES,1);
     for p = 1:NUM_PLANES

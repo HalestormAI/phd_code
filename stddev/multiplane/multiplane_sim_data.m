@@ -2,7 +2,7 @@
 % Add noise here
 speeds = cell(10,1);
 for t=1:10
-    speeds{t} = normrnd(.1,.02,1,2000);
+    speeds{t} = normrnd(.1,.0,1,2000);
 end
 % speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
 drns = num2cell(deg2rad(normrnd(0,5,10,2000)),2);
@@ -28,7 +28,7 @@ traj = multiplane_add_trajectories({planes.world}',plane_params,speeds,drns);
 
 drawPlane(planes(1).world)
 drawPlane(planes(2).world,'',0,'r');
-drawPlane(planes(3).world,'',0,'b'); 
+% drawPlane(planes(3).world,'',0,'b'); 
 axis equal
 axis ij
 drawtraj( traj,'',0,'b' )
