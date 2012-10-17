@@ -11,8 +11,8 @@ MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
 MODE_CLUSTER_2 = 2; % Throw all into kmeans and cluster for 2 of them
 MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
 
-WINDOW_SIZE = 75;
-WINDOW_DISTANCE = 38;
+WINDOW_SIZE = 100;
+WINDOW_DISTANCE = 50;
 
 
 MODE = MODE_CLUSTER_2;
@@ -83,7 +83,7 @@ for iteration = 1: NUM_ITERATIONS
     if MODE == MODE_CLUSTER_2
         [~,hypotheses] = kmeans(output_mat,2);
     elseif MODE == MODE_CLUSTER_G
-        hypotheses = gmeans(output_mat,0.001,'pca','gamma');
+        hypotheses = gmeans(output_mat,0.001,'pca','gamma')
     else
         hypotheses = output_mat;
     end
@@ -96,6 +96,8 @@ for iteration = 1: NUM_ITERATIONS
     
 %% Uncomment for alpha expansion
     multiplane_alpha_expansion_script 
+    
+    error('That''ll do for now kid');
     history(iteration).smoothCost   = smoothCost;
     history(iteration).distanceCost = distanceCost;
     history(iteration).labelCost    = labelCost;
