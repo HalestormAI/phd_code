@@ -76,7 +76,7 @@ void colour_pixels( double *radius, double *centre, double *outImg, int rows, in
         for( y = min_y; y <= max_y; y++ ) {
             if( y >= rows ) { // sanity check
                 mexPrintf("\t\t\ty is too big: %d (max: %d)\n", y, rows);
-                mexEvalString("drawnow");
+              //  mexEvalString("drawnow");
                 continue;
             }
             index = y + x*rows; 
@@ -107,9 +107,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
 {
  
     mexOut( "Setting init vars\n" );
-    const mxArray *regions, *img_dims;
+    const mxArray *regions, *img_dims, *img_offset;
     mxArray *mx_outImg, *mx_radius, *mx_centre;
-    double *outImg, *img_dims_dbl, *radius, *centre;
+    double *outImg, *img_dims_dbl, *radius, *centre, *img_offset_dbl;
     int x, y, max_x, max_y;
     
     // Take in regions for label as argument 1
@@ -132,6 +132,12 @@ void mexFunction( int nlhs, mxArray *plhs[],
     mexPrintf(  "(%d, %d)\n", max_x, max_y );
     mexEvalString("drawnow");
     
+    mexOut( "Getting Image Offset: " );
+    img_offset = prhs[2];
+    img_offset_dbl = (double*)mxGetPr(img_offset);
+    mexPrintf(  "(%g, %g)\n", img_offset_dbl[0], img_offset_dbl[1] );
+    mexEvalString("drawnow");
+    
     mx_outImg = mxCreateDoubleMatrix( max_y, max_x, mxREAL );
     outImg = (double*)mxGetPr( mx_outImg );
     
@@ -150,8 +156,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
         
         radius = (double*)mxGetPr(mx_radius);
         centre = (double*)mxGetPr(mx_centre);
-        centre[0] = round(centre[0]);
-        centre[1] = round(centre[1]);
+        centre[0] = round(centre[0] - img_offset_dbl[0]);
+        centre[1] = round(centre[1] - img_offset_dbl[1]);
         *radius = round(*radius);
         mexPrintf(  "\t\tRadius: %g\n", *radius );
         mexPrintf(  "\t\tCentre: (%g, %g)\n", centre[0], centre[1] );

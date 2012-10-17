@@ -5,6 +5,8 @@ function [f,thegroup] = drawcoords3( coords3, ttl, newfig, colour, lw, marker, c
 %       [ttl = '']      Title for the figure
 %       [newfig = 1]    0 for draw on same figure, 1 for new figure
 %       [colour = 'k']  Colour string
+%       [lw = 1]        Line width
+%       [marker = '-o'] Marker String
 %       [camera = 0]    Draw Camera at (0,0,0)'
 %
 %   Output: 

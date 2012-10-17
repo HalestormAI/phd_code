@@ -1,5 +1,11 @@
 function f = drawtraj( traj, ttl, newfig, colour, lw, marker )
-
+% Input:
+%   traj        Trajectory Set
+%   ttl         Figure title
+%   newfig      Boolean - create a new figure or not?
+%   colour      Line colour
+%   lw          Line width
+%   marker      Line Marker
     if nargin < 2
         ttl = '';
     end
