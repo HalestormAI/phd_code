@@ -43,7 +43,7 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
     %% Iterate over iterations
 
     for level=1:MAX_LEVEL
-        fprintf( 'Beginning Level %d\n*****************', level );
+        fprintf( 'Beginning Level %d\n*****************\n', level );
         % TODO: after level 1, make several multi-resolution search grids
         % and pass as cell
         if level == 1
@@ -52,7 +52,7 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
             focals = (focalScale/2):(focalScale/2.5):((focalScale*10)/2);
         else
             STEP = STEP/10;
-            sRange = (-10*STEP):STEP:(10*STEP);
+            sRange = (-10*STEP):2*STEP:(10*STEP);
 
             thetas = [];
             psis   = [];
@@ -60,6 +60,9 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
                 thetas = [thetas,E_thetas{level-1}(r) + sRange];
                 psis = [psis,E_psis{level-1}(r) + sRange];
             end
+            thetas = unique(thetas);
+            psis = unique(psis);
+
             focals = (E_focals(level-1)-focalScale/2.5):(focalScale/10):(E_focals(level-1)+focalScale/2.5);
         end
 
@@ -68,6 +71,14 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
         
         E_regions = combined_alpha_iterator( focals, thetas, psis, D, regions );
         [~,minErrors(level),E_focals(level),E_thetas{level},E_psis{level}] = hypotheses_from_region_errors( regions, E_regions, focals, thetas, psis );
+
+        E_focals(level)
+        E_thetas{level}
+        E_psis{level}
+        
+        fn = sprintf('leveldata_%d.mat',level);
+        
+        save(fn,'E_*','minErrors','regions','E_regions','focals', 'thetas', 'psis', 'D');
         
         if level > 1 && minErrors(level) > minErrors(level-1)
             disp('Iteration stopped due to error increase.');

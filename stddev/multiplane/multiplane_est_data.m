@@ -69,7 +69,7 @@ for iteration = 1: NUM_ITERATIONS
         regions(r).empty = 0;
         plane_details(r).trajectories = traj2imc( regions(r).traj,1,1 );
         plane_details(r).imagewidth = abs(mm(1,2) - mm(1,1));
-        [ output_params{r}, finalError{r}, fullErrors{r}, inits{r}, E_angles{r}, E_focals{r} ] = multiplane_multiscaleSolver_using_imagewidth( 1, plane_details(r), 3, 10, 1e-12 );
+        [ output_params{r}, finalError{r}, fullErrors{r}, inits{r} ] = multiplane_multiscaleSolver_using_imagewidth( 1, plane_details(r), 3, 10, 1e-12 );
     end
 
     disp('ESTIMATES');
