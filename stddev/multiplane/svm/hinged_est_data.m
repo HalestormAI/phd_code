@@ -115,7 +115,7 @@
 %  N.B. can use backproj as before - just vary different parameters
 
     % set plane details to reflect regions
-    imagewidth = max([plane_details.imagewidth])
+%     imagewidth = max([plane_details.imagewidth])
     clear plane_details;
     plane_details = struct('trajectories',{regions.traj},'imagewidth',imagewidth);
 
