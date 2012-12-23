@@ -11,10 +11,12 @@ function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, sc
     lengths = cellfun(@(x) size(x,2), trajectories);
 
     longEnough = trajectories(lengths>3);
-%     rectTrajectories = cellfun(@(x) backproj(orientation, scales, x), longEnough,'uniformoutput', false);
-      rectTrajectories = cellfun(@(x) backproj_c(orientation(1),orientation(2), ...
-                                                 scales(1),scales(2), x), ...
-                                                 longEnough,'uniformoutput', false);
+    
+    disp('REMEMBER THIS IS USING THE NON-STANDARD BACKPROJ (errorfunc.m)');
+    rectTrajectories = cellfun(@(x) backproj_n(orientation, scales, x), longEnough,'uniformoutput', false);
+%       rectTrajectories = cellfun(@(x) backproj_c(orientation(1),orientation(2), ...
+%                                                  scales(1),scales(2), x), ...
+%                                                  longEnough,'uniformoutput', false);
       
                                              
     for i=1:length(rectTrajectories)

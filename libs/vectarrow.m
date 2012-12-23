@@ -4,6 +4,8 @@ function outGrp = vectarrow(p0,p1,colorspec)
 %   to point p1. The function can plot both 2D and 3D vector with arrow
 %   depending on the dimension of the input
 %
+%   3rd argument is colourspec.
+%
 %   Example:
 %       3D vector
 %       p0 = [1 2 3];   % Coordinate of the first point p0
@@ -20,10 +22,12 @@ function outGrp = vectarrow(p0,p1,colorspec)
 %   Rentian Xiong 4-18-05
 %   $Revision: 1.0
 
-% IJH EDIT: Added colorspec
+% IJH EDIT: Added colorspec and checking whether to hold or not.
 if nargin < 3
     colorspec = 'b-';
 end
+
+shouldhold = strcmp(get(gca,'NextPlot'),'replace');
 
   if max(size(p0))==3
       if max(size(p1))==3
@@ -60,7 +64,9 @@ end
           xlabel('x')
           ylabel('y')
           zlabel('z')
-          hold off
+          if shouldhold
+            hold off
+          end
       else
           error('p0 and p1 must have the same dimension')
       end
@@ -84,7 +90,9 @@ end
           grid on
           xlabel('x')
           ylabel('y')
-          hold off
+          if shouldhold
+            hold off
+          end
       else
           error('p0 and p1 must have the same dimension')
       end

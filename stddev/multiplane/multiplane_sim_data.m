@@ -2,7 +2,7 @@ NUM_TRAJ = 20;
 % Add noise here
 speeds = cell(NUM_TRAJ,1);
 for t=1:NUM_TRAJ
-    speeds{t} = normrnd(.1,.0,1,2000);
+    speeds{t} = normrnd(.1,.005,1,2000);
 end
 % speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
 drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,2000)),2);

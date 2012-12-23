@@ -1,24 +1,39 @@
+if ~exist('labelCost','var') || ~exist('MINIDS','var')
 
-% % Train an SVM on assignments to get approximate plane divider line
-% figure;
-% svm = svmtrain(centres(full_regions,:), MINIDS(full_regions),'showPlot','true');
-% hold on;
-% 
-% % Get the line data from the plot
-% ax = svm.FigureHandles{1};
-% kiddies = get(ax,'Children');
-% hghand = kiddies(1);
-% linehandle = get(hghand,'Children');
-% xvals = get(linehandle,'XData');
-% yvals = get(linehandle,'YData');
-% 
-% % Use line data to get equation
-% m=(yvals(2)-yvals(1))/(xvals(2)-xvals(1));
-% b=yvals(1)-m*xvals(1);
-% % plot(xvals, m*xvals+b, '--', 'LineWidth', 3);
+    labelCost = NaN.*ones(size(hypotheses,1),length(regions));
+    for e=1:size(hypotheses,1)
+        for r=1:length(regions)
+            labelCost(e,r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(regions(r).traj,1,1)).^2);
+        end
+    end
+
+    [~,MINIDS] = min(labelCost);
+end
+
+full_regions = ~[regions.empty];
+centres = [regions.centre]';
+
+
+% Train an SVM on assignments to get approximate plane divider line
+figure;
+svm = svmtrain(centres(full_regions,:), MINIDS(full_regions),'showPlot','true');
+hold on;
+
+% Get the line data from the plot
+ax = svm.FigureHandles{1};
+kiddies = get(ax,'Children');
+hghand = kiddies(1);
+linehandle = get(hghand,'Children');
+xvals = get(linehandle,'XData');
+yvals = get(linehandle,'YData');
+
+% Use line data to get equation
+m=(yvals(2)-yvals(1))/(xvals(2)-xvals(1));
+b=yvals(1)-m*xvals(1);
+% plot(xvals, m*xvals+b, '--', 'LineWidth', 3);
 % close;
-% 
-% linePoints = [xvals(~isnan(xvals)), yvals(~isnan(yvals))]; % Line points is transpose of coord system.
+
+linePoints = [xvals(~isnan(xvals)), yvals(~isnan(yvals))]; % Line points is transpose of coord system.
 
 % Get angle of line
 angles1 = atan2( diff(linePoints([1,end],2)), diff(linePoints([1,end],1)) );
@@ -36,19 +51,16 @@ centre = mean(linePoints([1,end],:))';
 
 
 
-% 
+
 % history(iteration).output_mat   = output_mat;
 % history(iteration).fullErrors   = fullErrors;
 % history(iteration).centre       = centre;
 % history(iteration).angle        = angle;
 % history(iteration).regions      = regions;
-% 
-% 
-% 
-% region_intersect = minmax(linePoints');
 
-% figure;
-% hold on;
+
+
+region_intersect = minmax(linePoints');
 
 clear regions;
 for r=1:2

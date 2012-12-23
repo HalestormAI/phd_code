@@ -1,4 +1,4 @@
-function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker )
+function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker, reorder )
     if nargin < 2,
         ttl = '';
     end
@@ -12,7 +12,7 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker )
         camera = 0;
     end
     if nargin < 6,
-        marker = 'o';
+        marker = 'o-';
     end
 
     if newfig > 0,
@@ -22,6 +22,18 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker )
     end
     hold on
     thegroup = hggroup;
+    
+    % Perform ordering check
+    if nargin > 6 && reorder
+        edge_lengths = vector_dist(plane(:,traj2imc([1:end,1],1,1)));
+
+        % In all probability this should be more than accurate enough...
+        % (don't look at me like that...)
+        if range(edge_lengths) > 1e-10
+            plane = reorder_square_plane( plane );
+        end
+    end
+    
     for i=1:4
         id =  mod( i+1, 4 );
         if (id == 0)
@@ -29,9 +41,9 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker )
         end
         
         if size(plane,1) == 2
-            lines = plot( plane(1,[i,id]),plane(2,[i,id]), sprintf('-%s%s', marker, colour) );
+            lines = plot( plane(1,[i,id]),plane(2,[i,id]), sprintf('%s%s', marker, colour) );
         else
-            lines = plot3( plane(1,[i,id]),plane(2,[i,id]),plane(3,[i,id]), sprintf('-%s%s', marker, colour) );
+            lines = plot3( plane(1,[i,id]),plane(2,[i,id]),plane(3,[i,id]), sprintf('%s%s', marker, colour) );
         end
         set(lines, 'Parent', thegroup )
 

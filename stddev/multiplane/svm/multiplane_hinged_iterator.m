@@ -1,6 +1,6 @@
 
 function [all_err,minerror,e_angles,e_d,inits,errors] ...
-        = multiplane_hinged_iterator( trajectories, thetas, psis, ds, F, C )
+        = multiplane_hinged_iterator( trajectories, thetas, psis, ds, F, C, W_c )
 
 
     if nargin < 3
@@ -33,7 +33,7 @@ function [all_err,minerror,e_angles,e_d,inits,errors] ...
         t = inits(i,1);
         p = inits(i,2);
         d = inits(i,3);
-        errors{i} = hinged_error_func([t,p],[d,F], traj2imc(trajectories,1,1), C);
+        errors{i} = hinged_error_func([t,p],[d,F], traj2imc(trajectories,1,1), C, W_c);
         all_err(i) = sum(errors{i}.^2);
         if ~mod(i,500)
             fprintf('Completed %d of %d rows (%.3f%%)\n', i,length(inits),100*(i/length(inits)));

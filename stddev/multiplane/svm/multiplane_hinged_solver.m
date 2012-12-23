@@ -1,25 +1,19 @@
-function [ output_params, finalError, fullErrors, inits, E_angles, E_ds, errorvecs ] = multiplane_hinged_solver( plane_details, IM_CONSTRAINTS, CONSTRAINT_RECT, FOCAL, INIT_D, MAX_LEVEL, STEP, TOL )
+function [ output_params, finalError, fullErrors, inits, E_angles, E_ds, errorvecs ] = multiplane_hinged_solver( plane_details, CONSTRAINTS, FOCAL, INIT_D, MAX_LEVEL, STEP, TOL )
 
-    if nargin < 6
+    if nargin < 5
         MAX_LEVEL = 3;
     end
-    if nargin < 7
+    if nargin < 6
         STEP = 10;
     end
 
-    if nargin < 8
+    if nargin < 7
         TOL = 1e-6;
     end
 
 %     plane_details, CONSTRAINTS, FOCAL, INIT_D, MAX_LEVEL, STEP, TOL
 
-    CONSTRAINTS = backproj_c( CONSTRAINT_RECT(1), ...
-                              CONSTRAINT_RECT(2), ...
-                              INIT_D, ...
-                              CONSTRAINT_RECT(3), ...
-                              IM_CONSTRAINTS ...
-                            );
-    
+   
     fullErrors =  cell(MAX_LEVEL,1);
     minErrors  = zeros(MAX_LEVEL,1);
     E_angles   = zeros(MAX_LEVEL,2);
@@ -67,13 +61,18 @@ function [ output_params, finalError, fullErrors, inits, E_angles, E_ds, errorve
             error('NO DS REMAINING!');
         end
         
-        [fullErrors{level},minErrors(level),E_angles(level,:), E_ds(level), inits{level}, errorvecs{level}] = multiplane_hinged_iterator( plane_details.trajectories,thetas,psis,ds,FOCAL,CONSTRAINTS);
-        if level > 1 && minErrors(level) > minErrors(level-1)
-            disp('Iteration stopped due to error increase.');
-            level
-            level = level -1;
-            break;
-        elseif minErrors(level) < TOL
+%         levelWeight = 1*10^(-(MAX_LEVEL-level));
+        levelWeight = 1000;
+        
+        [fullErrors{level},minErrors(level),E_angles(level,:), E_ds(level), inits{level}, errorvecs{level}] = multiplane_hinged_iterator( plane_details.trajectories,thetas,psis,ds,FOCAL,CONSTRAINTS,levelWeight);
+        
+%         if level > 1 && minErrors(level) > minErrors(level-1)
+%             disp('Iteration stopped due to error increase.');
+%             level
+%             level = level -1;
+%             break;
+%         else
+        if minErrors(level) < TOL
             disp('Error below tolerance, ending now.');
             break
         end

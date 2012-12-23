@@ -1,4 +1,4 @@
-%% Set up initial parameteres
+%% Set up initial parameters
 MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
 MODE_CLUSTER_2 = 2; % Throw all into kmeans and cluster for 2 of them
 MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
@@ -25,7 +25,7 @@ regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANC
 % abs(mm(1,1)-mm(1,2))
     
 %% Produce region estimations
-[ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solver( regions,abs(mm(1,1)-mm(1,2)) );
+[ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solver( regions,abs(mm(1,1)-mm(1,2)),2 );
 
 % %% Get the initial labelling
 % labelCost = NaN.*ones(size(hypotheses,1),length(regions));
