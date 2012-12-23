@@ -1,4 +1,4 @@
-function f = drawtraj( traj, ttl, newfig, colour, lw, marker )
+function [f,g] = drawtraj( traj, ttl, newfig, colour, lw, marker, returnline )
 % Input:
 %   traj        Trajectory Set
 %   ttl         Figure title
@@ -30,7 +30,10 @@ function f = drawtraj( traj, ttl, newfig, colour, lw, marker )
     end
     
     if iscell(traj)
-        cellfun(@(x) drawtraj(x,ttl,0,colour, lw, marker), traj);
+        line_handles = cellfun(@(x) drawtraj(x,ttl,0,colour, lw, marker,1), traj);
+        
+        g = hggroup;
+        set(line_handles, 'Parent', g )
         return
     end
     
@@ -41,5 +44,9 @@ function f = drawtraj( traj, ttl, newfig, colour, lw, marker )
     end
         
     
-    f = drawfun(traj2imc(traj,1,1),ttl,0,colour, lw, marker);
+    [f,g] = drawfun(traj2imc(traj,1,1),ttl,0,colour, lw, marker);
+    
+    if nargin >= 7 && returnline
+        f = g;
+    end
 end

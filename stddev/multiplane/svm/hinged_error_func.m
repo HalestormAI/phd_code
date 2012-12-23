@@ -1,4 +1,4 @@
-function E = hinged_error_func( orientation, scales, trajectories, constraints )
+function E = hinged_error_func( orientation, scales, trajectories, constraints, WEIGHT )
     % Taking the edge of rectified plane 1, re-calculate the error for
     % plane 2.
         
@@ -38,13 +38,15 @@ function E = hinged_error_func( orientation, scales, trajectories, constraints )
     
     toUse = E ~= Inf;
     
-    E = E(toUse) + priors( rectTrajectories(toUse) );
+    E = E(toUse) * priors( rectTrajectories(toUse) );
     
     % Now append point constraints
+    unweighted_errors = zeros(size(constraints,2),1);
     for c=1:size(constraints,2)
-        E(length(trajectories)+c) = distance_from_plane( N, D, constraints(:,c) );
+        unweighted_errors(c) = distance_from_plane( N, D, constraints(:,c) );
+%         E(length(trajectories)+c) = WEIGHT*unweighted_error;
     end
-   
+   E = WEIGHT*sum(unweighted_errors)*E;
     
     function P = priors( traj )
         
@@ -55,10 +57,10 @@ function E = hinged_error_func( orientation, scales, trajectories, constraints )
         end
         P = std(means);
     end
-
-    function D = distance_from_plane( n, d, p )
-        
-        root = sqrt( n(1)^2 + n(2)^2 + n(3)^2 );
-        D = abs(sum(n.*p) - d) / root;
-    end
+% 
+%     function D = distance_from_plane( n, d, p )
+%         
+%         root = sqrt( sum(n.^2) );
+%         D = abs(sum(n.*p) - d) / root;
+%     end
 end

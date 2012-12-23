@@ -85,7 +85,7 @@
             end
         end
         % 25% chance of spawn provided we have room
-        if rand <= 1 && num_trajectories < MAX_TRAJ,
+        if rand <= 0.2 && num_trajectories < MAX_TRAJ,
             
             this_spd = NORM_SPEEDS(num_trajectories+1);
             

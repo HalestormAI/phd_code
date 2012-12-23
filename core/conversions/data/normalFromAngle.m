@@ -5,6 +5,11 @@ function N = normalFromAngle( theta, psi, base )
 %   psi     Yaw
 %   base    "degrees" (default) or "radians" 
 
+if nargin == 1 && length(theta) == 2
+    psi = theta(2);
+    theta = theta(1);
+end
+
 if nargin < 3,
     base = 'degrees';
 end

@@ -1,7 +1,7 @@
 function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solver( regions, imagewidth, MAX_LEVEL, STEP, TOL )
 
     if nargin < 4
-        MAX_LEVEL = 3;
+        MAX_LEVEL = 2;
     end
     if nargin < 5
         STEP = 10;

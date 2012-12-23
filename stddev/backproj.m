@@ -1,7 +1,7 @@
 function rectTraj = backproj( orientation, scales, traj )
       
     % orientation consists of theta and psi
-    abc   = normalFromAngle( -orientation(1), -orientation(2),'degrees' );
+    abc   = normalFromAngle( -orientation(1), -orientation(2),'degrees' )
 
     d     = scales(1);
     alpha = scales(2);
