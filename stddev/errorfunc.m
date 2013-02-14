@@ -1,5 +1,4 @@
 function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, scales, trajectories, DEBUG )   
-
     
     if nargin < 4
         DEBUG = false;
@@ -12,11 +11,16 @@ function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, sc
 
     longEnough = trajectories(lengths>3);
     
-    disp('REMEMBER THIS IS USING THE NON-STANDARD BACKPROJ (errorfunc.m)');
-    rectTrajectories = cellfun(@(x) backproj_n(orientation, scales, x), longEnough,'uniformoutput', false);
-%       rectTrajectories = cellfun(@(x) backproj_c(orientation(1),orientation(2), ...
-%                                                  scales(1),scales(2), x), ...
-%                                                  longEnough,'uniformoutput', false);
+%     disp('REMEMBER THIS IS USING THE NON-STANDARD BACKPROJ (errorfunc.m)');
+
+    if length(orientation) == 3
+        rectTrajectories = cellfun(@(x) backproj_func(orientation, scales, x), longEnough,'uniformoutput', false);
+    else
+        rectTrajectories = cellfun(@(x) backproj_c(orientation(1),orientation(2), ...
+                                     scales(1),scales(2), x), ...
+                                     longEnough,'uniformoutput', false);
+    end
+       
       
                                              
     for i=1:length(rectTrajectories)

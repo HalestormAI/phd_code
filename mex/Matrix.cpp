@@ -168,6 +168,19 @@ double Matrix::sum( ) const {
 }
 
 
+Matrix Matrix::elemMult( Matrix *val ) {
+    Matrix out = Matrix(this->rows,this->cols);
+
+    double sum_elems;
+    for( int i = 0; i < this->rows; ++i) {
+        for(int j = 0; j < this->cols; ++j) {
+           out.set( i, j, val->at(i,j)*this->at(i,j) );
+        }
+    }
+    return out;
+}
+
+
 /** Outside Functions **/
 
 Matrix pow( Matrix *m, double exp ) {

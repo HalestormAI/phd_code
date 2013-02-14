@@ -176,13 +176,65 @@ void matching_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
 
 }
 
+
+
+
+void direction_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
+
+    int M = A->length( );
+    int N = B->length( );
+
+    (*Q) = Matrix( M, N );
+
+    for( int m=0; m < M; m++ ) {
+        for( int n=0; n < N; n++ ) {
+            float drn = 1;
+            if( (m > 0) && (m < M-1) && (n > 0) && (n < N-1) )
+                drn = A->angleDiff( m, B, n );
+            if( m==n )
+                Q->set(m,n,999999);
+            else
+                Q->set(m,n,drn);
+        }
+    }
+
+}
+
+
+
+void distance_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
+
+    int M = A->length( );
+    int N = B->length( );
+
+    (*Q) = Matrix( M, N );
+
+    for( int m=0; m < M; m++ ) {
+        for( int n=0; n < N; n++ ) {
+            float dist = A->at(m).dist2D( B->at(n) );
+            if( m==n )
+                Q->set(m,n,999999);
+            else
+                Q->set(m,n,dist);
+        }
+    }
+
+}
+
+
     
 void mexFunction( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[] )
 {
     const mwSize *dims1, *dims2;
-    double *trajData1, *trajData2, *lss_output, *Q_output;
-    Matrix Q;
+    double *trajData1, 
+           *trajData2, 
+           *lss_output, 
+           *Q_output, 
+           *A_output, 
+           *D_output;
+    
+    Matrix Q,D,A;
 
     int tol_e, tol_d;
     
@@ -190,7 +242,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     if(nrhs!=2)
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidNumInputs",
                 "5 inputs required.");
-    else if(nlhs > 2)
+    else if(nlhs > 3)
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:maxlhs",
                 "Too many output arguments.");
     else if(!mxIsDouble(prhs[0]))
@@ -207,13 +259,25 @@ void mexFunction( int nlhs, mxArray *plhs[],
     Trajectory traj1 = Trajectory( trajData1, dims1 );
     Trajectory traj2 = Trajectory( trajData2, dims2 );
 
+    /* COMBINED MATCHING COST */
     matching_cost( &Q, &traj1, &traj2 );
-    
-
     plhs[0] = mxCreateDoubleMatrix( Q.rows, Q.cols, mxREAL );
-
     Q_output = mxGetPr( plhs[0] );
-
     Q.toDouble( Q_output );
     
+    /* DISTANCE COST */
+    if( nlhs >= 2 ) {
+        distance_cost( &D, &traj1, &traj2 );
+        plhs[1] = mxCreateDoubleMatrix( D.rows, D.cols, mxREAL );
+        D_output = mxGetPr( plhs[1] );
+        D.toDouble( D_output );
+    }
+    
+    /* ANGLE COST */
+    if( nlhs >= 3 ) {
+        distance_cost( &A, &traj1, &traj2 );
+        plhs[2] = mxCreateDoubleMatrix( A.rows, A.cols, mxREAL );
+        A_output = mxGetPr( plhs[2] );
+        A.toDouble( A_output );
+    }
 }
