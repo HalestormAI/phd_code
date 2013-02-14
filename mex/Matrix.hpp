@@ -38,6 +38,8 @@ class Matrix
         
         Matrix transpose( );
         
+        Matrix elemMult( Matrix *val );
+        
         friend Matrix pow( Matrix *m, double exp );
 };
 

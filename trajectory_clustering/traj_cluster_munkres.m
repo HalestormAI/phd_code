@@ -1,4 +1,4 @@
-function [clusters,matches,assignment,outputcost] = traj_cluster_munkres( trajectories, FPS, NUM_LONGEST, draw )
+function [clusters,matches,assignment,outputcost,imtraj] = traj_cluster_munkres( trajectories, FPS, NUM_LONGEST, draw, MAX_DISTANCE) 
 
     if nargin < 3
         NUM_LONGEST = 20;
@@ -6,26 +6,51 @@ function [clusters,matches,assignment,outputcost] = traj_cluster_munkres( trajec
 
     lengths = cellfun(@length, trajectories);
     [~,sortedIds] = sort(lengths,'descend');
+    
+%     trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
+    
+    % Assume trajectories are already split
+%     split = splitTrajectories(trajectories_lgt2,1); 
+
     longestIds = sortedIds(1:NUM_LONGEST);
     imtraj = traj2imc(trajectories(longestIds),FPS,1);
 %     drawcoords( imtraj,'',0,'k' );
 
 %     imtraj = cellfun(@(x) x(:,1:FPS:end), imtraj, 'un',0);
     
+
+    
+    
+    if nargin < 5
+        rng = range(horzcat(imtraj{:}),2);
+        MAX_DISTANCE = rng(1)*0.1;
+    end
+
     disp('Calculating assignment errors');
     assignment =  cell(length(imtraj),length(imtraj));
     outputcost = zeros(length(imtraj),length(imtraj));
     for i=1:length(imtraj)
-        for j=i:length(imtraj)
-            input_cost = cluster_traj( imtraj{i},imtraj{j} );
-%             fprintf('Done building error matrix (%d,%d). ',i,j);
-            [assignment{i,j},outputcost(i,j)] = assignmentoptimal( input_cost );
-            outputcost(j,i) = outputcost(i,j);
-%             fprintf('Element (%d,%d) of (%d,%d)\n',i,j,length(imtraj),length(imtraj));
+        imtraj_i = imtraj{i};
+        parfor j=i:length(imtraj)
+            % Get point-point similarities for trajectories
+            [input_cost,distance_cost] = cluster_traj( imtraj_i,imtraj{j} );
+            % Align trajectories in optimal way, get alignment cost
+            [assignment{i,j},outputcost(i,j)] = assignmentoptimal( input_cost ); 
+            
+            
+            %TODO: Need to find a way to get a distance measure out for an
+            %assignment, then threshold before throwing at
+            %adapt_apcluster.m (affinity propagation)
         end
         fprintf('\tRow %d of %d done.\n', i, length(imtraj));
     end
     
+    for i=1:length(imtraj)
+        for j=1:length(imtraj)
+            outputcost(j,i) = outputcost(i,j);
+        end
+    end
+
     meanerror = mean(nanmean(outputcost));
     stderror = std(nanstd(outputcost));
 
@@ -38,37 +63,41 @@ function [clusters,matches,assignment,outputcost] = traj_cluster_munkres( trajec
 %     [~,minidx] = min(outputcost);
 %     matches = findMatches(minidx);
     
-    for i=1:length(imtraj)
-        m = outputcost(i,:) < errTol;
-        for j=(i+1):length(imtraj)
-    %         Is i in matches?
-            if m(j)
-                idx = find(cellfun(@(x) logical(numel(find(x==i))),matches));
-                if isempty(idx)
-                   matches{end+1} = [i,j];
-                else
-                    if numel(idx) > 1
-                      costs = outputcost(i,idx);
-                      [~,idx] = min(costs);
-                    end
-                    if isempty(find(matches{idx}==j,1,'first'))
-                        matches{idx}(end+1) = j;
-                    end
-                end
-            end
-        end
-    end
+%     for i=1:length(imtraj)
+%         m = outputcost(i,:) < errTol;
+%         for j=(i+1):length(imtraj)
+%     %         Is i in matches?
+%             if m(j)
+%                 idx = find(cellfun(@(x) logical(numel(find(x==i))),matches));
+%                 if isempty(idx)
+%                    matches{end+1} = [i,j];
+%                 else
+%                     if numel(idx) > 1
+%                       costs = outputcost(i,idx);
+%                       [~,idx2] = min(costs);
+%                       idx = idx(idx2);
+%                     end
+%                     if isempty(find(matches{idx}==j,1,'first'))
+%                         matches{idx}(end+1) = j;
+%                     end
+%                 end
+%             end
+%         end
+% end
+    
+    
+    matches 
     
     % Find any trajectories that haven't been clustered
-    groupIds = inMatches( 1:length(imtraj), matches);
+    groupIds = inMatches( 1:length(imtraj), matches)
     
-    notClustered = find(~groupIds);
+    notClustered = find(~groupIds)
     for n=1:length(notClustered)
         matches{end+1} = notClustered(n);
     end
     
     
-    clusters = longestAssignment( imtraj, matches );
+    clusters = longestAssignment( imtraj, matches )
 %     return;
 
 

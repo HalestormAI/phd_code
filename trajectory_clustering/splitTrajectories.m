@@ -21,8 +21,7 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs )
         gt = find( lengths > mL+2*sL );
         lt = find( lengths < mL-2*sL );
         
-        
-        bad = (unique(union(gt,lt)))+1;
+        bad = (unique_c([gt,lt]))+1;
         
         % Doesn't need splitting, save some time!
         if isempty(bad)
@@ -31,7 +30,8 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs )
             good = 1:length(traj);
             good(bad) = [];
             % Split
-            splitTrajIds = SplitVec(good,'consecutive')';
+            %splitTrajIds = SplitVec(good,'consecutive')';
+            [~,splitTrajIds] = split_vector(good);
             tLengths = cellfun(@length,splitTrajIds);
             splitTrajIds(tLengths <= 1) = [];
             splitTraj = cellfun(@(x) traj(:,x),splitTrajIds,'uniformoutput',false);
