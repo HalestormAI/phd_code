@@ -1,0 +1,1417 @@
+==10424== Memcheck, a memory error detector
+==10424== Copyright (C) 2002-2010, and GNU GPL'd, by Julian Seward et al.
+==10424== Using Valgrind-3.6.0 and LibVEX; rerun with -h for copyright info
+==10424== Command: ./test ./cluster_traj.mexa64
+==10424== 
+==10424== Conditional jump or move depends on uninitialised value(s)
+==10424==    at 0x4A07808: __GI_strlen (mc_replace_strmem.c:284)
+==10424==    by 0x3683667F2A: puts (in /lib64/libc-2.12.so)
+==10424==    by 0x400CE9: main (test.c:60)
+==10424== 
+==10424== Conditional jump or move depends on uninitialised value(s)
+==10424==    at 0x4A07808: __GI_strlen (mc_replace_strmem.c:284)
+==10424==    by 0x3683667F2A: puts (in /lib64/libc-2.12.so)
+==10424==    by 0x400D09: main (test.c:62)
+==10424== 
+==10424== Conditional jump or move depends on uninitialised value(s)
+==10424==    at 0x4A07808: __GI_strlen (mc_replace_strmem.c:284)
+==10424==    by 0x3683667F2A: puts (in /lib64/libc-2.12.so)
+==10424==    by 0x400D29: main (test.c:64)
+==10424== 
+>> 
+result =
+
+  Columns 1 through 7
+
+    7.8007   23.3118   23.3118   38.5932   38.5932   54.5370   54.5370
+    8.4113    8.7024    8.7024   23.7262   23.7262   39.5369   39.5369
+    8.4113    8.7024    8.7024   23.7262   23.7262   39.5369   39.5369
+   23.5967    7.2020    7.2020    8.3259    8.3259   24.1517   24.1517
+   23.5967    7.2020    7.2020    8.3259    8.3259   24.1517   24.1517
+   39.9842   23.6271   23.6271    8.7667    8.7667    8.0584    8.0584
+   39.9842   23.6271   23.6271    8.7667    8.7667    8.0584    8.0584
+   56.9451   40.5629   40.5629   25.4314   25.4314    9.5948    9.5948
+   56.9451   40.5629   40.5629   25.4314   25.4314    9.5948    9.5948
+   73.7319   57.3671   57.3671   42.2155   42.2155   26.2633   26.2633
+   73.7319   57.3671   57.3671   42.2155   42.2155   26.2633   26.2633
+   88.9408   72.4840   72.4840   57.2350   57.2350   41.2335   41.2335
+   88.9408   72.4840   72.4840   57.2350   57.2350   41.2335   41.2335
+  104.5356   88.0524   88.0524   72.7835   72.7835   56.7976   
+>> 
+result2 =
+
+  Columns 1 through 7
+
+    7.8007   23.3118   23.3118   38.5932   38.5932   54.5370   54.5370
+    8.4113    8.7024    8.7024   23.7262   23.7262   39.5369   39.5369
+    8.4113    8.7024    8.7024   23.7262   23.7262   39.5369   39.5369
+   23.5967    7.2020    7.2020    8.3259    8.3259   24.1517   24.1517
+   23.5967    7.2020    7.2020    8.3259    8.3259   24.1517   24.1517
+   39.9842   23.6271   23.6271    8.7667    8.7667    8.0584    8.0584
+   39.9842   23.6271   23.6271    8.7667    8.7667    8.0584    8.0584
+   56.9451   40.5629   40.5629   25.4314   25.4314    9.5948    9.5948
+   56.9451   40.5629   40.5629   25.4314   25.4314    9.5948    9.5948
+   73.7319   57.3671   57.3671   42.2155   42.2155   26.2633   26.2633
+   73.7319   57.3671   57.3671   42.2155   42.2155   26.2633   26.2633
+   88.9408   72.4840   72.4840   57.2350   57.2350   41.2335   41.2335
+   88.9408   72.4840   72.4840   57.2350   57.2350   41.2335   41.2335
+  104.5356   88.0524   88.0524   72.7835   72.7835   56.7976  
+>> 
+result3 =
+
+  Columns 1 through 7
+
+    7.8007   23.3118   23.3118   38.5932   38.5932   54.5370   54.5370
+    8.4113    8.7024    8.7024   23.7262   23.7262   39.5369   39.5369
+    8.4113    8.7024    8.7024   23.7262   23.7262   39.5369   39.5369
+   23.5967    7.2020    7.2020    8.3259    8.3259   24.1517   24.1517
+   23.5967    7.2020    7.2020    8.3259    8.3259   24.1517   24.1517
+   39.9842   23.6271   23.6271    8.7667    8.7667    8.0584    8.0584
+   39.9842   23.6271   23.6271    8.7667    8.7667    8.0584    8.0584
+   56.9451   40.5629   40.5629   25.4314   25.4314    9.5948    9.5948
+   56.9451   40.5629   40.5629   25.4314   25.4314    9.5948    9.5948
+   73.7319   57.3671   57.3671   42.2155   42.2155   26.2633   26.2633
+   73.7319   57.3671   57.3671   42.2155   42.2155   26.2633   26.2633
+   88.9408   72.4840   72.4840   57.2350   57.2350   41.2335   41.2335
+   88.9408   72.4840   72.4840   57.2350   57.2350   41.2335   41.2335
+  104.5356   88.0524   88.0524   72.7835   72.7835   56.7976  
+==10424== Invalid free() / delete / delete[]
+==10424==    at 0x4A0595D: free (vg_replace_malloc.c:366)
+==10424==    by 0x368373DA1A: free_mem (in /lib64/libc-2.12.so)
+==10424==    by 0x368373D5B1: __libc_freeres (in /lib64/libc-2.12.so)
+==10424==    by 0x480165C: _vgnU_freeres (vg_preloaded.c:62)
+==10424==    by 0x3683635D41: exit (in /lib64/libc-2.12.so)
+==10424==    by 0x368361ECE3: (below main) (in /lib64/libc-2.12.so)
+==10424==  Address 0x84b8e10 is not stack'd, malloc'd or (recently) free'd
+==10424== 
+==10424== 
+==10424== HEAP SUMMARY:
+==10424==     in use at exit: 90,403 bytes in 2,413 blocks
+==10424==   total heap usage: 16,238 allocs, 13,830 frees, 1,981,579 bytes allocated
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 1 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C15E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 2 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C176: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 3 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C18E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 4 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C1A6: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 5 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C1BE: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 6 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C1D6: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 4 bytes in 1 blocks are definitely lost in loss record 7 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C1EE: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 6 bytes in 1 blocks are definitely lost in loss record 8 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0xFB9EA2D: ???
+==10424==    by 0xFB9EA63: ???
+==10424==    by 0xFB9EB3A: ???
+==10424==    by 0xFC963A5: ???
+==10424==    by 0xFB885D2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424== 
+==10424== 8 bytes in 1 blocks are definitely lost in loss record 13 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x1071AF6C: ???
+==10424==    by 0x107F3115: ???
+==10424==    by 0x106BA61A: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424==    by 0x2D746962726F2F6F: ???
+==10424==    by 0x686A6936306372: ???
+==10424== 
+==10424== 8 bytes in 1 blocks are definitely lost in loss record 14 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0xFB9EA08: ???
+==10424==    by 0xFB9EA56: ???
+==10424==    by 0xFB9EB3A: ???
+==10424==    by 0xFC963A5: ???
+==10424==    by 0xFB885D2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424== 
+==10424== 10 bytes in 1 blocks are definitely lost in loss record 15 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BFC6: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 10 bytes in 1 blocks are definitely lost in loss record 16 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C026: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 10 bytes in 1 blocks are definitely lost in loss record 17 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C03E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 10 bytes in 1 blocks are definitely lost in loss record 18 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C206: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 12 bytes in 1 blocks are definitely lost in loss record 19 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C056: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 12 bytes in 1 blocks are definitely lost in loss record 20 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C21E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 14 bytes in 1 blocks are definitely lost in loss record 22 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C00E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 14 bytes in 1 blocks are definitely lost in loss record 23 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C09E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 16 bytes in 1 blocks are definitely lost in loss record 26 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BF7E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 16 bytes in 1 blocks are definitely lost in loss record 27 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C0B6: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 16 bytes in 1 blocks are definitely lost in loss record 28 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C0E6: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 16 bytes in 1 blocks are definitely lost in loss record 29 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C0FE: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 16 bytes in 1 blocks are definitely lost in loss record 30 of 181
+==10424==    at 0x4A04A28: calloc (vg_replace_malloc.c:467)
+==10424==    by 0x4E319CE: mxCreateNumericMatrixWithReuse(unsigned long, unsigned long, mxClassID, mxComplexity, int, mxArray_tag const**) (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E31B08: mxCreateNumericArrayWithReuse(unsigned long, unsigned long const*, mxClassID, mxComplexity, int, mxArray_tag const**) (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E5ECC5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E5FD22: miGetCurrentItem (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x53D0CF9: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmat.so)
+==10424==    by 0x53D0D78: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmat.so)
+==10424==    by 0x4C0D83A: engGetVariable (in /usr/local/matlab-R2011a/bin/glnxa64/libeng.so)
+==10424==    by 0x400C17: main (test.c:48)
+==10424== 
+==10424== 18 bytes in 1 blocks are definitely lost in loss record 32 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BF96: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 18 bytes in 1 blocks are definitely lost in loss record 33 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C0CE: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 20 bytes in 1 blocks are definitely lost in loss record 34 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BFDE: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 22 bytes in 1 blocks are definitely lost in loss record 35 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BFF6: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 22 bytes in 1 blocks are definitely lost in loss record 36 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C06E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 24 bytes in 1 blocks are possibly lost in loss record 41 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824312: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58227DC: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58252F6: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264EA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 24 bytes in 1 blocks are definitely lost in loss record 42 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BF4E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 24 bytes in 1 blocks are definitely lost in loss record 43 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C146: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 24 (16 direct, 8 indirect) bytes in 1 blocks are definitely lost in loss record 44 of 181
+==10424==    at 0x4A04A28: calloc (vg_replace_malloc.c:467)
+==10424==    by 0x4E503AE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E510BB: mxGetDimensions (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0xF6F39DD: ???
+==10424==    by 0x400C81: main (test.c:53)
+==10424== 
+==10424== 24 (16 direct, 8 indirect) bytes in 1 blocks are definitely lost in loss record 45 of 181
+==10424==    at 0x4A04A28: calloc (vg_replace_malloc.c:467)
+==10424==    by 0x4E503AE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E510BB: mxGetDimensions (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0xF6F3A11: ???
+==10424==    by 0x400C81: main (test.c:53)
+==10424== 
+==10424== 24 (16 direct, 8 indirect) bytes in 1 blocks are definitely lost in loss record 46 of 181
+==10424==    at 0x4A04A28: calloc (vg_replace_malloc.c:467)
+==10424==    by 0x4E503AE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E510BB: mxGetDimensions (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0xF6F3A6C: ???
+==10424==    by 0x400C81: main (test.c:53)
+==10424== 
+==10424== 28 bytes in 1 blocks are definitely lost in loss record 47 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BFAE: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 29 bytes in 1 blocks are possibly lost in loss record 48 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582A667: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 29 bytes in 1 blocks are possibly lost in loss record 49 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582AE11: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 30 bytes in 1 blocks are possibly lost in loss record 50 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5821337: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5834115: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58039C2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424== 
+==10424== 30 bytes in 1 blocks are possibly lost in loss record 51 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582A35D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 30 bytes in 1 blocks are possibly lost in loss record 52 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582AC41: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 30 bytes in 1 blocks are possibly lost in loss record 53 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58252C8: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264EA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 30 bytes in 1 blocks are possibly lost in loss record 54 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582278D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58252F6: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264EA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 30 bytes in 1 blocks are possibly lost in loss record 55 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5816F85: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5817762: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5817CF9: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5827F93: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58286A6: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58299BF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBF0: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3E9: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 32 bytes in 1 blocks are possibly lost in loss record 64 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582A4EF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 32 bytes in 1 blocks are possibly lost in loss record 65 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582A7D7: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 32 bytes in 1 blocks are possibly lost in loss record 66 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582AD35: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 32 bytes in 1 blocks are possibly lost in loss record 67 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582AEE2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 32 bytes in 1 blocks are definitely lost in loss record 69 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019BF66: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 33 bytes in 1 blocks are possibly lost in loss record 70 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58212E5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5834115: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58039C2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424== 
+==10424== 33 bytes in 1 blocks are possibly lost in loss record 71 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582A94A: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 33 bytes in 1 blocks are possibly lost in loss record 72 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582AAC2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 33 bytes in 1 blocks are possibly lost in loss record 73 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582AFB5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 33 bytes in 1 blocks are possibly lost in loss record 74 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582B091: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7CF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 33 bytes in 1 blocks are possibly lost in loss record 75 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582A088: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7D7: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 34 bytes in 1 blocks are possibly lost in loss record 76 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5829F10: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7D7: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 34 bytes in 1 blocks are definitely lost in loss record 79 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C086: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 34 bytes in 1 blocks are definitely lost in loss record 80 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C12E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 36 bytes in 1 blocks are possibly lost in loss record 81 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582126A: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5834115: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58039C2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424== 
+==10424== 36 bytes in 1 blocks are possibly lost in loss record 82 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5829C0D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7D7: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 36 bytes in 1 blocks are definitely lost in loss record 83 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C116: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 36 bytes in 1 blocks are definitely lost in loss record 84 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C24E: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 37 bytes in 1 blocks are possibly lost in loss record 85 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CDE4: ??? (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9CF32: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(char const*, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5829D98: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582B7D7: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5831713: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x580A3F2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3DA: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5137083: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x5137156: fl::i18n::init__mllc_init(int) (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x51371CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424== 
+==10424== 40 bytes in 1 blocks are definitely lost in loss record 89 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x1071AEF1: ???
+==10424==    by 0x107F3115: ???
+==10424==    by 0x106BA61A: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424==    by 0x2D746962726F2F6F: ???
+==10424==    by 0x686A6936306372: ???
+==10424== 
+==10424== 40 bytes in 1 blocks are definitely lost in loss record 90 of 181
+==10424==    at 0x4A05FDE: malloc (vg_replace_malloc.c:236)
+==10424==    by 0x512DEBF: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x512CD5A: lcp_to_utf16 (in /usr/local/matlab-R2011a/bin/glnxa64/libut.so)
+==10424==    by 0x1019C236: ???
+==10424==    by 0x101CAD35: ???
+==10424==    by 0x10183AB2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424==    by 0x454B434F535F5448: ???
+==10424==    by 0x6D742F3D52494453: ???
+==10424== 
+==10424== 48 bytes in 2 blocks are possibly lost in loss record 115 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824312: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582236F: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582513A: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264A2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 72 bytes in 3 blocks are possibly lost in loss record 124 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5823085: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x80353D1: doProlog (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8035ACA: prologProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 78 bytes in 2 blocks are possibly lost in loss record 125 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5825256: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264EA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 84 bytes in 2 blocks are possibly lost in loss record 127 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582231D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582513A: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264A2: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 90 bytes in 3 blocks are possibly lost in loss record 136 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5826236: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x80353D1: doProlog (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8035ACA: prologProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424== 
+==10424== 90 bytes in 3 blocks are possibly lost in loss record 137 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58230D3: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x80353D1: doProlog (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8035ACA: prologProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424== 
+==10424== 95 bytes in 3 blocks are possibly lost in loss record 138 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58262A5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x80353D1: doProlog (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8035ACA: prologProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424== 
+==10424== 96 bytes in 3 blocks are possibly lost in loss record 142 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5823039: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x80353D1: doProlog (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8035ACA: prologProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 96 bytes in 3 blocks are possibly lost in loss record 143 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824992: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582314B: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x80353D1: doProlog (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8035ACA: prologProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 197 bytes in 5 blocks are possibly lost in loss record 147 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582630A: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 640 bytes in 1 blocks are definitely lost in loss record 156 of 181
+==10424==    at 0x4A04A28: calloc (vg_replace_malloc.c:467)
+==10424==    by 0x4E319CE: mxCreateNumericMatrixWithReuse(unsigned long, unsigned long, mxClassID, mxComplexity, int, mxArray_tag const**) (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E31B08: mxCreateNumericArrayWithReuse(unsigned long, unsigned long const*, mxClassID, mxComplexity, int, mxArray_tag const**) (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E5ECC5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E5FD22: miGetCurrentItem (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x53D0CF9: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmat.so)
+==10424==    by 0x53D0D78: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmat.so)
+==10424==    by 0x4C0D83A: engGetVariable (in /usr/local/matlab-R2011a/bin/glnxa64/libeng.so)
+==10424==    by 0x400C02: main (test.c:47)
+==10424== 
+==10424== 672 bytes in 1 blocks are definitely lost in loss record 157 of 181
+==10424==    at 0x4A04A28: calloc (vg_replace_malloc.c:467)
+==10424==    by 0x4E319CE: mxCreateNumericMatrixWithReuse(unsigned long, unsigned long, mxClassID, mxComplexity, int, mxArray_tag const**) (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E31B08: mxCreateNumericArrayWithReuse(unsigned long, unsigned long const*, mxClassID, mxComplexity, int, mxArray_tag const**) (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E5ECC5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x4E5FD22: miGetCurrentItem (in /usr/local/matlab-R2011a/bin/glnxa64/libmx.so)
+==10424==    by 0x53D0CF9: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmat.so)
+==10424==    by 0x53D0D78: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmat.so)
+==10424==    by 0x4C0D83A: engGetVariable (in /usr/local/matlab-R2011a/bin/glnxa64/libeng.so)
+==10424==    by 0x400BED: main (test.c:46)
+==10424== 
+==10424== 816 bytes in 34 blocks are possibly lost in loss record 158 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824312: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58227DC: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58252F6: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264EA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 1,049 (48 direct, 1,001 indirect) bytes in 1 blocks are definitely lost in loss record 159 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0xFBF4D59: ???
+==10424==    by 0xFBF5C6E: ???
+==10424==    by 0xFBF5E63: ???
+==10424==    by 0xFBFD40A: ???
+==10424==    by 0xFBFD4BD: ???
+==10424==    by 0xFC963A5: ???
+==10424==    by 0xFB885D2: ???
+==10424==    by 0x7FF000095: ???
+==10424==    by 0x72657473756C632E: ???
+==10424==    by 0x656D2E6A6172745E: ???
+==10424==    by 0x42524F0034366177: ???
+==10424== 
+==10424== 1,168 bytes in 34 blocks are possibly lost in loss record 160 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582278D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58252F6: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264EA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 1,625 bytes in 65 blocks are possibly lost in loss record 161 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582611F: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58261CB: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 1,903 bytes in 49 blocks are possibly lost in loss record 162 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582630A: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 2,736 bytes in 114 blocks are possibly lost in loss record 165 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5823085: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3E9: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,472 bytes in 114 blocks are possibly lost in loss record 167 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5826236: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,472 bytes in 114 blocks are possibly lost in loss record 168 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58230D3: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,648 bytes in 114 blocks are possibly lost in loss record 169 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5823039: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3E9: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,648 bytes in 114 blocks are possibly lost in loss record 170 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824992: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582314B: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,696 bytes in 154 blocks are possibly lost in loss record 171 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5823085: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3E9: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,725 bytes in 149 blocks are possibly lost in loss record 172 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x582611F: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58261CB: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,799 bytes in 134 blocks are possibly lost in loss record 173 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5822D08: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5825617: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 3,912 bytes in 114 blocks are possibly lost in loss record 174 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58262A5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x8032688: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 4,288 bytes in 134 blocks are possibly lost in loss record 175 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824992: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5822D7E: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5825617: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264CA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 4,683 bytes in 154 blocks are possibly lost in loss record 176 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x5826236: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 4,683 bytes in 154 blocks are possibly lost in loss record 177 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D19A: std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9D28B: std::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::string const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58230D3: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 4,928 bytes in 154 blocks are possibly lost in loss record 178 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5823039: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582F3E9: fl::i18n::initLcMgmtSystem(std::string const&) (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 4,928 bytes in 154 blocks are possibly lost in loss record 179 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x5824992: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582314B: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826356: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x582CBDE: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== 5,235 bytes in 154 blocks are possibly lost in loss record 180 of 181
+==10424==    at 0x4A06C8E: operator new(unsigned long) (vg_replace_malloc.c:261)
+==10424==    by 0x3689E9C3C8: std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DDA9: std::string::_M_mutate(unsigned long, unsigned long, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x3689E9DF6B: std::string::_M_replace_safe(unsigned long, unsigned long, char const*, unsigned long) (in /usr/lib64/libstdc++.so.6.0.13)
+==10424==    by 0x58262A5: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x58264BA: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5818154: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x80327B9: doContent (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x8033893: contentProcessor (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x802BEB0: XML_ParseBuffer (in /usr/local/matlab-R2011a/bin/glnxa64/libexpat.so.1.5.0)
+==10424==    by 0x581899D: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424==    by 0x5826572: ??? (in /usr/local/matlab-R2011a/bin/glnxa64/libmwi18n.so)
+==10424== 
+==10424== LEAK SUMMARY:
+==10424==    definitely lost: 2,058 bytes in 44 blocks
+==10424==    indirectly lost: 1,025 bytes in 19 blocks
+==10424==      possibly lost: 68,042 bytes in 2,259 blocks
+==10424==    still reachable: 19,278 bytes in 91 blocks
+==10424==         suppressed: 0 bytes in 0 blocks
+==10424== Reachable blocks (those to which a pointer was found) are not shown.
+==10424== To see them, rerun with: --leak-check=full --show-reachable=yes
+==10424== 
+==10424== For counts of detected and suppressed errors, rerun with: -v
+==10424== Use --track-origins=yes to see where uninitialised values come from
+==10424== ERROR SUMMARY: 104 errors from 100 contexts (suppressed: 44 from 9)

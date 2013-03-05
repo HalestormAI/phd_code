@@ -1,0 +1,703 @@
+version: 1
+creator: callgrind-3.6.0
+pid: 9392
+cmd:  ./test ./mex_file.mexa64
+part: 1
+
+
+desc: I1 cache: 
+desc: D1 cache: 
+desc: LL cache: 
+
+desc: Timerange: Basic block 0 - 3902
+desc: Trigger: Program termination
+
+positions: line
+events: Ir
+summary: 15565
+
+
+ob=(1) /lib64/ld-2.12.so
+fl=(1) ???
+fn=(0) 0x0000003682e00b00
+0 2
+cfn=(2) _dl_start
+calls=1 0 
+0 15563
+
+fn=(2)
+0 298
+cfn=(4) _dl_setup_hash
+calls=1 0 
+0 24
+0 17
+cfn=(6) _dl_sysdep_start
+calls=1 0 
+0 15182
+0 42
+
+fn=(24) calloc
+0 18
+cfn=(28) malloc
+calls=2 0 
+0 87
+
+fn=(48) _dl_init_paths
+0 14
+cfn=(50) _dl_important_hwcaps
+calls=1 0 
+0 326
+0 3
+cfn=(28)
+calls=1 0 
+0 28
+0 13
+cfn=(28)
+calls=1 0 
+0 28
+0 140
+cfn=(54) index
+calls=1 0 
+0 52
+0 4
+cfn=(10) strlen
+calls=1 0 
+0 127
+0 8
+cfn=(34) memcpy
+calls=1 0 
+0 102
+0 429
+cfn=(28)
+calls=1 0 
+0 28
+0 10
+cfn=(56) fillin_rpath
+calls=1 0 
+0 1690
+0 21
+
+fn=(84) read
+0 5
+
+fn=(104) open_path
+0 102
+cfn=(52) mempcpy
+calls=4 0 
+0 125
+0 272
+cfn=(52)
+calls=16 0 
+0 340
+0 64
+cfn=(52)
+calls=16 0 
+0 368
+0 176
+cfn=(80) open_verify
+calls=16 0 
+0 752
+0 400
+cfn=(106) _xstat
+calls=16 0 
+0 196
+0 168
+
+fn=(6)
+0 391
+cfn=(8) brk
+calls=1 0 
+0 11
+0 7
+cfn=(12) sbrk
+calls=1 0 
+0 17
+0 11
+cfn=(14) dl_main
+calls=1 0 
+0 14659
+0 42
+cfn=(10)
+calls=1 0 
+0 42
+0 2
+
+fn=(34)
+0 412
+
+fn=(70) __sigsetjmp
+0 38
+
+fn=(98) access
+0 11
+
+fn=(112) bcmp
+0 87
+
+fn=(20) _dl_new_object
+0 30
+cfn=(10)
+calls=2 0 
+0 83
+0 16
+cfn=(24)
+calls=2 0 
+0 105
+0 26
+cfn=(34)
+calls=2 0 
+0 70
+0 154
+cfn=(10)
+calls=1 0 
+0 73
+0 63
+cfn=(28)
+calls=1 0 
+0 28
+0 8
+cfn=(52)
+calls=1 0 
+0 49
+0 128
+
+fn=(38) rtld_lock_default_lock_recursive
+0 4
+
+fn=(40) rtld_lock_default_unlock_recursive
+0 4
+
+fn=(44) _dl_discover_osversion
+0 15
+cfn=(46) uname
+calls=1 0 
+0 5
+0 72
+
+fn=(52)
+0 1038
+
+fn=(54)
+0 200
+
+fn=(60) _dl_debug_initialize
+0 32
+
+fn=(94) memset
+0 35
+
+fn=(8)
+0 11
+
+fn=(14)
+0 24
+cfn=(16) process_envvars
+calls=1 0 
+0 654
+0 11
+cfn=(20)
+calls=1 0 
+0 247
+0 9
+cfn=(36) _dl_add_to_namespace_list
+calls=1 0 
+0 31
+0 175
+cfn=(42) strcmp
+calls=1 0 
+0 7
+0 226
+cfn=(4)
+calls=1 0 
+0 24
+0 7
+cfn=(44)
+calls=1 0 
+0 92
+0 10
+cfn=(48)
+calls=1 0 
+0 3023
+0 3
+cfn=(60)
+calls=1 0 
+0 23
+0 53
+cfn=(62) _dl_debug_state
+calls=1 0 
+0 1
+0 11
+cfn=(98)
+calls=1 0 
+0 11
+0 17
+cfn=(100) _dl_map_object_deps
+calls=1 0 
+0 6591
+0 101
+cfn=(34)
+calls=1 0 
+0 79
+0 8
+cfn=(58) strsep
+calls=1 0 
+0 943
+0 3
+cfn=(58)
+calls=1 0 
+0 4
+0 14
+cfn=(64) do_preload
+calls=1 0 
+0 2242
+0 15
+
+fn=(16)
+0 26
+cfn=(18) _dl_next_ld_env_entry
+calls=1 0 
+0 22
+0 4
+cfn=(18)
+calls=2 0 
+0 404
+0 198
+
+fn=(32) __libc_memalign
+0 237
+cfn=(90) mmap
+calls=1 0 
+0 6
+0 88
+
+fn=(64)
+0 17
+cfn=(66) _dl_catch_error
+calls=1 0 
+0 2215
+0 10
+
+fn=(78) expand_dynamic_string_token
+0 13
+cfn=(54)
+calls=1 0 
+0 52
+0 4
+cfn=(10)
+calls=1 0 
+0 73
+0 3
+cfn=(28)
+calls=1 0 
+0 28
+0 13
+cfn=(34)
+calls=1 0 
+0 52
+
+fn=(80)
+0 406
+cfn=(82) open
+calls=17 0 
+0 181
+0 59
+cfn=(84)
+calls=1 0 
+0 5
+0 307
+
+fn=(90)
+0 24
+
+fn=(114) _dl_cache_libcmp
+0 176
+cfn=(115) _dl_cache_libcmp'2
+calls=11 0 
+0 667
+
+fn=(115)
+0 623
+cfn=(115)
+calls=30 0 
+0 958
+0 44
+
+fn=(10)
+0 1020
+
+fn=(42)
+0 61
+cfn=(43) strcmp'2
+calls=4 0 
+0 28
+0 44
+
+fn=(43)
+0 28
+
+fn=(74) _dl_map_object
+0 103
+cfn=(76) _dl_name_match_p
+calls=5 0 
+0 246
+0 39
+cfn=(54)
+calls=2 0 
+0 62
+0 10
+cfn=(78)
+calls=1 0 
+0 238
+0 12
+cfn=(80)
+calls=1 0 
+0 206
+0 25
+cfn=(86) _dl_map_object_from_fd
+calls=1 0 
+0 1432
+0 8
+cfn=(10)
+calls=1 0 
+0 63
+0 26
+cfn=(104)
+calls=1 0 
+0 1487
+0 16
+cfn=(108) _dl_load_cache_lookup
+calls=1 0 
+0 1334
+0 23
+cfn=(104)
+calls=1 0 
+0 1476
+0 73
+cfn=(42)
+calls=2 0 
+0 21
+0 15
+cfn=(116) _dl_signal_error
+calls=1 0 
+0 292
+
+fn=(106)
+0 196
+
+fn=(116)
+0 32
+cfn=(68) _dl_initial_error_catch_tsd
+calls=2 0 
+0 4
+0 12
+cfn=(10)
+calls=1 0 
+0 63
+0 3
+cfn=(10)
+calls=1 0 
+0 62
+0 4
+cfn=(28)
+calls=1 0 
+0 28
+0 7
+cfn=(52)
+calls=1 0 
+0 40
+0 4
+cfn=(34)
+calls=1 0 
+0 23
+0 15
+cfn=(118) __longjmp
+calls=1 0 
+0 18
+0 24
+cfn=(122) _dl_dprintf
+calls=1 0 
+0 906
+0 2
+cfn=(126) _Exit
+calls=1 0 
+0 4
+0 4
+cfn=(120) __strerror_r
+calls=1 0 
+0 9
+0 3
+
+fn=(4)
+0 72
+
+fn=(12)
+0 17
+
+fn=(58)
+0 2104
+
+fn=(76)
+0 35
+cfn=(42)
+calls=5 0 
+0 42
+0 67
+cfn=(42)
+calls=7 0 
+0 63
+0 39
+
+fn=(108)
+0 223
+cfn=(114)
+calls=11 0 
+0 843
+0 76
+cfn=(110) _dl_sysdep_read_whole_file
+calls=1 0 
+0 68
+0 35
+cfn=(112)
+calls=1 0 
+0 87
+0 2
+
+fn=(120)
+0 9
+
+fn=(18)
+0 426
+
+fn=(46)
+0 5
+
+fn=(50)
+0 60
+cfn=(28)
+calls=1 0 
+0 28
+0 186
+cfn=(52)
+calls=1 0 
+0 22
+0 5
+cfn=(52)
+calls=1 0 
+0 22
+0 3
+
+fn=(56)
+0 19
+cfn=(58)
+calls=1 0 
+0 552
+0 6
+cfn=(58)
+calls=2 0 
+0 605
+0 13
+cfn=(10)
+calls=2 0 
+0 134
+0 79
+cfn=(28)
+calls=2 0 
+0 56
+0 20
+cfn=(52)
+calls=2 0 
+0 72
+0 134
+
+fn=(62)
+0 1
+
+fn=(82)
+0 186
+
+fn=(86)
+0 17
+cfn=(60)
+calls=1 0 
+0 9
+0 5
+cfn=(88) _fxstat
+calls=1 0 
+0 10
+0 44
+cfn=(20)
+calls=1 0 
+0 586
+0 271
+cfn=(90)
+calls=1 0 
+0 6
+0 51
+cfn=(94)
+calls=1 0 
+0 18
+0 34
+cfn=(90)
+calls=1 0 
+0 6
+0 237
+cfn=(96) close
+calls=1 0 
+0 5
+0 11
+cfn=(4)
+calls=1 0 
+0 24
+0 15
+cfn=(36)
+calls=1 0 
+0 40
+0 19
+cfn=(92) mprotect
+calls=1 0 
+0 5
+0 19
+
+fn=(102) openaux
+0 14
+cfn=(74)
+calls=1 0 
+0 5061
+
+fn=(110)
+0 10
+cfn=(82)
+calls=1 0 
+0 5
+0 8
+cfn=(88)
+calls=1 0 
+0 10
+0 8
+cfn=(96)
+calls=1 0 
+0 5
+0 14
+cfn=(90)
+calls=1 0 
+0 6
+0 2
+
+fn=(124) _dl_debug_vdprintf
+0 390
+cfn=(10)
+calls=4 0 
+0 163
+0 30
+cfn=(10)
+calls=3 0 
+0 137
+0 163
+
+fn=(36)
+0 14
+cfn=(38)
+calls=2 0 
+0 4
+0 35
+cfn=(40)
+calls=1 0 
+0 2
+0 12
+cfn=(40)
+calls=1 0 
+0 2
+0 2
+
+fn=(66)
+0 18
+cfn=(68)
+calls=2 0 
+0 4
+0 12
+cfn=(70)
+calls=2 0 
+0 38
+0 19
+cfn=(102)
+calls=1 0 
+0 5075
+cfn=(72) map_doit
+calls=1 0 
+0 2158
+0 33
+
+fn=(68)
+0 8
+
+fn=(88)
+0 20
+
+fn=(92)
+0 5
+
+fn=(96)
+0 10
+
+fn=(100)
+0 104
+cfn=(54)
+calls=1 0 
+0 34
+0 10
+cfn=(66)
+calls=1 0 
+0 5142
+0 16
+cfn=(28)
+calls=1 0 
+0 28
+0 56
+cfn=(94)
+calls=1 0 
+0 17
+0 71
+cfn=(34)
+calls=1 0 
+0 40
+0 23
+cfn=(34)
+calls=1 0 
+0 23
+0 18
+cfn=(116)
+calls=1 0 
+0 975
+0 8
+cfn=(34)
+calls=1 0 
+0 23
+0 3
+
+fn=(118)
+0 18
+
+fn=(122)
+0 21
+cfn=(124)
+calls=1 0 
+0 883
+0 2
+
+fn=(126)
+0 4
+
+fn=(28)
+0 36
+cfn=(32)
+calls=12 0 
+0 331
+
+fn=(72)
+0 9
+cfn=(74)
+calls=1 0 
+0 2146
+0 3
+
+totals: 15565

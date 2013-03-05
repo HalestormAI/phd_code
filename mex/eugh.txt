@@ -1,0 +1,41 @@
+/tmp/ccMPOPeH.o: In function `ijh::mex_cout(std::basic_stringstream<char, std::char_traits<char>, std::allocator<char> >*)':
+cluster_traj.cpp:(.text+0x46): undefined reference to `mexPrintf'
+/tmp/ccMPOPeH.o: In function `Matrix::print() const':
+cluster_traj.cpp:(.text+0x4b0): undefined reference to `mexPrintf'
+cluster_traj.cpp:(.text+0x4dc): undefined reference to `mexPrintf'
+cluster_traj.cpp:(.text+0x500): undefined reference to `mexPrintf'
+cluster_traj.cpp:(.text+0x524): undefined reference to `mexPrintf'
+/tmp/ccMPOPeH.o: In function `Matrix::operator+(Matrix const&) const':
+cluster_traj.cpp:(.text+0xa7d): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccMPOPeH.o: In function `Matrix::operator-(Matrix const&) const':
+cluster_traj.cpp:(.text+0xd1b): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccMPOPeH.o: In function `main':
+cluster_traj.cpp:(.text+0x1783): undefined reference to `mexPrintf'
+cluster_traj.cpp:(.text+0x1817): undefined reference to `mexPrintf'
+/tmp/ccllDWdh.o: In function `Point::Point(Matrix)':
+Point.cpp:(.text+0xe4): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccllDWdh.o: In function `Point::print2D()':
+Point.cpp:(.text+0x197): undefined reference to `mexPrintf'
+Point.cpp:(.text+0x1ce): undefined reference to `mexEvalString'
+/tmp/ccllDWdh.o: In function `Point::print3D()':
+Point.cpp:(.text+0x327): undefined reference to `mexPrintf'
+Point.cpp:(.text+0x35e): undefined reference to `mexEvalString'
+/tmp/ccllDWdh.o: In function `Point::toMatrix()':
+Point.cpp:(.text+0xb83): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccj2epiS.o: In function `Trajectory::addPoint3D(float, float, float)':
+Trajectory.cpp:(.text+0x59b): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccj2epiS.o: In function `Trajectory::addPoint(Point)':
+Trajectory.cpp:(.text+0x610): undefined reference to `mexErrMsgIdAndTxt'
+Trajectory.cpp:(.text+0x63a): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccj2epiS.o: In function `Trajectory::loadAll(mxArray_tag const*, std::vector<Trajectory, std::allocator<Trajectory> >*)':
+Trajectory.cpp:(.text+0x1189): undefined reference to `mxGetDimensions'
+Trajectory.cpp:(.text+0x11ae): undefined reference to `mxGetCell'
+Trajectory.cpp:(.text+0x11be): undefined reference to `mxGetDimensions'
+Trajectory.cpp:(.text+0x11e7): undefined reference to `mxGetPr'
+Trajectory.cpp:(.text+0x1218): undefined reference to `mxGetPr'
+Trajectory.cpp:(.text+0x1244): undefined reference to `mexErrMsgIdAndTxt'
+/tmp/ccj2epiS.o: In function `Trajectory::outputAll(std::vector<Trajectory, std::allocator<Trajectory> >*, mxArray_tag*)':
+Trajectory.cpp:(.text+0x130c): undefined reference to `mxCreateDoubleMatrix'
+Trajectory.cpp:(.text+0x131c): undefined reference to `mxGetPr'
+Trajectory.cpp:(.text+0x1358): undefined reference to `mxSetCell'
+collect2: ld returned 1 exit status

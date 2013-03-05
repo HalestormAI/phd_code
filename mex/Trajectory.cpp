@@ -66,7 +66,7 @@ void Trajectory::print3D( ) {
     }
 }
 
-uint Trajectory::length( ) {
+uint Trajectory::length( ) const {
     return this->points.size( );
 }
 
@@ -99,7 +99,7 @@ void Trajectory::addPoint(Point p) {
         this->is3D = true;
 }
 
-float Trajectory::angleDiff( int aIdx, Trajectory *t, int bIdx ) {
+float Trajectory::angleDiff( int aIdx, const Trajectory &t, int bIdx ) const {
 
 //         mexPrintf("%d %d %d (%d)\n%d %d %d (%d)\n\n", aIdx-1, aIdx, aIdx+1, this->points.size( ), bIdx-1, bIdx, bIdx+1, t->points.size( ));
 
@@ -107,9 +107,9 @@ float Trajectory::angleDiff( int aIdx, Trajectory *t, int bIdx ) {
     Point p2a = this->at( aIdx );
     Point p3a = this->at(aIdx+1);
 
-    Point p1b = t->at(bIdx-1);
-    Point p2b = t->at( bIdx );
-    Point p3b = t->at(bIdx+1);
+    Point p1b = t.at(bIdx-1);
+    Point p2b = t.at( bIdx );
+    Point p3b = t.at(bIdx+1);
 
     Line l1a = Line( p1a, p2a );
     Line l2a = Line( p2a, p3a );
@@ -141,6 +141,43 @@ Trajectory Trajectory::subtrajectory( std::vector<int> ids )
     }
     
     return sub;
+}
+
+std::string Trajectory::toStr( ) {
+    std::stringstream s;
+    
+    std::vector<Point>::iterator i;
+    for( i = this->points.begin( ); i != this->points.end( ); i++ ){
+        
+        if( this->is3D )
+            s << i->toStr3D( );
+        else
+            s << i->toStr2D( );
+    }    
+    
+    return s.str( );
+}
+
+void Trajectory::toFile( std::string filename )
+{
+    std::string str = this->toStr( );
+    std::ofstream output;
+    output.open( filename.c_str( ) );
+    output << this->toStr( );
+    output.close( );
+}
+
+void Trajectory::fromFile( std::string filename )
+{
+    // Load in all lines into vector
+    std::ifstream input;
+    input.open(filename.c_str( ));
+    std::string lineTmp;
+    while(std::getline( input, lineTmp)) 
+    {
+        this->addPoint( Point::fromString( lineTmp ) );
+    }
+    
 }
 
 // STATIC METHODS

@@ -1,5 +1,6 @@
 #include <math.h>
 #include <vector>
+#include <fstream>
 #include "camcal_pets/cameraModel.h"
 #include "camcal_pets/xmlUtil.h"
 #include "mex.h"
@@ -31,17 +32,21 @@ public:
     void print2D( );    
     void print3D( );
     
-    uint length( );
+    uint length( ) const;
 
     Point at( int idx ) const;
     
     void addPoint3D(float x, float y,float z);    
     void addPoint(Point p);
        
-    float angleDiff( int aIdx, Trajectory *t, int bIdx );    
+    float angleDiff( int aIdx, const Trajectory &t, int bIdx ) const;    
     void calibTsai( Etiseo::CameraModel *cam );
     
     Trajectory subtrajectory( std::vector<int> ids );
+    std::string toStr( );
+    void toFile( std::string filename );
+    void fromFile( std::string filename );
+
     
     static void loadAll( const mxArray *prhs, std::vector<Trajectory> *alltraj );
     static void outputAll( std::vector<Trajectory> *traj, mxArray *out );

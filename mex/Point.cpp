@@ -36,10 +36,15 @@ Point::Point( Matrix m ) {
 }
 
 void Point::print2D( ) {
+    mexPrintf( this->toStr2D( ).c_str( ) );
+    mexEvalString("drawnow");
+}
+
+std::string Point::toStr2D( ) {
     std::stringstream ss;
     ss << std::setw (10) << this->x << "\t" << this->y << std::endl;
-    mexPrintf( ss.str( ).c_str( ) );
-    mexEvalString("drawnow");
+    return ss.str( );
+    
 }
 
 void Point::print3D( ) {
@@ -124,4 +129,44 @@ Matrix Point::toMatrix( ) {
     }
         
     return m;
+}
+
+Point Point::fromString( std::string str )
+{
+    double x,y,z;
+    Point P;
+    
+    std::istringstream cast_buffer;
+    std::vector<std::string> tokens;
+    std::istringstream iss(str);
+    
+    // Copy each element of the line into the string vector
+    copy(std::istream_iterator<std::string>(iss),
+         std::istream_iterator<std::string>(),
+         std::back_inserter<std::vector<std::string> >(tokens));
+    
+    
+    // Now use the size of the buffer to decide 2d or 3d
+    bool is3d = tokens.size( ) > 2;
+
+    // Need to cast x and y for both
+    cast_buffer.str(tokens.at(0));
+    cast_buffer >> x;
+    cast_buffer.clear( );
+    cast_buffer.str(tokens.at(1));
+    cast_buffer >> y;
+    cast_buffer.clear( );
+    
+    
+    // If 3d, cast z and create point
+    if( is3d ) {
+        cast_buffer.str(tokens.at(2));
+        cast_buffer >> z;
+        P = Point( x, y, z );
+    } else {
+        P = Point( x, y );
+    }
+    
+    return P;
+
 }

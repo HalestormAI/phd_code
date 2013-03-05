@@ -5,142 +5,17 @@
 #include <iterator>
 #include <math.h>
 #include <iostream>
-
+#include "mexHelper.cpp"
 #include "Matrix.cpp"
+#include "Trajectory.hpp"
 
-#define PI 3.14159265358979323846
+#ifndef PI
+#define PI 3.1415926535897932384626433832795028841971693993751058209749
+#endif
+
 #define DEG2RAD(DEG) ((DEG)*((PI)/(180.0)))
 
 using namespace std;
-
-class Point
-{
-public:
-       float x, y;
-       float X,Y,Z;
-       
-       Point ( ) {}
-       Point( float ix, float iy ) {
-           this->x = ix;
-           this->y = iy;
-       }
-       
-       void print2D( ) {
-            cout << this->x << "\t" << this->y << endl;
-       }
-       
-       void print3D( ) {
-            cout << this->X << "\t" << this->Y << "\t" << this->Z << endl;
-       }
-       
-       float dist2D( Point pt ) {
-            float dx = (this->x - pt.x);
-            float dy = (this->y - pt.y);
-
-            float dist = sqrt(pow(dx,2) + pow(dy,2));
-            return dist;
-       }
-       
-       
-};
-
-class Line
-{
-public:
-    Point start;
-    Point end;
-    float m,c;
-    
-    Line( Point p1, Point p2 ) {
-        this->start = p1;
-        this->end = p2;
-        
-        float dx = p1.x - p2.x;
-        float dy = p1.y - p2.y;
-        
-        this->m = dy/dx;
-        
-        this->c = p1.y - this->m*p1.x;
-    }
-    
-    float ang( Line l ) {
-        return atan( abs( (this->m - l.m) / (1+this->m*l.m) ) );
-    }
-};
-
-class Trajectory
-{
-public:
-    vector<Point> points;
-    
-    Trajectory( double *traj, const mwSize *dims ) {
-        this->fromDouble( traj, dims );
-    }
-    
-    void fromDouble( double* traj, const mwSize *dims ) {
-    
-        float x,y;
-        for(int col=0;col < dims[1]; col++) {
-            x = traj[0+col*dims[0]];
-            y = traj[1+col*dims[0]];
-            points.push_back( Point( x, y ) );
-        }
-    }
-    
-    void toDouble( double *traj ) {
-        for( int col=0; col<this->points.size( ); col++ ) {
-            traj[0+col*3] = this->points.at(col).X;
-            traj[1+col*3] = this->points.at(col).Y;
-            traj[2+col*3] = this->points.at(col).Z;
-        }
-    }
-    
-    void print2D( ) {
-        vector<Point>::iterator i;
-        for( i = this->points.begin( ); i != this->points.end( ); i++ ){
-            i->print2D( );
-        }
-    }
-    
-    void print3D( ) {
-        vector<Point>::iterator i;
-        for( i = this->points.begin( ); i != this->points.end( ); i++ ){
-            i->print3D( );
-        }
-    }
-    
-    uint length( ) {
-        return this->points.size( );
-    }
-
-    Point at( int idx ) {
-        return this->points.at(idx);
-    }
-       
-    float angleDiff( int aIdx, Trajectory *t, int bIdx ) {
-        
-//         mexPrintf("%d %d %d (%d)\n%d %d %d (%d)\n\n", aIdx-1, aIdx, aIdx+1, this->points.size( ), bIdx-1, bIdx, bIdx+1, t->points.size( ));
-        
-        Point p1a = this->at(aIdx-1);
-        Point p2a = this->at( aIdx );
-        Point p3a = this->at(aIdx+1);
-        
-        Point p1b = t->at(bIdx-1);
-        Point p2b = t->at( bIdx );
-        Point p3b = t->at(bIdx+1);
-        
-        Line l1a = Line( p1a, p2a );
-        Line l2a = Line( p2a, p3a );
-        Line l1b = Line( p1b, p2b );
-        Line l2b = Line( p2b, p3b );
-        
-        float ang1 = l1a.ang( l2a );
-        float ang2 = l1b.ang( l2b );
-        
-        return abs( ang1/PI - ang2/PI );
-    }
-        
-};
 
 
 void vec2double( double *dbl, vector<pair<int,int> > *vec ) {
@@ -153,24 +28,23 @@ void vec2double( double *dbl, vector<pair<int,int> > *vec ) {
     }
 }
 
-void matching_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
+void matching_cost( Matrix &Q, const Trajectory &A, const Trajectory &B, double *w ) {
 
-    int M = A->length( );
-    int N = B->length( );
+    int M = A.length( );
+    int N = B.length( );
 
-    (*Q) = Matrix( M, N );
+    Q = Matrix( M, N );
 
     for( int m=0; m < M; m++ ) {
         for( int n=0; n < N; n++ ) {
-            float dist = A->at(m).dist2D( B->at(n) );
+            float dist = w[1]*(A.at(m).dist2D( B.at(n) ));
             float drn = 1;
-            
             if( (m > 0) && (m < M-1) && (n > 0) && (n < N-1) )
-                drn = A->angleDiff( m, B, n );
-            if( m==n )
-                Q->set(m,n,999999);
-            else
-                Q->set(m,n,drn*dist);
+                drn = w[0]*(A.angleDiff( m, B, n ));
+//             if( m==n )
+//                 Q->set(m,n,999999);
+//             else
+                Q.set(m,n,drn+dist);
         }
     }
 
@@ -179,22 +53,22 @@ void matching_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
 
 
 
-void direction_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
+void direction_cost( Matrix &Q, const Trajectory &A, const Trajectory &B) {
 
-    int M = A->length( );
-    int N = B->length( );
+    int M = A.length( );
+    int N = B.length( );
 
-    (*Q) = Matrix( M, N );
+    Q = Matrix( M, N );
 
     for( int m=0; m < M; m++ ) {
         for( int n=0; n < N; n++ ) {
             float drn = 1;
             if( (m > 0) && (m < M-1) && (n > 0) && (n < N-1) )
-                drn = A->angleDiff( m, B, n );
-            if( m==n )
-                Q->set(m,n,999999);
-            else
-                Q->set(m,n,drn);
+                drn = A.angleDiff( m, B, n );
+//             if( m==n )
+//                 Q->set(m,n,999999);
+//             else
+                Q.set(m,n,drn);
         }
     }
 
@@ -202,20 +76,20 @@ void direction_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
 
 
 
-void distance_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
+void distance_cost( Matrix &Q, const Trajectory &A, const Trajectory &B) {
 
-    int M = A->length( );
-    int N = B->length( );
+    int M = A.length( );
+    int N = B.length( );
 
-    (*Q) = Matrix( M, N );
+    Q = Matrix( M, N );
 
     for( int m=0; m < M; m++ ) {
         for( int n=0; n < N; n++ ) {
-            float dist = A->at(m).dist2D( B->at(n) );
-            if( m==n )
-                Q->set(m,n,999999);
-            else
-                Q->set(m,n,dist);
+            float dist = A.at(m).dist2D( B.at(n) );
+//             if( m==n )
+//                 Q->set(m,n,999999);
+//             else
+                Q.set(m,n,dist);
         }
     }
 
@@ -226,30 +100,36 @@ void distance_cost( Matrix *Q, Trajectory *A, Trajectory *B ) {
 void mexFunction( int nlhs, mxArray *plhs[],
                   int nrhs, const mxArray *prhs[] )
 {
-    const mwSize *dims1, *dims2;
+    const mwSize *dims1, *dims2, *weight_dims;
     double *trajData1, 
-           *trajData2, 
+           *trajData2,
+           *weight,
            *lss_output, 
            *Q_output, 
            *A_output, 
            *D_output;
     
-    Matrix Q,D,A;
+    Matrix Q;
 
     int tol_e, tol_d;
     
+    bool need_to_free = false;
+    
     /* check proper input and output */
-    if(nrhs!=2)
+    if(nrhs>3 || nrhs < 2)
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidNumInputs",
-                "5 inputs required.");
+                "Usage: [...] = cluster_traj(trajectory_1, trajectory_2[, weight]);\n\n\ttrajectory_1\t2xm double\n\ttrajectory_2\t2xn double\n\tweight\t\t2x1 double (w_shape, w_distance)");
     else if(nlhs > 3)
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:maxlhs",
                 "Too many output arguments.");
     else if(!mxIsDouble(prhs[0]))
-        mexErrMsgIdAndTxt( "MATLAB:errorfunc:inputNotStruct",
+        mexErrMsgIdAndTxt( "MATLAB:errorfunc:inputNotDouble",
+                "Input must be a double.");
+    else if(!mxIsDouble(prhs[1]))
+        mexErrMsgIdAndTxt( "MATLAB:errorfunc:inputNotDouble",
                 "Input must be a double.");
    
-    // Get normal from theta and psi
+    // Get trajectory data
     trajData1 = (double*)mxGetPr( prhs[0] );
     dims1 = mxGetDimensions( prhs[0] );
 
@@ -258,16 +138,48 @@ void mexFunction( int nlhs, mxArray *plhs[],
 
     Trajectory traj1 = Trajectory( trajData1, dims1 );
     Trajectory traj2 = Trajectory( trajData2, dims2 );
+    
+    // Get weight
+    if( nrhs >= 3 ) {
+        weight_dims = mxGetDimensions( prhs[2] );
+        if(!mxIsDouble(prhs[2]) || weight_dims[0] != 1 || weight_dims[1] != 2)
+            mexErrMsgIdAndTxt( "MATLAB:errorfunc:inputNotDouble",
+                    "Weight must be a 1x2 double.");
+        
+        weight = (double*)mxGetPr( prhs[2] );
+        
+        // Make sure it sums to 1, else normalise
+        double weight_size = weight[0] + weight[1];
+        if(weight_size != 1) {
+            weight[0] = weight[0] / weight_size;
+            weight[1] = weight[1] / weight_size;
+        }
+    } else {
+        // default to even
+        weight = (double*)malloc(2*sizeof(double));
+        weight[0] = 0.5;
+        weight[1] = 0.5;
+        need_to_free = true;
+    }
+    
+//     ijh::cout << "Weight: " << weight[0] << "," << weight[1] << std::endl;
+//     ijh::mex_cout( );
 
     /* COMBINED MATCHING COST */
-    matching_cost( &Q, &traj1, &traj2 );
+    matching_cost( Q, traj1, traj2, weight );
     plhs[0] = mxCreateDoubleMatrix( Q.rows, Q.cols, mxREAL );
     Q_output = mxGetPr( plhs[0] );
     Q.toDouble( Q_output );
     
+    if( need_to_free ) {
+        free( weight );
+        weight = NULL;
+    }
+    
     /* DISTANCE COST */
     if( nlhs >= 2 ) {
-        distance_cost( &D, &traj1, &traj2 );
+        Matrix D;
+        distance_cost( D, traj1, traj2 );
         plhs[1] = mxCreateDoubleMatrix( D.rows, D.cols, mxREAL );
         D_output = mxGetPr( plhs[1] );
         D.toDouble( D_output );
@@ -275,9 +187,11 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     /* ANGLE COST */
     if( nlhs >= 3 ) {
-        distance_cost( &A, &traj1, &traj2 );
+        Matrix A;
+        direction_cost( A, traj1, traj2 );
         plhs[2] = mxCreateDoubleMatrix( A.rows, A.cols, mxREAL );
         A_output = mxGetPr( plhs[2] );
         A.toDouble( A_output );
     }
+    
 }
