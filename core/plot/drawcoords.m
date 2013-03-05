@@ -42,9 +42,9 @@ function [f,thegroup] = drawcoords( imcoords, ttl, newfig, colour, lw, marker )
             if ischar(colour),
                 lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s%s', marker, colour), 'LineWidth',lw );
             elseif size(colour,1) == (length(imcoords)/2),
-                lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s-', marker), 'Color', colour(cid2mpid(i),:) );
+                lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s-', marker), 'Color', colour(cid2mpid(i),:), 'LineWidth',lw );
             else
-                lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s--', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
+                lines = plot( imcoords(1,i:i+1), imcoords(2,i:i+1), sprintf('%s', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
             end
             set(lines, 'Parent', thegroup )    
         end

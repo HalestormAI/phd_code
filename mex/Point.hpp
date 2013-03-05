@@ -10,6 +10,9 @@
 #include <sstream>
 #include <iomanip>
 #include <vector> 
+#include <iterator>
+#include <iostream>
+
 class Point
 {
     public:
@@ -30,6 +33,7 @@ class Point
        Point( double wx, double wy, double wz );
        
        void print2D( );
+       std::string toStr2D( );
        
        void print3D( );
        std::string toStr3D( );
@@ -51,5 +55,7 @@ class Point
        bool isNull( );
        
        Matrix toMatrix( );
+       
+       static Point fromString( std::string str );
 };
 #endif

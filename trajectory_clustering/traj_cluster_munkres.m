@@ -1,4 +1,4 @@
-function [clusters,matches,assignment,outputcost,imtraj] = traj_cluster_munkres( trajectories, FPS, NUM_LONGEST, draw, MAX_DISTANCE) 
+function [cluster_struct,assignment,outputcost,imtraj,trajectory_distances,trajectory_shapes] = traj_cluster_munkres( trajectories, FPS, NUM_LONGEST, draw, cost_weighting, MAX_DISTANCE) 
 
     if nargin < 3
         NUM_LONGEST = 20;
@@ -21,7 +21,7 @@ function [clusters,matches,assignment,outputcost,imtraj] = traj_cluster_munkres(
 
     
     
-    if nargin < 5
+    if nargin < 6
         rng = range(horzcat(imtraj{:}),2);
         MAX_DISTANCE = rng(1)*0.1;
     end
@@ -29,106 +29,74 @@ function [clusters,matches,assignment,outputcost,imtraj] = traj_cluster_munkres(
     disp('Calculating assignment errors');
     assignment =  cell(length(imtraj),length(imtraj));
     outputcost = zeros(length(imtraj),length(imtraj));
+%     distance_cost = cell(length(imtraj),length(imtraj));
+    shape_cost = cell(length(imtraj),length(imtraj));
+    trajectory_distances = zeros(length(imtraj),length(imtraj));
+    trajectory_shapes = zeros(length(imtraj),length(imtraj));
+    
+    if nargin < 5
+        cost_weighting = [ 0.5 0.5 ];
+    end
+    
     for i=1:length(imtraj)
         imtraj_i = imtraj{i};
-        parfor j=i:length(imtraj)
+        for j=i:length(imtraj)
             % Get point-point similarities for trajectories
-            [input_cost,distance_cost] = cluster_traj( imtraj_i,imtraj{j} );
+            [input_cost,distance_cost] = cluster_traj( imtraj_i,imtraj{j}, cost_weighting );
+% input_cost = cluster_traj( imtraj_i,imtraj{j}, cost_weighting );
+% 
+            
             % Align trajectories in optimal way, get alignment cost
             [assignment{i,j},outputcost(i,j)] = assignmentoptimal( input_cost ); 
-            
             
             %TODO: Need to find a way to get a distance measure out for an
             %assignment, then threshold before throwing at
             %adapt_apcluster.m (affinity propagation)
+            trajectory_distances(i,j) = assigment_distance( assignment{i,j}, distance_cost );
+%             trajectory_shapes(i,j) = assigment_shape( assignment{i,j}, shape_cost{i,j} );
         end
         fprintf('\tRow %d of %d done.\n', i, length(imtraj));
     end
+
+    disp('Calculating Matches');
+    
+    %  Convert output_cost to affinity
+    affinity = max(max(outputcost))-outputcost;
+    
+    % Force no affinity if too far away (e.g. 10% of image width)
+    unacceptible = logical(trajectory_distances > MAX_DISTANCE);
+    affinity(unacceptible) = 0;
     
     for i=1:length(imtraj)
         for j=1:length(imtraj)
-            outputcost(j,i) = outputcost(i,j);
+            affinity(j,i) = affinity(i,j);
         end
     end
+    
+    % Cluster using affinity propagation
+    cluster_index = apcluster(affinity,median(affinity));
+    
+    indices = unique(cluster_index);
+   
+    
+    cluster_struct.colours = colourForLabels( 1:length(indices) );
+    cluster_struct.labels = indices;
+    cluster_struct.labelling = cluster_index;
+    cluster_struct.representative = find_representative( cluster_struct, outputcost, imtraj, draw );
 
-    meanerror = mean(nanmean(outputcost));
-    stderror = std(nanstd(outputcost));
-
-    errTol = meanerror-3*stderror;
-
-    matches = {};
-
-    disp('Calculating Matches');
-%     
-%     [~,minidx] = min(outputcost);
-%     matches = findMatches(minidx);
     
-%     for i=1:length(imtraj)
-%         m = outputcost(i,:) < errTol;
-%         for j=(i+1):length(imtraj)
-%     %         Is i in matches?
-%             if m(j)
-%                 idx = find(cellfun(@(x) logical(numel(find(x==i))),matches));
-%                 if isempty(idx)
-%                    matches{end+1} = [i,j];
-%                 else
-%                     if numel(idx) > 1
-%                       costs = outputcost(i,idx);
-%                       [~,idx2] = min(costs);
-%                       idx = idx(idx2);
-%                     end
-%                     if isempty(find(matches{idx}==j,1,'first'))
-%                         matches{idx}(end+1) = j;
-%                     end
-%                 end
-%             end
-%         end
-% end
-    
-    
-    matches 
-    
-    % Find any trajectories that haven't been clustered
-    groupIds = inMatches( 1:length(imtraj), matches)
-    
-    notClustered = find(~groupIds)
-    for n=1:length(notClustered)
-        matches{end+1} = notClustered(n);
+    function mean_distance = assigment_distance( ass , distances )
+        subs = [1:length(ass);ass']'; % Get the subscript indices
+        subs(~subs(:,2),:) = []; % remove all where a vertex doesn't match
+        idx = sub2ind(size(distances), subs(subs(:,2)>0,1), subs(subs(:,2)>0,2));
+        mean_distance = mean(distances(idx));
     end
-    
-    
-    clusters = longestAssignment( imtraj, matches )
-%     return;
-
-
-    disp('Drawing');
-    if length(clusters) > 7
-        disp('Too many clusters to draw');
-        length(clusters);
-        return
+    function mean_shape = assigment_shape( ass , shapes )
+        subs = [1:length(ass);ass']'; % Get the subscript indices
+        subs(~subs(:,2),:) = []; % remove all where a vertex doesn't match
+        idx = sub2ind(size(shapes), subs(subs(:,2)>0,1), subs(subs(:,2)>0,2));
+        mean_shape = mean(shapes(idx));
     end
-    if nargin >= 4 && (numel(draw) > 1 || draw)
-        figure;
-%         subplot(1,2,1);
-        image(draw);
-        colours = ['r','b','g','m','y','w','c'];
-        disp('Drawing matched traj');
-        for i=1:length(matches)
-            drawtraj(imtraj(matches{i}),'',0,colours(i),4,'-');
-        end
-        disp('drawing original traj');
-        drawtraj(imtraj,'',0,'k',[],'-');
-        title('Trajectory Group Assignments');
-        
-%         subplot(1,2,2);
-%         image(draw);
-%         drawtraj(imtraj,'',0,'k',2,'-');
-%         for i=1:length(matches)
-%             drawtraj(clusters{i},'',0,colours(i),2,'-');
-%         end
-%         title('Median Trajectory Clusters');
-    end
-    
 end
 
 %  medianTraj = medianAssignment(fpstraj, matches, assignment);

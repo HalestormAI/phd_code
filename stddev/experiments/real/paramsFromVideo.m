@@ -9,8 +9,9 @@ function plane_details = paramsFromVideo( vidname, FPS )
     
     trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
     split = splitTrajectories(trajectories_lgt2,1);
-    [traj_clusters,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 200, frame);
-    plane_details.trajectories = recentreImageTrajectories( traj_clusters, frame );
+    [cluster_struct,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 1000, frame, [0.5,0.5]);
+    
+    plane_details.trajectories = recentreImageTrajectories( cluster_struct.representative, frame );
     
 
     if exist('H','var')
