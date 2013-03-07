@@ -70,7 +70,7 @@ PRINTMESSAGES = 1;
 DISPLAY = 1;
 
 % Save image frames of the data window for making movies?
-SAVE_IMAGE_FRAMES = 0;
+SAVE_IMAGE_FRAMES = 1;
 
 % Save the the objects struct at each frame so we can produce sprite
 % visualisations, as well as trajectory plots later. 
@@ -112,7 +112,7 @@ if(length(varargin) > 0)
     return;
   end
 end
-
+SAVE_IMAGE_FRAMES
 % Initialise some global variables
 K = mixparam.K;
 ALPHA = mixparam.ALPHA;
