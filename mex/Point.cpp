@@ -35,24 +35,28 @@ Point::Point( Matrix m ) {
     this->is2D = false;
 }
 
-void Point::print2D( ) {
+void Point::print2D( ) const
+{
     mexPrintf( this->toStr2D( ).c_str( ) );
     mexEvalString("drawnow");
 }
 
-std::string Point::toStr2D( ) {
+std::string Point::toStr2D( ) const
+{
     std::stringstream ss;
     ss << std::setw (10) << this->x << "\t" << this->y << std::endl;
     return ss.str( );
     
 }
 
-void Point::print3D( ) {
+void Point::print3D( ) const
+{
     mexPrintf( this->toStr3D( ).c_str( ) );
     mexEvalString("drawnow");
 }
 
-std::string Point::toStr3D( ) {
+std::string Point::toStr3D( ) const
+{
     
     std::stringstream ss;
     ss << this->X << "\t" << this->Y << "\t" << this->Z << std::endl;
@@ -60,7 +64,7 @@ std::string Point::toStr3D( ) {
 }
     
 
-double Point::dist2D( Point pt ) {
+double Point::dist2D( const Point pt ) const {
     float dx = (this->x - pt.x);
     float dy = (this->y - pt.y);
 
@@ -95,7 +99,12 @@ Point operator+ (const Point &p1, const Point &p2) {
 }
 
 Point operator- (const Point &p1, const Point &p2) {
-    return Point( p1.X - p2.X, p1.Y - p2.Y, p1.Z - p2.Z );
+    
+    
+    if( p1.is2D )
+        return Point( p1.x - p2.x, p1.y - p2.y );
+    else
+        return Point( p1.X - p2.X, p1.Y - p2.Y, p1.Z - p2.Z );
 }
 
 Point Point::cross( Point p ) {

@@ -1,20 +1,23 @@
 function [cluster_struct,assignment,outputcost,imtraj,trajectory_distances,trajectory_shapes] = traj_cluster_munkres( trajectories, FPS, NUM_LONGEST, draw, cost_weighting, MAX_DISTANCE) 
 
+
+    if nargin < 4 || isempty(draw)
+        draw = 0;
+    end
+
     if nargin < 3
         NUM_LONGEST = 20;
     end
 
+    
+    NUM_LONGEST = min(length(trajectories), NUM_LONGEST);
+    
     lengths = cellfun(@length, trajectories);
     [~,sortedIds] = sort(lengths,'descend');
-    
-%     trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
-    
-    % Assume trajectories are already split
-%     split = splitTrajectories(trajectories_lgt2,1); 
-
     longestIds = sortedIds(1:NUM_LONGEST);
+    
     imtraj = traj2imc(trajectories(longestIds),FPS,1);
-%     drawcoords( imtraj,'',0,'k' );
+    %     drawcoords( imtraj,'',0,'k' );
 
 %     imtraj = cellfun(@(x) x(:,1:FPS:end), imtraj, 'un',0);
     
@@ -79,18 +82,12 @@ function [cluster_struct,assignment,outputcost,imtraj,trajectory_distances,traje
     indices = unique(cluster_index);
    
     
-    cluster_struct.colours = colourForLabels( 1:length(indices) );
-    cluster_struct.labels = indices;
-    cluster_struct.labelling = cluster_index;
-    cluster_struct.representative = find_representative( cluster_struct, outputcost, imtraj, draw );
+    cluster_struct.colours          = colourForLabels( 1:length(indices) );
+    cluster_struct.labels           = indices;
+    cluster_struct.labelling        = cluster_index;
+    cluster_struct.representative   = find_representative( cluster_struct, outputcost, imtraj, draw );
+    cluster_struct.chosen_ids       = longestIds;
 
-    
-    function mean_distance = assigment_distance( ass , distances )
-        subs = [1:length(ass);ass']'; % Get the subscript indices
-        subs(~subs(:,2),:) = []; % remove all where a vertex doesn't match
-        idx = sub2ind(size(distances), subs(subs(:,2)>0,1), subs(subs(:,2)>0,2));
-        mean_distance = mean(distances(idx));
-    end
     function mean_shape = assigment_shape( ass , shapes )
         subs = [1:length(ass);ass']'; % Get the subscript indices
         subs(~subs(:,2),:) = []; % remove all where a vertex doesn't match

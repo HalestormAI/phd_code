@@ -7,6 +7,7 @@
 #include "mex.h"
 #include "matrix.h"
 #include "Matrix.hpp"
+#include "mexHelper.hpp"
 #include <sstream>
 #include <iomanip>
 #include <vector> 
@@ -32,13 +33,13 @@ class Point
        
        Point( double wx, double wy, double wz );
        
-       void print2D( );
-       std::string toStr2D( );
+       void print2D( ) const;
+       std::string toStr2D( ) const;
        
-       void print3D( );
-       std::string toStr3D( );
+       void print3D( ) const;
+       std::string toStr3D( ) const;
        
-       double dist2D( Point pt );
+       double dist2D( const Point pt ) const;
        
        void calibTsai( Etiseo::CameraModel *cam );
        

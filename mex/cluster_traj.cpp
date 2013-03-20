@@ -5,8 +5,8 @@
 #include <iterator>
 #include <math.h>
 #include <iostream>
-#include "mexHelper.cpp"
-#include "Matrix.cpp"
+#include "mexHelper.hpp"
+#include "Matrix.hpp"
 #include "Trajectory.hpp"
 
 #ifndef PI

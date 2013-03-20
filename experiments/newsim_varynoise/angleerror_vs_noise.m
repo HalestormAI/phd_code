@@ -106,8 +106,9 @@ for pId = 1:NUM_PLANES
         if ~GIVENTRAJ 
             %% Generate Trajectories & Plane
             baseTraj = addTrajectoriesToPlane( basePlane, [], ...
-                NUM_TRAJECTORIES, 2000, 1, 0, 0, NOISE_PARAMS(nId), ...
-                0, 0);
+                NUM_TRAJECTORIES, 2000, 1, ...
+                0, NOISE_PARAMS(nId), 0, 0, 0);...% NOISE: [ inter, intra, drn, height, intra-height ]
+                
 
             camTraj = cellfun(@(x) rotation(1:3,1:3)*x,baseTraj,'uniformoutput',false);
 
