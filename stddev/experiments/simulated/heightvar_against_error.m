@@ -3,8 +3,8 @@
 D = 10;
 FOC = 1;
 
-thetas = 80:-25:10;
-psis = -50:50:50;
+thetas = 80:-10:10;
+psis = -50:10:50;
 
 orientations = zeros( length(thetas)*length(psis), 2 );
 
@@ -36,8 +36,8 @@ errors        = cell(NUM_EXPS,length(orientations));
 angleErrors   = cell(NUM_EXPS,length(orientations));
 fullErrors   = cell(NUM_EXPS,length(orientations));
 
-for h=1:NUM_EXPS
-    stddev_h = stddevs(h);
+for h=7:NUM_EXPS
+    stddev_w = stddevs(h);
     for o=1:length(orientations)
         plane_details = createPlaneDetails( orientations(o,:), scale, [stddev,stddev_w, stddev_h] );
         GT_N = normalFromAngle( orientations(o,1), orientations(o,2) );

@@ -6,7 +6,7 @@
     %    STD_SPEED, WALK_SPD_VAR, DRN_VAR, HEIGHT_VAR,  INNER_HEIGHT_VAR,
     %    startPoints, startDrns
 
-    
+    fprintf('Given %d arguments\n\n', nargin);
     NODISPLAY = 1;
     %% Param check
     if nargin < 2,

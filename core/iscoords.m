@@ -1,5 +1,9 @@
 function isit = iscoords( traj )
 
+    if size(traj,2) < 2
+        isit = 0;
+        return
+    end
     v1 = traj(:,2:2:end);
     v2 = traj(:,3:2:end);
 

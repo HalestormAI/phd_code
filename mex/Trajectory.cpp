@@ -37,14 +37,16 @@ void Trajectory::fromDouble3D( double* traj, const mwSize *dims ) {
     this->is3D = true;
 }
 
-void Trajectory::toDouble2D( double *traj ) {
+void Trajectory::toDouble2D( double *traj ) const
+{
     for( int col=0; col<this->points.size( ); col++ ) {
         traj[0+col*2] = this->points.at(col).x;
         traj[1+col*2] = this->points.at(col).y;
     }
 }
 
-void Trajectory::toDouble3D( double *traj ) {
+void Trajectory::toDouble3D( double *traj ) const
+{
     for( int col=0; col<this->points.size( ); col++ ) {
         traj[0+col*3] = this->points.at(col).X;
         traj[1+col*3] = this->points.at(col).Y;
@@ -52,29 +54,90 @@ void Trajectory::toDouble3D( double *traj ) {
     }
 }
 
-void Trajectory::print2D( ) {
-    std::vector<Point>::iterator i;
-    for( i = this->points.begin( ); i != this->points.end( ); i++ ){
+void Trajectory::print2D( ) const
+{
+    std::vector<Point>::const_iterator i;
+    for( i = this->points.begin( ); i != this->points.end( ); i++ )
+    {
         i->print2D( );
     }
 }
 
-void Trajectory::print3D( ) {
-    std::vector<Point>::iterator i;
+void Trajectory::print3D( ) const
+{
+    std::vector<Point>::const_iterator i;
     for( i = this->points.begin( ); i != this->points.end( ); i++ ){
         i->print3D( );
     }
 }
 
-uint Trajectory::length( ) const {
+Point Trajectory::at( int idx ) const
+{
+    return this->points.at( idx );
+}
+
+Point Trajectory::front( ) const 
+{
+    return this->points.front( );
+}
+
+Point Trajectory::back( ) const
+{
+    return this->points.back( );
+}
+
+uint Trajectory::length( ) const
+{
     return this->points.size( );
 }
 
-Point Trajectory::at( int idx ) const {
-    return this->points.at(idx);
+/**
+ * Get the vector of speeds for each pair of points along the trajectory
+ */
+std::vector<double> Trajectory::frame_speeds( ) const
+{
+    
+    std::vector<double> speeds;
+    for( uint i=1; i < this->length( ); i++ )
+    {
+        speeds.push_back(this->points.at(i).dist2D( this->points.at(i-1)));
+    }
+    
+    return speeds;
 }
 
-void Trajectory::addPoint3D(float x, float y,float z) {
+/**
+ * Get the mean speed of the trajectory
+ */
+double Trajectory::mean_speed( ) const 
+{
+    
+    std::vector<double> speeds = this->frame_speeds( );
+    double distance_sum = std::accumulate(speeds.begin(), speeds.end(), 0);
+    
+    return distance_sum / (this->length( )-1);
+}
+
+std::vector<double> Trajectory::to1D( ) const
+{
+    std::vector<double> pos = this->frame_speeds( );
+    std::vector<double> pos1d(pos.size( ));
+    
+    // Cumulative sum
+    std::partial_sum(pos.begin(), pos.end(), pos1d.begin(), std::plus<double>());
+    
+    std::transform( 
+            pos1d.begin(), 
+            pos1d.end(), 
+            pos1d.begin(), 
+            std::bind2nd( std::minus<double>(), pos1d.front( ) )
+    ); // Subtract pos1d[0] from pos1d[0...n]
+    
+    return pos1d;
+}
+
+void Trajectory::addPoint3D(float x, float y,float z)
+{
     if( this->is2D ) {
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidDim",
                 "This is a 2D trajectory - cannot add a 3D point.");
@@ -143,10 +206,10 @@ Trajectory Trajectory::subtrajectory( std::vector<int> ids )
     return sub;
 }
 
-std::string Trajectory::toStr( ) {
+std::string Trajectory::toStr( ) const {
     std::stringstream s;
     
-    std::vector<Point>::iterator i;
+    std::vector<Point>::const_iterator i;
     for( i = this->points.begin( ); i != this->points.end( ); i++ ){
         
         if( this->is3D )
@@ -180,14 +243,83 @@ void Trajectory::fromFile( std::string filename )
     
 }
 
+
+
+std::ostream& operator<<( std::ostream &out, const Trajectory &t ) {
+    out << t.toStr( );
+    return out;
+}
+
 // STATIC METHODS
 
+/**
+ * Helper for transform in Trajectory::lengths
+ */
+int _trajectory_length( Trajectory &t) { return t.length( ); }
+
+/**
+ * Get vector of lengths of all trajectories in a vector
+ */
+std::vector<int> Trajectory::lengths( std::vector<Trajectory> &traj )
+{
+    
+    std::vector<int> l(traj.size( ));
+    
+    std::transform(traj.begin( ), traj.end( ), l.begin( ), _trajectory_length );
+    
+    return l;
+}
+
+/**
+ * Finds longest pair of trajectories from a vector
+ */
+void Trajectory::longest_pair( std::vector<Trajectory> &trajs, std::vector<Trajectory> &longest )
+{
+    std::vector<int> lengths = Trajectory::lengths( trajs );
+    std::vector<int>::iterator l_it;
+
+    int max_val[2] = {-1,-1}; // [0] is largest, [1] is 2nd largest
+    int max_ids[2] = {-1,-1};
+
+    for( l_it = lengths.begin( ); l_it != lengths.end( ); l_it++ )
+    {
+        // if it's maxer than the maxest
+        if( (*l_it) > max_val[0] ) { 
+            // bump current top-spot to 2nd
+            max_ids[1] = max_ids[0];
+            max_val[1] = max_val[0];
+            // Get current id
+            max_ids[0] = std::distance(lengths.begin( ),l_it);;
+            max_val[0] = *l_it;
+        } else if( (*l_it) > max_val[1] ) {
+            // Just replace 2nd place
+            max_ids[1] = std::distance(lengths.begin( ), l_it);
+            max_val[1] = *l_it;
+        }
+    }
+    
+    longest[0] = trajs.at(max_ids[0]);
+    longest[1] = trajs.at(max_ids[1]);
+} 
+
+/**
+ * Load all trajectories from mex Cell Array
+ */
 void Trajectory::loadAll( const mxArray *prhs, std::vector<Trajectory> *alltraj ) {
     const mwSize *tDims = mxGetDimensions( prhs );
     const mwSize *trajDims;
     
+    // Account for row and column cell arrays
+    int idx0 = 0,
+        idx1 = 1;
+    
+    if( tDims[0] == 1 && tDims[1] > 1 ) {
+        idx0 = 1;
+        idx1 = 0;
+    }
+    
     mxArray *mx_traj;
-    for( int t=0; t<tDims[0]; t++ ) {
+    for( int t=0; t<tDims[idx0]; t++ ) {
         mx_traj = (mxArray*)mxGetCell(prhs,t);
         trajDims = mxGetDimensions( mx_traj );
         
