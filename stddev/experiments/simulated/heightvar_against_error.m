@@ -1,7 +1,7 @@
 % Set up constants for iterator
 
-D = 10;
-FOC = 1;
+D = 100;
+FOC = 0.0014;
 
 thetas = 80:-10:10;
 psis = -50:10:50;
@@ -36,7 +36,7 @@ errors        = cell(NUM_EXPS,length(orientations));
 angleErrors   = cell(NUM_EXPS,length(orientations));
 fullErrors   = cell(NUM_EXPS,length(orientations));
 
-for h=7:NUM_EXPS
+for h=1:NUM_EXPS
     stddev_w = stddevs(h);
     for o=1:length(orientations)
         plane_details = createPlaneDetails( orientations(o,:), scale, [stddev,stddev_w, stddev_h] );
