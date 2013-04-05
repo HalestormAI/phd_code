@@ -14,7 +14,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
             z0,
             z1,
             zdiff,
-            *nums, // Array representing points in vector 1
+            *nums,  // Array representing points in vector 1
             *nums2; //      ----- || -----      in vector 2
     
     const mwSize *numDim,
@@ -28,9 +28,10 @@ void mexFunction( int nlhs, mxArray *plhs[],
     if( nrhs == 2 ) {
         nums2 = (double*)mxGetPr(prhs[1]);
         numDim2 = mxGetDimensions(prhs[1]);
-    }
+    } 
     
     int col_offset = (nrhs == 1 ? 2 : 1); // Skip a column if interlaced vector
+    
     
     // Now output data
     plhs[0] = mxCreateDoubleMatrix(1,floor(numDim[1]/col_offset),mxREAL);
@@ -51,8 +52,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
         ydiff = pow(y0-y1,2);
 
         if( numDim[0] == 3 ) { // If it's a 3D vector
+            z0 = nums[2+col*numDim[0]];
             if( nrhs == 1 ) {
-                z0 = nums[2+col*numDim[0]];
+                z1 = nums[2+(col+1)*numDim[0]];
             } else if (nrhs == 2) {
                 z1 = nums2[2+col*numDim[0]];
             }
@@ -60,6 +62,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         } else {
             zdiff=0;
         }
+        
 
         outputDbl[(int)floor(col/(float)col_offset)] = sqrt(xdiff+ydiff+zdiff);
 
