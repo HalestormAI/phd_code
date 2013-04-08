@@ -15,6 +15,8 @@ if nargin < 6
     FSTEP = 1;
 end
 
+STEP_0 = STEP;
+
 fsolve_options;
 options = optimset('TolFun',TOL);
 
@@ -30,8 +32,8 @@ for level=1:MAX_LEVEL
         psis = -90:STEP:90;
         focals = 10.^(-4:FSTEP:1);
     else
-        STEP = STEP/10;
-        range = (-10*STEP):STEP:(10*STEP);
+        STEP = STEP/STEP_0;
+        range = (-STEP_0*STEP):STEP:(STEP_0*STEP);
 
         thetas = E_angles(level-1,1) + range;
         psis = E_angles(level-1,2) + range;
