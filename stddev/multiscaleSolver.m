@@ -33,7 +33,7 @@ for level=1:MAX_LEVEL
         focals = 10.^(-4:FSTEP:1);
     else
         STEP = STEP/10;
-        range = (-10*STEP):2*STEP:(10*STEP);
+        range = (-STEP_0*STEP):STEP:(STEP_0*STEP);
 
         thetas = E_angles(level-1,1) + range;
         psis = E_angles(level-1,2) + range;

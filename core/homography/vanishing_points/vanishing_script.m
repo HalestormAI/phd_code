@@ -6,7 +6,7 @@ if ~exist( 'needfresh','var' )
 end
 
 NUM_PARALLEL = 3;
-NUM_SETS = 3;
+NUM_SETS = 2;
 % Get translation S.T. image centre is at [0;0]
 im_sz = size( I1 );
 im_sz = im_sz(2:-1:1)';
