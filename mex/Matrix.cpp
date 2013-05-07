@@ -190,3 +190,19 @@ Matrix pow( Matrix *m, double exp ) {
             out.set(i,j,pow(m->at(i,j),exp));
     return out;
 }
+
+Matrix Matrix::eye( int sz ) 
+{
+    Matrix I(sz,sz);
+    for( int i=0; i < sz; i++ ) {
+        for( int j=0; j < sz; j++ ) {
+            if( i==j )
+                I.set(i,j,1);
+            else
+                I.set(i,j,0);
+        }
+    }
+    
+    return I;
+    
+}

@@ -7,7 +7,15 @@ end
 % speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
 drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,2000)),2);
 
-[planes,plane_params] = multiplane_make_planes( );
+[planes,plane_params] = multiplane_make_planes(1, [0,25,350] );
+
+disp('********************************');
+
+planes
+plane_params
+
+
+disp('********************************');
 
 traj = multiplane_add_trajectories({planes.world}',plane_params,speeds,drns);
 [planes,camTraj] = world2camera( planes, traj, [-3,30]);
@@ -26,9 +34,13 @@ traj = multiplane_add_trajectories({planes.world}',plane_params,speeds,drns);
 % drawtraj(imTraj,'',0,'k');
 % view(0,90);
 
-drawPlane(planes(1).world)
-drawPlane(planes(2).world,'',0,'r');
+colours = ['k','r','b','g','m','c'];
+
+drawPlane(planes(1).world);
+for p=2:length(planes)
+    drawPlane(planes(p).world,'',0,colours(p));
+end
 % drawPlane(planes(3).world,'',0,'b'); 
 axis equal
 axis ij
-drawtraj( traj,'',0,'b' )
+drawtraj( traj,'',0,'b' );

@@ -31,8 +31,9 @@ Matrix SimTrajectory::drn2mat( int frameNo, Plane *plane ) {
         for( i = this->directions.begin( ); i != this->directions.begin( )+frameNo; i++ ) {
             prevDrn += *i;
         }
-    }else
+    } else {
         prevDrn = 0;
+    }
     
     // need to get sum of all directions up to now
     newDrn = prevDrn + drn; // angle in radians
@@ -42,10 +43,26 @@ Matrix SimTrajectory::drn2mat( int frameNo, Plane *plane ) {
     float theta, psi;
     Plane::anglesFromN( plane->n, &theta, &psi );
     
-    
     // Get direction along plane
     Matrix planeDrn = (plane->boundaries.at(3) - plane->boundaries.at(0)).toMatrix( );
+    
+    
+    planeDrn.print( );
+    //Matrix planeDrn = (plane->maxboundaries - plane->minboundaries).toMatrix();
     planeDrn /= L2norm( planeDrn );
+        planeDrn.print( );
+
+    /*
+    if( plane->id > 0 ) {
+        
+        Matrix reflect = Matrix::eye(3);
+        reflect.set(2, 2,-1);
+        planeDrn = reflect*planeDrn;
+        
+    }*/
+    
+//     if(plane->id == 2)
+//         planeDrn.print( );
     
     Matrix yRot = yRotate(theta);
     Matrix zRot = zRotate(newDrn);
@@ -78,7 +95,9 @@ void SimTrajectory::addFrame( std::vector<Plane> *planes, int curFrame ) {
     
     // get plane for this point
     Plane* curPlane = Plane::findPlane( planes, endPos );
-//     curPlane->print( );
+    
+    /*if(curPlane->id == 2)
+        curPlane->print( );*/
     
     if(!curPlane) {
         mexPrintf("Point left all planes\n");
@@ -89,6 +108,10 @@ void SimTrajectory::addFrame( std::vector<Plane> *planes, int curFrame ) {
     
     // Get new direction
     Matrix drn = this->drn2mat( curFrame, curPlane );
+    
+//     mexPrintf("Printing Direction\n");
+//     drn.print( );
+    
     Point newPos = endPos->move( &drn, this->speeds.at(curFrame) );
     
     if( !curPlane->checkBounds( &newPos ) )  {
@@ -169,6 +192,7 @@ void SimTrajectory::newStartingPoint( std::vector<Plane> *planes ) {
     
     if( plane_id ) {
         plane_id = planes->size( )-1;
+        
         startEnd = 2;
         std::vector<double>::iterator it;
         

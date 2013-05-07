@@ -1,7 +1,6 @@
 #include "Plane.hpp"
 
-
-Plane::Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl ) {
+Plane::Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl, int id ) {
     this->n.push_back(paramsDbl[0]);
     this->n.push_back(paramsDbl[1]);
     this->n.push_back(paramsDbl[2]);
@@ -10,6 +9,8 @@ Plane::Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl ) 
     this->boundariesFromDouble( boundDbl, boundaryDims );
     
     this->minmaxBounds( );
+    
+    this->id = id;
 }
 
 void Plane::boundariesFromDouble( double *boundaries , const mwSize *dims ) {

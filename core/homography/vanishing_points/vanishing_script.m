@@ -1,138 +1,138 @@
-I1 = frame;
-% close all
-
-if ~exist( 'needfresh','var' )
-    needfresh = 1;
-end
-
-NUM_PARALLEL = 3;
-NUM_SETS = 2;
-% Get translation S.T. image centre is at [0;0]
-im_sz = size( I1 );
-im_sz = im_sz(2:-1:1)';
-translation = im_sz ./ 2;
-imPos = [ [0;0] im_sz ] - repmat(translation,1,2);
-    
-figure,
-im_handle = image(imPos(1,:),imPos(2,:),I1);%imagesc( I1 );
-axis image;
-    
-colors = ['b','r','w','m','c'];
-if (needfresh),
-    lines = cell(2,1);
-
-    title('Need 2 sets of parallel lines');
-
-    for i=1:NUM_SETS,
-        disp('Enter pair of parallel lines');
-        for j=1:NUM_PARALLEL,
-            disp('Entering New Line');
-            p1 = impoint;
-            p1.setColor( colors(i) );
-            p2 = impoint;
-            p2.setColor( colors(i) );
-            endpoints = [p1.getPosition',p2.getPosition'];
-            lines{i}(:,j) = cross( [endpoints(:,1);1], [endpoints(:,2);1] );
-            hline2( lines{i}(:,j), colors(i) );
-        end
-    end
-end
-
-
-figure;
-image(imPos(1,:),imPos(2,:),I1);
-hold on;
-
-intersects = cell(NUM_SETS,1);
-for d=1:NUM_SETS
-    if NUM_PARALLEL > 2
-        % Eigen decomposition on each direction to find intersects of points
-        a = lines{d}(1,:)';
-        b = lines{d}(2,:)';
-        c = lines{d}(3,:)';
-        M = [ sum([a.*a a.*b a.*c]);
-            sum([b.*a b.*b b.*c]);
-            sum([c.*a c.*b c.*c]); ];
-        [eigVec,eigVal] = eig(M);
-        [~,MINEIG] = min(diag(eigVal));
-        intersects{d} = eigVec(:,MINEIG)./eigVec(3,MINEIG);
-    elseif NUM_PARALLEL == 2
-        inum = 1;
-        for i=1:NUM_PARALLEL,
-            for j=(i+1):NUM_PARALLEL,
-                intersects{d}(:,inum) = hcross( lines{d}(:,i), lines{d}(:,j) );
-                inum = inum + 1;
-            end
-        end
-    else
-        error('NOT ENOUGH PARALLEL LINES!');
-    end
-    scatter(intersects{d}(1,:), intersects{d}(2,:),24,strcat(colors(d),'o'));
-end
-axis image;
-for d=1:NUM_SETS
-    for i=1:NUM_PARALLEL
-        set(hline2(lines{d}(:,i),colors(d)),'LineWidth',2);
-    end
-end
-
-if NUM_SETS == 1
-    
-    intersects{2} = intersects{1}+[10000;0;0];
-    vanishing_line = hcross(intersects{2},intersects{1});
-elseif NUM_SETS == 2
-    vanishing_line  = hcross(intersects{1}(:,1), intersects{2}(:,1));
-else
-    intersects_mat = cell2mat(intersects');
-    a = intersects_mat(1,:)';
-    b = intersects_mat(2,:)';
-    c = intersects_mat(3,:)';
-    M = [ sum([a.*a a.*b a.*c]);
-          sum([b.*a b.*b b.*c]);
-          sum([c.*a c.*b c.*c]); ];
-    [eigVec,eigVal] = eig(M);
-    [~,MINEIG] = min(diag(eigVal));
-    vanishing_line = eigVec(:,MINEIG)./eigVec(3,MINEIG);
-end
-% vanishing_line2 = hcross(intersects{3}(:,1), intersects{4}(:,1));
-
-vl_handle  = hline2( vanishing_line ,'g' );
-% vl_handle2 = hline2( vanishing_line2 ,'c' );
-
-set(vl_handle ,'LineWidth',2);
-% set(vl_handle2,'LineWidth',2);
-set(gca,'color','k')
-axis auto;
-
-
-P = eye(3);
-P(3,:) = vanishing_line';
-P_t = maketform( 'projective',P' );
-
-I2 = imtransform( I1, P_t, 'bicubic','size',size(I1));
-% figure; image(imPos(1,:),imPos(2,:), I2);
-
-a = vanishing_line(1);
-b = vanishing_line(2);
-c = vanishing_line(3);
-
-asqplbsq = (a^2+b^2);
-E = (a^2*c+b^2)/asqplbsq;
-F = (a*b*(c-1))/asqplbsq;
-G = (a^2+b^2*c)/asqplbsq;
-
-calib_data.a = a;
-calib_data.b = b;
-calib_data.c = c;
-calib_data.H = [  E  F  a;
-                  F  G  b;
-                 -a -b  c ];
-    
-             
-figure;
-scatter(intersects_mat(1,:), intersects_mat(2,:), 'r*')
-
-return
+% I1 = frame;
+% % close all
+% 
+% if ~exist( 'needfresh','var' )
+%     needfresh = 1;
+% end
+% 
+% NUM_PARALLEL = 3;
+% NUM_SETS = 2;
+% % Get translation S.T. image centre is at [0;0]
+% im_sz = size( I1 );
+% im_sz = im_sz(2:-1:1)';
+% translation = im_sz ./ 2;
+% imPos = [ [0;0] im_sz ] - repmat(translation,1,2);
+%     
+% figure,
+% im_handle = image(imPos(1,:),imPos(2,:),I1);%imagesc( I1 );
+% axis image;
+%     
+% colors = ['b','r','w','m','c'];
+% if (needfresh),
+%     lines = cell(2,1);
+% 
+%     title('Need 2 sets of parallel lines');
+% 
+%     for i=1:NUM_SETS,
+%         disp('Enter pair of parallel lines');
+%         for j=1:NUM_PARALLEL,
+%             disp('Entering New Line');
+%             p1 = impoint;
+%             p1.setColor( colors(i) );
+%             p2 = impoint;
+%             p2.setColor( colors(i) );
+%             endpoints = [p1.getPosition',p2.getPosition'];
+%             lines{i}(:,j) = cross( [endpoints(:,1);1], [endpoints(:,2);1] );
+%             hline2( lines{i}(:,j), colors(i) );
+%         end
+%     end
+% end
+% 
+% 
+% figure;
+% image(imPos(1,:),imPos(2,:),I1);
+% hold on;
+% 
+% intersects = cell(NUM_SETS,1);
+% for d=1:NUM_SETS
+%     if NUM_PARALLEL > 2
+%         % Eigen decomposition on each direction to find intersects of points
+%         a = lines{d}(1,:)';
+%         b = lines{d}(2,:)';
+%         c = lines{d}(3,:)';
+%         M = [ sum([a.*a a.*b a.*c]);
+%             sum([b.*a b.*b b.*c]);
+%             sum([c.*a c.*b c.*c]); ];
+%         [eigVec,eigVal] = eig(M);
+%         [~,MINEIG] = min(diag(eigVal));
+%         intersects{d} = eigVec(:,MINEIG)./eigVec(3,MINEIG);
+%     elseif NUM_PARALLEL == 2
+%         inum = 1;
+%         for i=1:NUM_PARALLEL,
+%             for j=(i+1):NUM_PARALLEL,
+%                 intersects{d}(:,inum) = hcross( lines{d}(:,i), lines{d}(:,j) );
+%                 inum = inum + 1;
+%             end
+%         end
+%     else
+%         error('NOT ENOUGH PARALLEL LINES!');
+%     end
+%     scatter(intersects{d}(1,:), intersects{d}(2,:),24,strcat(colors(d),'o'));
+% end
+% axis image;
+% for d=1:NUM_SETS
+%     for i=1:NUM_PARALLEL
+%         set(hline2(lines{d}(:,i),colors(d)),'LineWidth',2);
+%     end
+% end
+% 
+% if NUM_SETS == 1
+%     
+%     intersects{2} = intersects{1}+[10000;0;0];
+%     vanishing_line = hcross(intersects{2},intersects{1});
+% elseif NUM_SETS == 2
+%     vanishing_line  = hcross(intersects{1}(:,1), intersects{2}(:,1));
+% else
+%     intersects_mat = cell2mat(intersects');
+%     a = intersects_mat(1,:)';
+%     b = intersects_mat(2,:)';
+%     c = intersects_mat(3,:)';
+%     M = [ sum([a.*a a.*b a.*c]);
+%           sum([b.*a b.*b b.*c]);
+%           sum([c.*a c.*b c.*c]); ];
+%     [eigVec,eigVal] = eig(M);
+%     [~,MINEIG] = min(diag(eigVal));
+%     vanishing_line = eigVec(:,MINEIG)./eigVec(3,MINEIG);
+% end
+% % vanishing_line2 = hcross(intersects{3}(:,1), intersects{4}(:,1));
+% 
+% vl_handle  = hline2( vanishing_line ,'g' );
+% % vl_handle2 = hline2( vanishing_line2 ,'c' );
+% 
+% set(vl_handle ,'LineWidth',2);
+% % set(vl_handle2,'LineWidth',2);
+% set(gca,'color','k')
+% axis auto;
+% 
+% 
+% P = eye(3);
+% P(3,:) = vanishing_line';
+% P_t = maketform( 'projective',P' );
+% 
+% I2 = imtransform( I1, P_t, 'bicubic','size',size(I1));
+% % figure; image(imPos(1,:),imPos(2,:), I2);
+% 
+% a = vanishing_line(1);
+% b = vanishing_line(2);
+% c = vanishing_line(3);
+% 
+% asqplbsq = (a^2+b^2);
+% E = (a^2*c+b^2)/asqplbsq;
+% F = (a*b*(c-1))/asqplbsq;
+% G = (a^2+b^2*c)/asqplbsq;
+% 
+% calib_data.a = a;
+% calib_data.b = b;
+% calib_data.c = c;
+% calib_data.H = [  E  F  a;
+%                   F  G  b;
+%                  -a -b  c ];
+%     
+%              
+% figure;
+% scatter(intersects_mat(1,:), intersects_mat(2,:), 'r*')
+% 
+% return
 
 %% Conics - We have 2 pairs of lines, l(1):a,b and l(2):a,b
 % We need at least two conditions to find the intersection of the 

@@ -41,6 +41,8 @@ class Matrix
         Matrix elemMult( Matrix *val );
         
         friend Matrix pow( Matrix *m, double exp );
+        
+        static Matrix eye( int sz );
 };
 
 #endif
