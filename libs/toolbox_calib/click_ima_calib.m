@@ -164,11 +164,11 @@ n_sq_x_default = n_sq_x;
 n_sq_y_default = n_sq_y;
 
 
-if (exist('dX')~=1)|(exist('dY')~=1), % This question is now asked only once
+if (exist('dX')~=1)||(exist('dY')~=1), % This question is now asked only once
     % Enter the size of each square
     
-    dX = input(['Size dX of each square along the X direction ([]=' num2str(dX_default) 'mm) = ']);
-    dY = input(['Size dY of each square along the Y direction ([]=' num2str(dY_default) 'mm) = ']);
+    dX = input(['Size dX of each square along the X direction ([]=', num2str(dX_default), 'mm) = ']);
+    dY = input(['Size dY of each square along the Y direction ([]=', num2str(dY_default), 'mm) = ']);
     if isempty(dX), dX = dX_default; else dX_default = dX; end;
     if isempty(dY), dY = dY_default; else dY_default = dY; end;
     

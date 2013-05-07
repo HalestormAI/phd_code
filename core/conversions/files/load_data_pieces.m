@@ -46,22 +46,23 @@ function data = load_data_pieces( name_tpl, num_data, orientations, imtraj )
                 gt_l  = vector_dist( rect_gt{t} );
                 est_l = vector_dist( rect_est{t} );
 
-                gt_sprd  = std(gt_l)./mean(gt_l)
-                est_sprd = std(est_l)./mean(est_l)
+                gt_sprd  = std(gt_l)./mean(gt_l);
+                est_sprd = std(est_l)./mean(est_l);
 
-                raw_err(j,t) = abs(gt_sprd - est_sprd);
+%                 raw_err(j,t) = abs(gt_sprd - est_sprd);
+                raw_err(j,t) = mean(abs(gt_l./mean(gt_l) - est_l./mean(est_l)));
             end
             
             err(j) = mean(raw_err(j,:));
             
-            
-            if( i== 11 && j== 10 )
-                figure;
-                subplot(1,2,1);
-                drawtraj(rect_gt,'',0);
-                subplot(1,2,2);
-                drawtraj(rect_est,'',0,'r');
-            end
+%             
+%             if( i== 11 && j== 10 )
+%                 figure;
+%                 subplot(1,2,1);
+%                 drawtraj(rect_gt,'',0);
+%                 subplot(1,2,2);
+%                 drawtraj(rect_est,'',0,'r');
+%             end
         end
     end
 end

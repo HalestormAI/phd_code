@@ -8,11 +8,12 @@ function plane_details = paramsFromVideo( vidname, FPS )
 
     disp('Filtering Trajectories...')
     trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
+    
     disp('Splitting Trajectories...')
     split = splitTrajectories(trajectories_lgt2,1);
-    
+    length(split)
     disp('Clustering Trajectories (May take some time)...')
-    [cluster_struct,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 1000, frame, [0.5,0.5]);
+    [cluster_struct,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 100, frame, [0.5,0.5]);
     
     plane_details.trajectories = recentreImageTrajectories( cluster_struct.representative, frame );
     
@@ -21,7 +22,7 @@ function plane_details = paramsFromVideo( vidname, FPS )
     if exist('H','var')
         plane_details.camTraj = cellfun(@(x) H*makeHomogenous(x),plane_details.trajectories,'uniformoutput',false);
     elseif exist('calib_fn','var')
-        plane_details.camTraj = PETSCalibrationParameters(calib_fn, traj_clusters);
+        plane_details.camTraj = PETSCalibrationParameters(calib_fn, plane_details.trajectories);
     end
 
     disp('Creating image and ground-truth plane data');

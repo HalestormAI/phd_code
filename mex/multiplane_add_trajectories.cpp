@@ -83,7 +83,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
         mx_bounds = (mxArray*) mxGetCell(prhs[0],p);
         mx_params = (mxArray*) mxGetCell(prhs[1],p);
         psz = mxGetDimensions( mx_bounds );
-        planes.push_back(Plane( (double*)mxGetPr(mx_bounds), psz, (double*)mxGetPr(mx_params)));
+        planes.push_back(Plane( (double*)mxGetPr(mx_bounds), psz, (double*)mxGetPr(mx_params), planes.size( )));
 //         planes.at(p).print( );
     }
     

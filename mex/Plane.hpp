@@ -23,8 +23,9 @@ public:
     Point maxboundaries;
     std::vector<float> n;
     float d;
+    int id;
     
-    Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl );
+    Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl, int id = -1);
     
     void boundariesFromDouble( double *boundaries , const mwSize *dims );
 

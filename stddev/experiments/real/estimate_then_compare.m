@@ -5,7 +5,7 @@ mkdir(folder);
 pushd(folder);
 
 plane_details = paramsFromVideo( vidname,7 );
-[ output_params, finalError, fullErrors ] = multiscaleSolver( 1, plane_details, 3, 10, 1e-4 );
+[ output_params, finalError, fullErrors ] = multiscaleSolver( 1, plane_details, 3, 5, 1e-3 );
 gt_trajLengths = cellfun(@traj_speeds, plane_details.camTraj,'un',0)
 rectTrajectories = cellfun(@(x) backproj_c(output_params(1),output_params(2), ...
                                                             plane_details.D,output_params(3), x), ...
