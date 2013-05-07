@@ -7,6 +7,7 @@
 
 #define PI 3.14159265358979323846
 #define DEG2RAD(DEG) ((DEG)*((PI)/(180.0)))
+#define RAD2DEG(RAD) ((RAD)*((180.0)/(PI)))
 
 using namespace std;
 
@@ -22,6 +23,22 @@ public:
         this->foc   = f;
         
         this->normalFromAngles( );
+    }
+    
+    Params( double n[], float d, float f )
+    {
+        this->theta = RAD2DEG( acos(n[2]) );
+        if( this->theta == 0 )
+            this->psi = RAD2DEG( asin(-n[0]) );
+        else
+            this->psi = RAD2DEG( asin(-n[0]) / sin(DEG2RAD(this->theta)) );
+        
+        this->nx = n[0];
+        this->ny = n[1];
+        this->nz = n[2];
+        
+        this->d = d;
+        this->foc = f;
     }
     
     void normalFromAngles( ) {
@@ -123,9 +140,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
     double *trajData, *output;
     
     /* check proper input and output */
-    if(nrhs!=5)
+    if(nrhs < 4 || nrhs > 5 )
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidNumInputs",
-                "5 inputs required.");
+                "4/5 inputs required.");
     else if(nlhs > 5)
         mexErrMsgIdAndTxt( "MATLAB:errorfunc:maxlhs",
                 "Too many output arguments.");
@@ -134,13 +151,29 @@ void mexFunction( int nlhs, mxArray *plhs[],
                 "Input must be a cell.");
    
     // Get normal from theta and psi
-    Params *params = new Params( mxGetScalar(prhs[0]),
-                         mxGetScalar(prhs[1]),
-                         mxGetScalar(prhs[2]),
-                         mxGetScalar(prhs[3]) );
+    Params *params;
+    int trajPos = 3;
+    if( nrhs == 4 ) {
+        // need to get 3x1 double for n
+        // then scalars for d and f.
+        
+        double* n_dbl = (double*)mxGetPr( prhs[0] );
+        
+        params = new Params( n_dbl, 
+                             mxGetScalar(prhs[1]),
+                             mxGetScalar(prhs[2]) );
+        trajPos = 3;
+    } else if( nrhs == 5 ) {
     
-    trajData = (double*)mxGetPr( prhs[4] );
-    dims = mxGetDimensions( prhs[4] );
+        params = new Params( mxGetScalar(prhs[0]),
+                             mxGetScalar(prhs[1]),
+                             mxGetScalar(prhs[2]),
+                             mxGetScalar(prhs[3]) );
+        trajPos = 4;
+    }
+    
+    trajData = (double*)mxGetPr( prhs[trajPos] );
+    dims = mxGetDimensions( prhs[trajPos] );
     
     Trajectory traj = Trajectory( trajData, dims, params );
     traj.rectify( );

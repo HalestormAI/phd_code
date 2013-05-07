@@ -1,7 +1,7 @@
 function plane_details = paramsFromVideo( vidname, FPS )
     tic;
     if nargin < 2
-        FPS = 15;
+        FPS = 7;
     end
     disp('Loading Data');
     load(vidname);
