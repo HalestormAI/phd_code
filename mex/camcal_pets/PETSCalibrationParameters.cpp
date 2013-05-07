@@ -7,8 +7,8 @@
 #include <fstream>
 #include "cameraModel.h"
 #include "xmlUtil.h"
-#include "../Matrix.cpp"
-#include "../Trajectory.cpp"
+#include "../Matrix.hpp"
+#include "../Trajectory.hpp"
 
 #include "cameraModel.h"
 #include "xmlUtil.h"
