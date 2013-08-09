@@ -16,7 +16,8 @@
 Matrix xRotate( float theta );
 Matrix yRotate( float theta );
 Matrix zRotate( float theta );
-float L2norm( Point p );
-float L2norm( Matrix *m );
+
+
 float myrand( float mult );
+double vec_mag( double *vec, int sz );
 #endif

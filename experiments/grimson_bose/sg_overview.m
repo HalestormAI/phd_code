@@ -1,28 +1,39 @@
+% warning('off','MATLAB:rankDeficientMatrix');
 
-% Generic formulae from section 2
-% P = eye(3);
-% A = eye(3);
-%
-% P(3,:) = vanishing_line;
-% A(1,:) = [ 1/beta, -alpha/beta 0 ];
-%
-% circle_alpha =(dx1*dy1 - dx2*dy2*s^2) / ...
-%               (dy1^2 - (s^2)*(dy2^2)) );
-% radius = abs( s*(dx2*dy1 - dx1*dy2) / ...
-%               (dy1^2 - (s^2)*(dy2^2)) );
-
-
+% 
+% % Generic formulae from section 2
+% % P = eye(3);
+% % A = eye(3);
+% %
+% % P(3,:) = vanishing_line;
+% % A(1,:) = [ 1/beta, -alpha/beta 0 ];
+% %
+% % circle_alpha =(dx1*dy1 - dx2*dy2*s^2) / ...
+% %               (dy1^2 - (s^2)*(dy2^2)) );
+% % radius = abs( s*(dx2*dy1 - dx1*dy2) / ...
+% %               (dy1^2 - (s^2)*(dy2^2)) );
+% 
+% 
 
 % Set up parameters
 T_width  = 0.4*size(frame,1);
 T_frames = 25;
 T_bbox   = 0.25*size(frame,1)*size(frame,2);
-T_reproj = 0.2;
+T_reproj = 0.4;
+
 
 disp('Loading Trajectories...');
 if ~exist('frame','var')
     error('Frame not set (make sure you''re using the right size version!)');
 end
+
+if exist('trajectories','var') && ~exist('imtraj','var')
+    imtraj = trajectories;
+end
+
+% Pre-filter all that are less than 25 frames long...
+lengths = cellfun(@length, imtraj);
+imtraj(lengths < T_frames) = [];
 
 if exist('fromklt','var') && fromklt
     % If input is from KLT, check it's not in coords format and convert
@@ -31,18 +42,26 @@ if exist('fromklt','var') && fromklt
         imtraj = imc2traj( imtraj );
     end
     
+    bbox_areas = cell(length(imtraj),1);
+    for i=1:length(imtraj)
+        bbox_areas{i} = ones( 1, length(imtraj{i}) );
+    end
+    
 elseif ~exist('bbox_areas','var')
     error('Bounding Box areas not set');
 elseif ~exist('trajsg','var')
     error('No trajectories were given!');
-else
-    % remove all trajectories with too-large a bounding box
-    imtraj = trajsg(cellfun(@max,bbox_areas) <= T_bbox);
 end
 
-% Pre-filter all that are less than 25 frames long...
-lengths = cellfun(@length, imtraj);
-imtraj(lengths < T_frames) = [];
+% remove all trajectories with too-large a bounding box
+imtraj = imtraj(cellfun(@max,bbox_areas) <= T_bbox);
+
+% recentre all trajectories
+imtraj = recentreImageTrajectories(imtraj,frame);
+
+% Pre-filter all trajectories showing no movement
+imtraj = filterStationaryPoints( imtraj );
+
 
 % 3.1 detecting constant velocity paths
 
@@ -129,7 +148,9 @@ textprogressbar('Getting constant speed paths...');
 const_spd = zeros(length(paths),1);
 parfor p=1:length(paths)
     [reproj_err] = bose_reprojection_error( linpaths{p}, paths{p}, Gs{p} );
-    
+    reproj_err
+    T_reproj*paths{p}(end)
+    disp('********************')
     if reproj_err < T_reproj*paths{p}(end)
         const_spd(p) = 1;
     end
@@ -175,6 +196,7 @@ type_b_traj_ids      = vertcat(type_b_traj_ids_cell{:});
 
 % Get circles and intersects
 [circ_constraints] = bose_generate_circles( type_b_traj_segments, type_b_traj_ids );
+circ_constraints = circ_constraints(~any(isnan(circ_constraints),2),:);
 [isct,isct_0] = circle_intersection( circ_constraints );
 
 A = eye(3);

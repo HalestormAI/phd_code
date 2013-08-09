@@ -40,4 +40,6 @@ public:
     Matrix drn2mat( int frameNo, Plane *plane );
     
     void newStartingPoint( std::vector<Plane> *planes );
+private:
+    bool reversal;
 };

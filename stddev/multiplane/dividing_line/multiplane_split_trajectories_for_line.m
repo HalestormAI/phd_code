@@ -4,18 +4,18 @@ function [sideTrajectories,sideTrajectoryId] = multiplane_split_trajectories_for
     sideTrajectories = cell( 2, 1 );
     sideTrajectoryId = cell( 2, 1 );
 
-    if nargin < 4
+    if nargin < 4 || isempty(debug)
         debug = 0;
         debug_colour = [];
-    elseif nargin < 5
+    elseif nargin < 5 || isempty(debug_colour)
         debug_colour = 'm';
     end
     
-    if nargin < 6
+    if nargin < 6 || isempty(debug_style)
         debug_style = '--';
     end
     
-    for t=1:length(trajectories)
+    for t=1:length(trajectories)       
         sides = multiplane_line_side( centre, angle, trajectories{t}, debug, debug_colour, debug_style );
         debug = 0;
         [splits, splitIds] = SplitVec( sides, 'equal','split','index' );

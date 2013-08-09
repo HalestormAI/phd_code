@@ -40,7 +40,7 @@ public:
         
     }
     
-    mxArray* getInputs( ) {
+    mxArray** getInputs( ) {
         return this->inputs;
     }
     

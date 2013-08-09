@@ -37,17 +37,18 @@ bool simulateFrame( int t ) {
     for(i = trajectories.begin( ); i != trajectories.end( ); i++) {
 //             mexPrintf("Checking trajectory\n"); mexEvalString("drawnow");
         if( i->second.isStarted( ) && !i->second.isFinished( ) ) {
-//             mexPrintf("Adding Frame\n"); mexEvalString("drawnow");
+        //     mexPrintf("Adding Frame\n"); mexEvalString("drawnow");
         
         //i->second.print3D( ); mexPrintf("\n\n");mexEvalString("drawnow");
              i->second.addFrame( &planes, t );
-//             mexPrintf("\tTrajectory is started but not finished\n");mexEvalString("drawnow");
+          //   mexPrintf("\tTrajectory is started but not finished\n");mexEvalString("drawnow");
         } else if( !i->second.isFinished( ) && probabilityGenerator( ENTER_PROB ) ) {
-//             mexPrintf("Starting trajectory\n"); mexEvalString("drawnow");
+             mexPrintf("Starting trajectory\n"); mexEvalString("drawnow");
             i->second.start( t, &planes );
         } else if( i->second.isFinished( ) ) {
             ++num_finished;
         }
+      //  mexPrintf("Loop end\n"); mexEvalString("drawnow");
     }
     
     return num_finished != trajectories.size( );
@@ -118,7 +119,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
 
     for( int frame = 0; frame < num_frames; frame++ ) {
-        mexPrintf("Running Frame %d of %d\n",frame, num_frames);
+        //mexPrintf("Running Frame %d of %d\n",frame, num_frames);
         if(!simulateFrame(frame))
             break;
     }
