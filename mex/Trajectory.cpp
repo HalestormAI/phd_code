@@ -40,17 +40,17 @@ void Trajectory::fromDouble3D( double* traj, const mwSize *dims ) {
 void Trajectory::toDouble2D( double *traj ) const
 {
     for( int col=0; col<this->points.size( ); col++ ) {
-        traj[0+col*2] = this->points.at(col).x;
-        traj[1+col*2] = this->points.at(col).y;
+        traj[0+col*2] = this->points.at(col).getX();
+        traj[1+col*2] = this->points.at(col).getY();
     }
 }
 
 void Trajectory::toDouble3D( double *traj ) const
 {
     for( int col=0; col<this->points.size( ); col++ ) {
-        traj[0+col*3] = this->points.at(col).X;
-        traj[1+col*3] = this->points.at(col).Y;
-        traj[2+col*3] = this->points.at(col).Z;
+        traj[0+col*3] = this->points.at(col).getX();
+        traj[1+col*3] = this->points.at(col).getY();
+        traj[2+col*3] = this->points.at(col).getZ();
     }
 }
 

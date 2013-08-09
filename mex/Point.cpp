@@ -64,12 +64,25 @@ std::string Point::toStr3D( ) const
 }
     
 
-double Point::dist2D( const Point pt ) const {
-    float dx = (this->x - pt.x);
-    float dy = (this->y - pt.y);
+double Point::dist( const Point pt ) const {
+    float dist;
+    if(this->is2D) {
+        float dx = (this->x - pt.x);
+        float dy = (this->y - pt.y);
 
-    float dist = sqrt(pow(dx,2) + pow(dy,2));
+        dist = sqrt(pow(dx,2) + pow(dy,2));
+    } else {
+        float dx = (this->X - pt.X);
+        float dy = (this->Y - pt.Y);
+        float dz = (this->Z - pt.Z);
+
+        dist = sqrt(pow(dx,2) + pow(dy,2) + pow(dz,2));
+    }
+        
     return dist;
+}
+double Point::dist2D( const Point pt ) const {
+    return this->dist(pt);
 }
 
 void Point::calibTsai( Etiseo::CameraModel *cam ) {
@@ -80,7 +93,7 @@ void Point::calibTsai( Etiseo::CameraModel *cam ) {
    this->is3D = true;
 }
 
-Point Point::move( Matrix *drn, float spd ) {
+Point Point::move( Matrix *drn, float spd ) const {
     Matrix out;
     out = this->toMatrix( ) + ((*drn)*spd);
     return Point( out );
@@ -95,17 +108,32 @@ bool operator!= (Point &p1, Point &p2) {
 }
 
 Point operator+ (const Point &p1, const Point &p2) {
-    return Point( p1.X + p2.X, p1.Y + p2.Y, p1.Z + p2.Z );
+    if( p1.is2D )
+        return Point( p1.x + p2.x, p1.y + p2.y );
+    else
+        return Point( p1.X + p2.X, p1.Y + p2.Y, p1.Z + p2.Z );
 }
-
 Point operator- (const Point &p1, const Point &p2) {
-    
-    
     if( p1.is2D )
         return Point( p1.x - p2.x, p1.y - p2.y );
     else
         return Point( p1.X - p2.X, p1.Y - p2.Y, p1.Z - p2.Z );
 }
+
+Point operator/ (const Point &p1, const double val) {
+    if( p1.is2D )
+        return Point( p1.x / val, p1.y / val );
+    else
+        return Point( p1.X / val, p1.Y / val, p1.Z / val );
+}
+
+Point operator* (const double val, const Point &p1) {
+    if( p1.is2D )
+        return Point( val*p1.x, val*p1.y );
+    else
+        return Point( val*p1.X, val*p1.Y, val*p1.Z );
+}
+
 
 Point Point::cross( Point p ) {
     
@@ -121,7 +149,7 @@ bool Point::isNull( ) {
     return isN;
 }
 
-Matrix Point::toMatrix( ) {
+Matrix Point::toMatrix( ) const {
     Matrix m;
     if( this->is3D ) {
         m = Matrix(3,1);
@@ -178,4 +206,16 @@ Point Point::fromString( std::string str )
     
     return P;
 
+}
+
+
+void Point::toDouble( double *out ) {
+    if(this->is2D) {
+        out[0] = this->x;
+        out[1] = this->y;
+    } else {
+        out[0] = this->X;
+        out[1] = this->Y;
+        out[2] = this->Z;
+    }
 }

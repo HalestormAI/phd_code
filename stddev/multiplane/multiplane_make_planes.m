@@ -45,7 +45,7 @@ function [planes,plane_params] = multiplane_make_planes( drawit, yAngles )
     plane_params = cell(NUM_PLANES,1);
     for p = 1:NUM_PLANES
         planes(p).world = SCALE.*planes(p).world;
-        [n,d] = planeFromPoints( planes(p).world );
+        [n,d] = planeFromPoints( planes(p).world,4,'svd' );
         plane_params{p} = [n',d];
     end
 

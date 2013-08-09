@@ -9,6 +9,8 @@
 #include "Point.hpp"
 #include "mex.h"
 #include "matrix.h"
+#include "functions.hpp"
+#include "Line.cpp"
 
 #ifndef PI
 #define PI 3.1415926535897932384626433832795028841971693993751058209749
@@ -27,15 +29,19 @@ public:
     
     Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl, int id = -1);
     
+    Matrix getDrn( bool switcharoo = false );
+    
     void boundariesFromDouble( double *boundaries , const mwSize *dims );
 
     void minmaxBounds( );
     
     void print( );
     
-    bool checkBounds( Point *p, bool notZ=false );
+    bool checkBounds( Point p, bool notZ=false, bool debug=false);
     
-    static Plane* findPlane( std::vector<Plane> *planes, Point *pos, bool debug=false );
+    void intersect( Plane &b, double (&n)[3] );
+    
+    static Plane* findPlane( std::vector<Plane> *planes, Point pos, bool debug=false );
     static std::vector<Point> intersection( Plane *oldPlane, Plane *newPlane );
     static void anglesFromN( std::vector<float> n, float *theta, float *psi);
 };

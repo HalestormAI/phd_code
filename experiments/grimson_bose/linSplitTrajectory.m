@@ -10,6 +10,7 @@ function [pieces, quality] = linSplitTrajectory( traj )
     
     st_pt = 1;
 %     textprogressbar('Splitting Linear Trajectories...');
+    counter = 1;
     while st_pt<length(traj)
         for nd_pt=length(traj):-1:(st_pt+MIN_LENGTH)
             % Try to fit line

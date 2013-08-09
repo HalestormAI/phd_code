@@ -1,86 +1,128 @@
+% % % % % OLD STUFF - IGNORE THIS!
+% % % % % %% Init Params
+% % % % %     NUM_ITERATIONS = 2;
+% % % % % 
+% % % % %     MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
+% % % % %     MODE_CLUSTER_2 = 2; % Throw all into kmeans and cluster for 2 of them
+% % % % %     MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
+% % % % % 
+% % % % %     WINDOW_SIZE = 100;
+% % % % %     WINDOW_DISTANCE = 50;
+% % % % % 
+% % % % % 
+% % % % %     MODE = MODE_CLUSTER_2;
+% % % % %
+% % % %     FIXED_D = 1;
+% % % % % 
+% % % % % %% Setup simulated data
+% % % % %     multiplane_sim_data;
+% % % % % 
+% % % % % %% Get region data
+% % % % %     allPoints = [imTraj{:}];
+% % % % %     mm = minmax([imTraj{:}]);
+% % % % %     regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANCE);
+% % % % % 
+% % % % % %% Produce initial region estimates
+% % % % %     output_params = cell(length(regions),1);
+% % % % %     finalError    = cell(length(regions),1);
+% % % % %     fullErrors    = cell(length(regions),1);
+% % % % %     inits         = cell(length(regions),1);
+% % % % % 
+% % % % % 
+% % % % % 
+% % % % %     for r=1:length(regions)
+% % % % %         fprintf('Region: %d\n',r);
+% % % % %         if length(regions(r).traj) < 1
+% % % % %             regions(r).empty = 1;
+% % % % %             fprintf('\tNo trajectories in region\n');
+% % % % %             continue;
+% % % % %         end
+% % % % %         regions(r).empty = 0;
+% % % % %         plane_details(r).trajectories = traj2imc( regions(r).traj,1,1 );
+% % % % %         plane_details(r).imagewidth = abs(mm(1,2) - mm(1,1));
+% % % % %         [ output_params{r}, finalError{r}, fullErrors{r}, inits{r} ] = multiplane_multiscaleSolver_using_imagewidth( 1, plane_details(r), 3, 10, 1e-12 );
+% % % % %     end
+% % % % % 
+% % % % %     disp('ESTIMATES');
+% % % % %     output_mat = cell2mat(output_params);
+% % % % % 
+% % % % %     if abs(round(output_mat(1,2))) == 101 || abs(round(output_mat(2,2))) == 101
+% % % % %         disp('Error101');
+% % % % %         save( sprintf('error101_iteration-%d_region-%d_%s',iteration,r,datestr(now, '_dd-mm-yy_HH-MM-SS')) );
+% % % % %     end
+% % % % % 
 % 
-% % % % OLD STUFF - IGNORE THIS!
-% % % % %% Init Params
-% % % %     NUM_ITERATIONS = 2;
-% % % % 
-% % % %     MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
-% % % %     MODE_CLUSTER_2 = 2; % Throw all into kmeans and cluster for 2 of them
-% % % %     MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
-% % % % 
-% % % %     WINDOW_SIZE = 100;
-% % % %     WINDOW_DISTANCE = 50;
-% % % % 
-% % % % 
-% % % %     MODE = MODE_CLUSTER_2;
-% % % %
-% % %     FIXED_D = 1;
-% % % % 
-% % % % %% Setup simulated data
-% % % %     multiplane_sim_data;
-% % % % 
-% % % % %% Get region data
-% % % %     allPoints = [imTraj{:}];
-% % % %     mm = minmax([imTraj{:}]);
-% % % %     regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANCE);
-% % % % 
-% % % % %% Produce initial region estimates
-% % % %     output_params = cell(length(regions),1);
-% % % %     finalError    = cell(length(regions),1);
-% % % %     fullErrors    = cell(length(regions),1);
-% % % %     inits         = cell(length(regions),1);
-% % % % 
-% % % % 
-% % % % 
-% % % %     for r=1:length(regions)
-% % % %         fprintf('Region: %d\n',r);
-% % % %         if length(regions(r).traj) < 1
-% % % %             regions(r).empty = 1;
-% % % %             fprintf('\tNo trajectories in region\n');
-% % % %             continue;
-% % % %         end
-% % % %         regions(r).empty = 0;
-% % % %         plane_details(r).trajectories = traj2imc( regions(r).traj,1,1 );
-% % % %         plane_details(r).imagewidth = abs(mm(1,2) - mm(1,1));
-% % % %         [ output_params{r}, finalError{r}, fullErrors{r}, inits{r} ] = multiplane_multiscaleSolver_using_imagewidth( 1, plane_details(r), 3, 10, 1e-12 );
-% % % %     end
-% % % % 
-% % % %     disp('ESTIMATES');
-% % % %     output_mat = cell2mat(output_params);
-% % % % 
-% % % %     if abs(round(output_mat(1,2))) == 101 || abs(round(output_mat(2,2))) == 101
-% % % %         disp('Error101');
-% % % %         save( sprintf('error101_iteration-%d_region-%d_%s',iteration,r,datestr(now, '_dd-mm-yy_HH-MM-SS')) );
-% % % %     end
-% % % % 
-
-FIXED_D = 1;
-
-combined_alpha_est_data;
-
-empties = arrayfun(@(x) isempty(x.traj), regions);
-regions = arrayfun( @addemptyfield, regions, empties);
-
-plane_details = struct('trajectories',{},'imagewidth',{});
-for r=1:length(regions)
-    plane_details(r).trajectories = traj2imc( regions(r).traj,1,1 );
-    plane_details(r).imagewidth = abs(mm(1,2) - mm(1,1));
-end
-
-if MODE == MODE_CLUSTER_2
-    [~,hypotheses] = kmeans(output_params,2);
-elseif MODE == MODE_CLUSTER_G
-    hypotheses = gmeans(output_params,0.001,'pca','gamma');
-else
-    hypotheses = output_params;
-end
-
+% FIXED_D = 1;
+% 
+% %% Set up initial parameters
+% MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
+% MODE_CLUSTER_K = 2; % Throw all into kmeans and cluster for 2 of them
+% MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
+% 
+% WINDOW_SIZE = 50;
+% WINDOW_DISTANCE = 25;
+% 
+% 
+% rootFld = sprintf('hinged-%s-winsz_%d-windist_%d',datestr(now,'HH-MM-SS'), WINDOW_SIZE, WINDOW_DISTANCE);
+% mkdir(rootFld);
+% pushd( rootFld );
+% 
+% MODE = MODE_CLUSTER_K;
+% 
+% params = multiplane_params_example(10,30);
+% 
+% % multiplane_sim_data;
+% [planes, trajectory_struct, params, plane_params] = multiplane_read_wavefront_obj( '/home/ian/PhD/equal-plane-sizes.obj', params,1 );
+% camTraj = trajectory_struct.camera;
+% imTraj = trajectory_struct.image;
+% 
+% 
+% 
+% allPoints = [imTraj{:}];
+% 
+% %% Display ground truth
+% disp('GROUND TRUTH');
+% ground_truth = zeros(length(planes),2);
+% for p = 1:length(planes)
+%     ground_truth(p,:) = anglesFromN(planeFromPoints(planes(p).camera),1,'degrees');
+% %     ground_truth(2,:) = anglesFromN(planeFromPoints(planes(2).camera),1,'degrees')
+% end
+% % 
+% % 
+% %% Generate Initial Regions
+% mm = minmax([imTraj{:}]);
+% regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANCE);
+% % abs(mm(1,1)-mm(1,2))
+%     
+% empties = arrayfun(@(x) isempty(x.traj), regions);
+% regions = arrayfun( @addemptyfield, regions, empties);
+% 
+% %% Produce region estimations
+% [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solver( regions(~empties),abs(mm(1,1)-mm(1,2)),3 );
+% 
+% plane_details = struct('trajectories',{},'imagewidth',{});
+% for r=1:length(regions)
+%     plane_details(r).trajectories = traj2imc( regions(r).traj,1,1 );
+%     plane_details(r).imagewidth = abs(mm(1,2) - mm(1,1));
+% end
+% 
+% if MODE == MODE_CLUSTER_K
+%     [~,hypotheses] = kmeans(output_params,length(planes));
+% elseif MODE == MODE_CLUSTER_G
+%     hypotheses = gmeans(output_params,0.001,'pca','ad');
+% else
+%     hypotheses = output_params;
+% end
+% 
 
 
 % Output estimation details.
 % [plane_ids,confidence] = multiplane_planeids_from_traj( planes, tmpTraj );
 disp('GROUND TRUTH');
-ground_truth(1,:) = anglesFromN(planeFromPoints(planes(1).camera),1,'degrees')
-ground_truth(2,:) = anglesFromN(planeFromPoints(planes(2).camera),1,'degrees')
+for p=1:length(planes)
+    ground_truth(p,:) = anglesFromN(planeFromPoints(planes(p).camera),1,'degrees');
+end
+disp(ground_truth)
 
 
 
@@ -88,42 +130,77 @@ ground_truth(2,:) = anglesFromN(planeFromPoints(planes(2).camera),1,'degrees')
 labelCost = NaN.*ones(size(hypotheses,1),length(regions));
 for e=1:size(hypotheses,1)
     for r=1:length(regions)
-        labelCost(e,r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(regions(r).traj,1,1)).^2);
+        if regions(r).empty
+            labelCost(e,r) = Inf;
+        else
+            labelCost(e,r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(regions(r).traj,1,1)).^2);
+        end
     end
 end
 
 
-[~,MINIDS] = min(labelCost);
 
-%% Relabel using SVM
-svm_line_splitter;
+[~,labelling_prealpha] = min(labelCost);
+
+fig_prealpha = figure;
+pcolours = ['k','r','b','g','m','c','y'];
+for i=1:length(planes)
+    drawPlane(planes(i).image, '' ,0, pcolours(i));
+end
+drawtraj(imTraj,'',0);
+[~,regions] = multiplane_overlay_sliding_regions( regions, labelling_prealpha);
+% save beforealpha
+% saveas(fig_prealpha,'prealpha_regions.fig');
+
+% multiplane_alpha_expansion_script
+% save afteralpha
 % 
+% fig_postalpha = figure;
+% pcolours = ['k','r','b','g','m','c','y'];
+% for i=1:length(planes)
+%     drawPlane(planes(i).image, '' ,0, pcolours(i));
+% end
+% drawtraj(imTraj,'',0);
+% [~,regions_postalpha] = multiplane_overlay_sliding_regions( regions, labelling);
 % 
-% %% Use SVM labelling to get plane edge constraint
-% % TODO: Get trajectory endpoints that intersect with the SVM line - we know
-% % these to be on the plane.
-%     % reorder hypotheses
+% saveas(fig_postalpha,'postalpha_regions.fig');
+% popd;
+
+return
+
+
+
+
+
+% Relabel using SVM
+svm_line_splitter;  %sideTrajectories comes from here
+
+
+%% Use SVM labelling to get plane edge constraint
+% TODO: Get trajectory endpoints that intersect with the SVM line - we know
+% these to be on the plane.
+    % reorder hypotheses
     ordered_hypotheses = assign_hypotheses_for_regions(hypotheses,regions);
-% 
-%     % Get plane dividing line endpoints for constraint
+
+    % Get plane dividing line endpoints for constraint
     svm_line = [xvals(~isnan(xvals)),yvals(~isnan(yvals))]';
     plane_constraints_im = svm_line(:,[1,end]);
+    
+    % Get the points on in trajectories that hit the dividing line
+%     region_endpoints = cell2mat(cellfun(@(x) x(:,[1 end]), regions(1).traj,'un',0));
+%     region_online = cellfun(@(x) is_point_on_line(x,plane_constraints_im,1),num2cell(region_endpoints,1));
 %     
-%     % Get the points on in trajectories that hit the dividing line
-% %     region_endpoints = cell2mat(cellfun(@(x) x(:,[1 end]), regions(1).traj,'un',0));
-% %     region_online = cellfun(@(x) is_point_on_line(x,plane_constraints_im,1),num2cell(region_endpoints,1));
-% %     
-% %     if find(region_online)
-% %         plane_constraints_im = region_endpoints(:,region_online)
-% %     end
-% 
-%     % Rectify with plane 1 hypothesis
-%     plane_constraints_rect = backproj_c( ordered_hypotheses(1,1), ...
-%                                          ordered_hypotheses(1,2), ...
-%                                          FIXED_D, ...
-%                                          ordered_hypotheses(1,3), ...
-%                                          plane_constraints_im ...
-%                                        );
+%     if find(region_online)
+%         plane_constraints_im = region_endpoints(:,region_online)
+%     end
+
+    % Rectify with plane 1 hypothesis
+    plane_constraints_rect = backproj_c( ordered_hypotheses(1,1), ...
+                                         ordered_hypotheses(1,2), ...
+                                         FIXED_D, ...
+                                         ordered_hypotheses(1,3), ...
+                                         plane_constraints_im ...
+                                       );
 
 
 % plane_constraints_im = p
