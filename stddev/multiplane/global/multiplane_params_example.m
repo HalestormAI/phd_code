@@ -1,4 +1,4 @@
-function params = multiplane_params_example( height, NUM_TRAJ )
+function params = multiplane_params_example( height, NUM_TRAJ, scale, TIME )
 % Generates a set of  plane parameters with the following specification:
 %   Camera:
 %       Rotation: AOE=30 degrees and AOY = 5 degrees.
@@ -17,16 +17,22 @@ function params = multiplane_params_example( height, NUM_TRAJ )
         NUM_TRAJ = 30;
     end
     
-    scale = 1/height;
+    if nargin < 3 || isempty(scale)
+        scale = 1/height;
+    end
+    
+    if nargin < 4
+        TIME = 2000;
+    end
 
     params = multiplane_cam_params( 30, 15, 720, height );
     
     speeds = cell(NUM_TRAJ,1);
     for t=1:NUM_TRAJ
-        speeds{t} = normrnd(scale,.0,1,2000);
+        speeds{t} = normrnd(scale,.0,1,TIME);
     end
     % speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
-    drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,2000)),2);
+    drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,TIME)),2);
     
     params = multiplane_trajectory_params( speeds, drns, params );
 end

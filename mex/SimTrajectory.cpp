@@ -42,58 +42,99 @@ Matrix SimTrajectory::drn2mat( int frameNo, Plane *plane ) {
     Matrix nMat(3,1);
     nMat.fromVector(plane->n);
     
+    
+    
+    Matrix planeDrn = plane->getDrn( this->reversal );
+    planeDrn /= planeDrn.mag( );
+    
+//     planeDrn.print( );
+    
     Matrix mMat(3,1);
     double mMatArr[3] = {0,0,1};
     mMat.fromDouble(mMatArr);
     
     Matrix axis = Matrix::cross(nMat,mMat);
+        
+    double xAngle = atan( planeDrn.at(1,0) / planeDrn.at(2,0) );
+    if(isnan(xAngle)){
+        xAngle = 0;
+    }
+    Matrix xRot = xRotate( xAngle );
+    Matrix axisRotX = xRot*planeDrn;
     
-    double c = plane->n[2],
-           t = acos(c),
-           s = sin(t),
-           C = 1-c;
+    double yAngle = atan(axisRotX.at(0,0)/axisRotX.at(2,0));
+    Matrix yRot = yRotate( (PI/2)-yAngle );
     
-    double x = axis.at(0,0),
-           y = axis.at(1,0),
-           z = axis.at(2,0);
-    
-    
-    
-    Matrix rMat(3,3); 
-    rMat.set(0,0, x*x*C +c  );
-    rMat.set(0,1, x*y*C -z*s);
-    rMat.set(0,2, x*z*C +y*s);
-     
-    rMat.set(1,0, y*x*C +z*s);
-    rMat.set(1,1, y*y*C +c  );
-    rMat.set(1,2, y*z*C -x*s);
-     
-    rMat.set(2,0, z*x*C -y*s);
-    rMat.set(2,1, z*y*C +x*s);
-    rMat.set(2,2, z*z*C +c  );
+    Matrix rMat = yRot*xRot;
     
     
-    double c_i = cos(-t),
-           s_i = sin(-t),
-           C_i = 1-c_i;
     
-    Matrix rMatInv(3,3); 
-    rMatInv.set(0,0, x*x*C_i +c_i  );
-    rMatInv.set(0,1, x*y*C_i -z*s_i);
-    rMatInv.set(0,2, x*z*C_i +y*s_i);
-     
-    rMatInv.set(1,0, y*x*C_i +z*s_i);
-    rMatInv.set(1,1, y*y*C_i +c_i  );
-    rMatInv.set(1,2, y*z*C_i -x*s_i);
-     
-    rMatInv.set(2,0, z*x*C_i -y*s_i);
-    rMatInv.set(2,1, z*y*C_i +x*s_i);
-    rMatInv.set(2,2, z*z*C_i +c_i  );
+//     double c = plane->n[2],
+//            t = acos(c),
+//            s = sin(t),
+//            C = 1-c;
+//     
+//     double x = axis.at(0,0),
+//            y = axis.at(1,0),
+//            z = axis.at(2,0);
+//     
+//     
+//     Matrix rMat(3,3); 
+//     rMat.set(0,0, x*x*C +c  );  rMat.set(0,1, x*y*C -z*s);  rMat.set(0,2, x*z*C +y*s);
+//     rMat.set(1,0, y*x*C +z*s);  rMat.set(1,1, y*y*C +c  );  rMat.set(1,2, y*z*C -x*s);
+//     rMat.set(2,0, z*x*C -y*s);  rMat.set(2,1, z*y*C +x*s);  rMat.set(2,2, z*z*C +c  );
+// 
+//     
+    Matrix rMatInv = rMat.inv33( );
     
+//     double c_i = cos(-t),
+//            s_i = sin(-t),
+//            C_i = 1-c_i;
+//     
+//     Matrix rMatInv2;
+//     mexPrintf("RMAT (NEW INVERSE): \n");
+//     rMatInv2 = rMat.inv33( );
+//     rMatInv2.print( );
+//     
+//     Matrix rMatInv(3,3); 
+//     rMatInv.set(0,0, x*x*C_i +c_i  );
+//     rMatInv.set(0,1, x*y*C_i -z*s_i);
+//     rMatInv.set(0,2, x*z*C_i +y*s_i);
+//      
+//     rMatInv.set(1,0, y*x*C_i +z*s_i);
+//     rMatInv.set(1,1, y*y*C_i +c_i  );
+//     rMatInv.set(1,2, y*z*C_i -x*s_i);
+//      
+//     rMatInv.set(2,0, z*x*C_i -y*s_i);
+//     rMatInv.set(2,1, z*y*C_i +x*s_i);
+//     rMatInv.set(2,2, z*z*C_i +c_i  );
+//     
+//     mexPrintf("RMAT(inv): \n");
+//     rMatInv.print( );
     Matrix zRot = zRotate(newDrn);
     
-    Matrix planeDrn = plane->getDrn( this->reversal );
-    planeDrn /= planeDrn.mag( );
+    
+//     if( plane->id == 1 )  {
+    
+//         mexPrintf("SimTrajectory.cpp (line 99): nMat:\n", plane->id);
+//         nMat.print( );
+//         mexPrintf("mMat:\n", plane->id);
+//         mMat.print( );
+// 
+//         mexPrintf("Plane %d Direction:\n", plane->id);
+//         planeDrn.print( );
+// 
+//         mexPrintf("rMat:\n");
+//         rMat.print( );
+// 
+//         mexPrintf("zRot:\n");
+//         zRot.print( );
+// 
+//         mexPrintf("rMatInv:\n");
+//         rMatInv.print( );
+//         
+//         mexPrintf("\nxAngle: %g, yAngle %g\n\n",xAngle, yAngle);
+//     }
     
     /*float theta, psi;
     Plane::anglesFromN( plane->n, &theta, &psi );
@@ -125,21 +166,27 @@ Matrix SimTrajectory::drn2mat( int frameNo, Plane *plane ) {
     
     Matrix rotDrn = rMatInv*(zRot*(rMat*planeDrn));
     
-    if(isnan(rotDrn.at(0,0))) {
-        mexPrintf("WE GOT A NaN! Theta: %g\n Here's the rotation Matrix: \n", t);
-        rMat.print( );
-        mexPrintf("Here's the inverse:\n");
-        rMatInv.print( );
-        mexPrintf("nMat=\n");
-        nMat.print( );
-        mexPrintf("mMat=\n");
-        mMat.print( );
-        mexPrintf("axis=\n");
-        axis.print( );
-        mexEvalString("drawnow");
-        mexErrMsgTxt("And now I must bid you adieu");
-        
-    }
+    
+//     if( plane->id == 1 )  {
+//         mexPrintf("rotDrn:\n");
+//         rotDrn.print( );
+//     }
+//     if(isnan(rotDrn.at(0,0))) {
+//         mexPrintf("WE GOT A NaN! Theta: %g\n Here's the rotation Matrix: \n", t);
+//         rMat.print( );
+//         mexPrintf("Here's the inverse:\n");
+//         rMatInv.print( );
+//         mexPrintf("nMat=\n");
+//         nMat.print( );
+//         mexPrintf("mMat=\n");
+//         mMat.print( );
+//         mexPrintf("axis=\n");
+//         axis.print( );
+//         mexEvalString("drawnow");
+//         mexErrMsgTxt("And now I must bid you adieu");
+//         
+//     }
+    
     return rotDrn;
 }
 
@@ -214,8 +261,6 @@ Point SimTrajectory::changePlane( std::vector<Plane> *planes, Point *oldPos, Poi
     }
     
     
-    //mexPrintf("Finding intersection\n");
-    //mexEvalString("drawnow");
     // Intersection of oldPlane and new Plane
     std::vector<Point> intersect = Plane::intersection( oldPlane, newPlane );
     Point x0 = *oldPos;
@@ -226,6 +271,8 @@ Point SimTrajectory::changePlane( std::vector<Plane> *planes, Point *oldPos, Poi
     Matrix newDrn = this->drn2mat(curFrame, newPlane);
 
     
+
+    // get the distance from the border so we can split the trajectory there
     double d = ( (x2-x1).cross(x0-x1) ).toMatrix( ).mag( ) / ( x2-x1 ).toMatrix( ).mag( );
     
     double s = this->speeds.at(curFrame);
@@ -311,6 +358,7 @@ void SimTrajectory::newStartingPoint( std::vector<Plane> *planes ) {
     //std::vector<Point> boundaries = planes->at(plane_id).boundaries;
     //float newY = boundaries.at(0).Y + myrand(1)*boundaries.at(2).Y;
     //Point start = Point(boundaries.at(startEnd).X, newY, boundaries.at(startEnd).Z);
+    
     this->addPoint( start );
     
 }

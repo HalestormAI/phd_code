@@ -1,10 +1,27 @@
-function [region_trajectories, plane_regions] = multiplane_boundary_trajectory_split( trajectories, boundary_line_points )
+function [region_trajectories, plane_regions, plane_graph] = multiplane_boundary_trajectory_split( trajectories, boundary_line_points )
+% MULTIPLANE_BOUNDARY_TRAJECTORY_SPLIT Generate new regions from the global
+% trajectory set based on boundary lines given as end points.
+%
+% Usage:
+%   RT = MULTIPLANE_BOUNDARY_TRAJECTORY_SPLIT( T, L )
+%       T = Tx1 Cell array of image trajectories
+%       L = (|P|-1)x1 cell of 2x2 boundary point matrices
+%      RT = Rx1 cell of cells, where each outer cell contains the
+%           trajectories for region.
+%
+%   [RT,PR] = MULTIPLANE_BOUNDARY_TRAJECTORY_SPLIT( ... )
+%      PR = Px1 cell of polygons representing each plane boundary
+%
+%   [RT,PR,PG] = MULTIPLANE_BOUNDARY_TRAJECTORY_SPLIT( ... )
+%      PG = 1xP vector containing ids of parent polygons (i.e. which
+%            planes are attached to one another).
+%
     % Get the convex hull of the trajectories
     allPoints = [trajectories{:}];
     hull = convhull(allPoints(1,:), allPoints(2,:));
     hullPts = allPoints(:,hull);
 
-    plane_regions = regions_from_boundaries( boundary_line_points, hullPts );
+    [plane_regions,plane_graph] = regions_from_boundaries( boundary_line_points, hullPts );
     
     region_trajectories = cell(length(plane_regions),1);
     

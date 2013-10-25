@@ -35,6 +35,23 @@ Point::Point( Matrix m ) {
     this->is2D = false;
 }
 
+void Point::print( ) const
+{
+    if(this->is3D)
+        this->print3D( );
+    else
+        this->print2D( );
+}
+
+std::string Point::toStr( ) const
+{
+    if(this->is3D)
+        return this->toStr3D( );
+    else
+        return this->toStr2D( );
+    
+}
+
 void Point::print2D( ) const
 {
     mexPrintf( this->toStr2D( ).c_str( ) );

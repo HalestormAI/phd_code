@@ -56,7 +56,7 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
             focals = (focalScale/2):(focalScale/2.5):((focalScale*10)/2);
         else
             STEP = STEP/10;
-            sRange = (-10*STEP):5*STEP:(10*STEP);
+            sRange = (-10*STEP):10*STEP:(10*STEP);
 
             thetas = [];
             psis   = [];

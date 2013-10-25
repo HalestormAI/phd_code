@@ -80,12 +80,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
                 "Plane boundaries and parameters must be the same length.");
     
     int num_planes = std::max(pbDims[0],pbDims[1]);
+    planes = std::vector<Plane>(num_planes);
     for( int p=0; p < num_planes; p++ ) {
         mx_bounds = (mxArray*) mxGetCell(prhs[0],p);
         mx_params = (mxArray*) mxGetCell(prhs[1],p);
         psz = mxGetDimensions( mx_bounds );
-        planes.push_back(Plane( (double*)mxGetPr(mx_bounds), psz, (double*)mxGetPr(mx_params), planes.size( )));
-//         planes.at(p).print( );
+        planes[p] = Plane( (double*)mxGetPr(mx_bounds), psz, (double*)mxGetPr(mx_params), p);
+//          planes.at(p).print( );
     }
     
     if( planes.empty( ) )

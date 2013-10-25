@@ -25,12 +25,13 @@ function [f,g] = drawtraj( traj, ttl, newfig, colour, lw, marker, returnline )
     if newfig > 0,
         f = figure;
         title(ttl);
+        hold on;
     else 
         f = gcf;
     end
     
     if iscell(traj)
-        line_handles = cellfun(@(x) drawtraj(x,ttl,0,colour, lw, marker,1), traj);
+        [~,line_handles] = cellfun(@(x) drawtraj(x,ttl,0,colour, lw, marker,1), traj);
         
         g = hggroup;
         set(line_handles, 'Parent', g )
@@ -38,13 +39,14 @@ function [f,g] = drawtraj( traj, ttl, newfig, colour, lw, marker, returnline )
     end
     
     if(size(traj,1)==3)
-        drawfun = @drawcoords3;
+%         drawfun = @drawcoords3;
+        g = plot3(traj(1,:),traj(2,:),traj(3,:),sprintf('%s', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
     else
-        drawfun = @drawcoords;
+%         drawfun = @drawcoords;
+        g = plot(traj(1,:),traj(2,:),sprintf('%s', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
     end
-        
-    
-    [f,g] = drawfun(traj2imc(traj,1,1),ttl,0,colour, lw, marker);
+     
+%     [f,g] = drawfun(traj2imc(traj,1,1),ttl,0,colour, lw, marker);
     
     if nargin >= 7 && returnline
         f = g;

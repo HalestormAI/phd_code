@@ -17,8 +17,8 @@ function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, sc
         rectTrajectories = cellfun(@(x) backproj_func(orientation, scales, x), longEnough,'uniformoutput', false);
     else
         rectTrajectories = cellfun(@(x) backproj_c(orientation(1),orientation(2), ...
-                                     scales(1),scales(2), x), ...
-                                     longEnough,'uniformoutput', false);
+                                                 scales(1),scales(2), x), ...
+                                                 longEnough,'uniformoutput', false);
     end
        
     for i=1:length(rectTrajectories)

@@ -303,3 +303,26 @@ Matrix Matrix::cross( const Matrix &M, const Matrix &N ) {
     crs.set(2,0, M.at(0,0)*N.at(1,0) - M.at(1,0)*N.at(0,0));
     return crs;
 }
+
+Matrix Matrix::inv33( ) const
+{
+    // computes the inverse of a matrix m
+    double det = this->at(0,0) * (this->at(1,1) * this->at(2,2) - this->at(2,1) * this->at(1,2)) -
+                this->at(0,1) * (this->at(1,0) * this->at(2,2) - this->at(1,2) * this->at(2,0)) +
+                this->at(0,2) * (this->at(1,0) * this->at(2,1) - this->at(1,1) * this->at(2,0));
+
+    double invdet = 1 / det;
+
+    Matrix minv(3,3); // inverse of matrix m
+    minv.set(0,0,(this->at(1,1) * this->at(2,2) - this->at(2,1) * this->at(1,2)) * invdet);
+    minv.set(0,1,(this->at(0,2) * this->at(2,1) - this->at(0,1) * this->at(2,2)) * invdet);
+    minv.set(0,2,(this->at(0,1) * this->at(1,2) - this->at(0,2) * this->at(1,1)) * invdet);
+    minv.set(1,0,(this->at(1,2) * this->at(2,0) - this->at(1,0) * this->at(2,2)) * invdet);
+    minv.set(1,1,(this->at(0,0) * this->at(2,2) - this->at(0,2) * this->at(2,0)) * invdet);
+    minv.set(1,2,(this->at(1,0) * this->at(0,2) - this->at(0,0) * this->at(1,2)) * invdet);
+    minv.set(2,0,(this->at(1,0) * this->at(2,1) - this->at(2,0) * this->at(1,1)) * invdet);
+    minv.set(2,1,(this->at(2,0) * this->at(0,1) - this->at(0,0) * this->at(2,1)) * invdet);
+    minv.set(2,2,(this->at(0,0) * this->at(1,1) - this->at(1,0) * this->at(0,1)) * invdet);
+
+    return minv;
+}

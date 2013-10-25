@@ -26,10 +26,10 @@ function E_regions = combined_alpha_iterator( ALPHAS, THETAS, PSIS, D, REGIONS )
                 E_r = cell(length(REGIONS),1);
                 for r=1:length(REGIONS)
                     
-                    [~,fval] = fsolve(@(x) errorfunc_traj( x(1:2), [D,x(3)], REGIONS(r).traj ),[theta,psi,alpha], options);
+%                     [~,fval] = fsolve(@(x) errorfunc_traj( x(1:2), [D,x(3)], REGIONS(r).traj ),[theta,psi,alpha], options);
                     %errors{i} = errorfunc([t,p],[D,f], trajectories);
-                    E_r{r} = sum(fval);
-%                     E_r{r} = errorfunc_traj( [theta,psi], [D,alpha], REGIONS(r).traj );
+%                     E_r{r} = sum(fval);
+                    E_r{r} = errorfunc_traj( [theta,psi], [D,alpha], REGIONS(r).traj );
                 end
                 E_r_a{t,p}   = cellfun(@(x) sum(x.^2), E_r);
             end

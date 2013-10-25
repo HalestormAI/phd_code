@@ -1,10 +1,10 @@
 function imc = traj2imc( traj, FPS, NOROUND )
 
 if nargin < 2,
-    FPS = 25;
+    FPS = 1;
 end
 if nargin < 3,
-    NOROUND = 0;
+    NOROUND = 1;
 end
 
 if iscell( traj )
