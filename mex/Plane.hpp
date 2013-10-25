@@ -26,7 +26,7 @@ public:
     std::vector<float> n;
     float d;
     int id;
-    
+    Plane( ) {}
     Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl, int id = -1);
     
     Matrix getDrn( bool switcharoo = false );

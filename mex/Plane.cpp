@@ -24,6 +24,11 @@ void Plane::boundariesFromDouble( double *boundaries , const mwSize *dims ) {
         z = boundaries[2+col*dims[0]];
         this->boundaries.push_back( Point( x, y, z ) );
     }
+    
+    mexPrintf("Plane %d boundaries:\n",this->id);
+    for( unsigned int j = 0; j < this->boundaries.size( ); j++ ) {
+        this->boundaries.at(j).print( );
+    }
 }
 
 void Plane::minmaxBounds( ) {
@@ -55,8 +60,8 @@ void Plane::print( ) {
         ss << "\t" << i->toStr3D( );
     }
     
-    ss << "\nMinmax:\n\t" << this->minboundaries.toStr3D( ) << "\t"
-       << this->maxboundaries.toStr3D( ) << std::endl;
+   /* ss << "\nMinmax:\n\t" << this->minboundaries.toStr3D( ) << "\t"
+       << this->maxboundaries.toStr3D( ) << std::endl;*/
         
     mexPrintf( ss.str( ).c_str( ) );
     mexEvalString("drawnow");
@@ -71,21 +76,12 @@ bool Plane::checkBounds( Point p, bool notZ, bool debug ) {
     bool zwin = notZ ? true : zin;
     bool result = xin && yin && zwin;
     
-//     if( debug && !result ) {
-//         mexPrintf("Point not on plane: \n\tMinpt: ");
-//         this->minboundaries.print3D( );
-//         mexPrintf("\tMaxpt: ");
-//         this->maxboundaries.print3D( );
-//         mexPrintf("\tPoint: ");
-//         p.print3D( );
-//         mexPrintf("\n=================\n");
-//     }
     return result;
 }
 
 Plane* Plane::findPlane( std::vector<Plane> *planes, Point pos, bool debug ) {
     Plane *curPlane = 0;
-    
+//    mexPrintf("### Number of planes: %d\n", planes->size( ) );
     std::vector<Plane>::iterator iter;
     for( iter = planes->begin( ); iter != planes->end( ); iter++ ) {
         
@@ -106,21 +102,32 @@ std::vector<Point> Plane::intersection( Plane *oldPlane, Plane *newPlane ) {
     // First, get plane intersection ( n1 x n2 ) / norm( n1 x n2 )
     Point npdiffpt, opdiffpt;
     double n[3], npdiff[3], opdiff[3];
-    newPlane->intersect(*oldPlane,n);
-    //mexPrintf("N: [ %g\n     %g\n     %g]\n\n", n[0],n[1],n[2]);
+//     newPlane->intersect(*oldPlane,n);
+//     //mexPrintf("N: [ %g\n     %g\n     %g]\n\n", n[0],n[1],n[2]);
+//     
+//     double mag = vec_mag(n,3);
+//     //mexPrintf("N: [ %g\n     %g\n     %g]\n(mag: %g)\n", n[0],n[1],n[2], mag);
+//     
+//     n[0] /= mag;
+//     n[1] /= mag;
+//     n[2] /= mag;
+//     
+    Matrix n_oldplane(3,1), n_newplane(3,1), a_intersect(3,1);
     
-    double mag = vec_mag(n,3);
-    //mexPrintf("N: [ %g\n     %g\n     %g]\n(mag: %g)\n", n[0],n[1],n[2], mag);
+    n_oldplane.fromVector(oldPlane->n);
+    n_newplane.fromVector(newPlane->n);
+    a_intersect = Matrix::cross(n_oldplane, n_newplane);
+    a_intersect /= a_intersect.mag( );
     
-    n[0] /= mag;
-    n[1] /= mag;
-    n[2] /= mag;
+    a_intersect.toDouble(n);
+    
+//     mexPrintf("Intersection line (%d->%d): \n", oldPlane->id, newPlane->id);
+//     a_intersect.print( );
     
     std::vector<Point> possible_intersects;
     std::vector<Line> newPlaneLines, oldPlaneLines;
     
-    double eps = std::numeric_limits<double>::epsilon()*100;
-    mexPrintf("Eps: %g\n", eps);
+    double eps = 1.0e-10;
     
     for( unsigned int p1 = 0; p1 < oldPlane->boundaries.size( ); p1++ ) {
         unsigned int p2 = p1 + 1;
@@ -139,7 +146,10 @@ std::vector<Point> Plane::intersection( Plane *oldPlane, Plane *newPlane ) {
         // Use mag on point
         opdiffpt = opdiffpt / vec_mag(opdiff,3);
         npdiffpt = npdiffpt / vec_mag(npdiff,3);
-        
+//         mexPrintf("Edge diff plane %d: \n", oldPlane->id);
+//         opdiffpt.print( );
+//         mexPrintf("Eps:  %d\n", eps);
+//         mexPrintf("Errors:\n\t%g\n\t%g\n\t%g\n\n",fabs(fabs(n[0]) - fabs(opdiffpt.getX( ))),fabs(fabs(n[1]) - fabs(opdiffpt.getY( ))),fabs(fabs(n[2]) - fabs(opdiffpt.getZ( ))));
         // Check direction of lines is the same as plane-plane intersection line
         if( fabs(fabs(n[0]) - fabs(opdiffpt.getX( ))) < eps && 
             fabs(fabs(n[1]) - fabs(opdiffpt.getY( ))) < eps && 
@@ -165,10 +175,13 @@ std::vector<Point> Plane::intersection( Plane *oldPlane, Plane *newPlane ) {
             Line l11 = oldPlaneLines.at(l),
                  l12 = newPlaneLines.at(l2);
             
-            double drn11[3];
-            l11.getDrn(drn11);
+           /* double drn11[3];
+            l11.getDrn(drn11);*/
             
-            if( Line::checkPointOnLine( l11.start, drn11, l12.start ) ) {
+            double d = l11.point_distance(l12.start);
+//             mexPrintf("Point plane distance (%d, %d) = %g\n",l,l2,d);
+            //if( Line::checkPointOnLine( l11.start, drn11, l12.start ) ) {
+            if( d < 0.001 ) {
                 possible_intersects.push_back(l11.start);
                 possible_intersects.push_back(l11.end);
                 possible_intersects.push_back(l12.start);
@@ -179,6 +192,32 @@ std::vector<Point> Plane::intersection( Plane *oldPlane, Plane *newPlane ) {
 
     if( possible_intersects.size() != 4 )
     {
+        mexPrintf("Oldplane lines size: %d\nNewPlane lines size: %d\n",oldPlaneLines.size( ),newPlaneLines.size( ));
+        for(int l=0; l < oldPlaneLines.size( ); l++ )
+        {
+            mexPrintf("\n************\n");
+            mexPrintf("Old Plane Line %d (ln184, plane.cpp)\n", l);
+            Line ln = oldPlaneLines.at(l);
+            ln.start.print( );
+            ln.end.print( );
+            mexPrintf("New Plane Line %d (ln184, plane.cpp)\n", l);
+            ln = newPlaneLines.at(l);
+            ln.start.print( );
+            ln.end.print( );
+            mexPrintf("************\n\n");
+        }
+    
+        mexPrintf("Possible Intersects Size: %d\n", possible_intersects.size());
+        for(unsigned int i=0; i < possible_intersects.size( ); i++)
+        {
+            possible_intersects.at(i).print( );
+        }
+        
+        mexPrintf("Plane %d:\n", oldPlane->id);
+        oldPlane->print( );
+        mexPrintf("\nPlane %d:\n", newPlane->id);
+        newPlane->print( );
+        
         mexErrMsgTxt("Didn't get 4 intersect points...");
     }
     

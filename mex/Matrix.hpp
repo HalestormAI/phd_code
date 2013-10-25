@@ -43,6 +43,8 @@ class Matrix
         
         double mag( );
         
+        Matrix inv33( ) const;
+        
         const Matrix operator*( const Matrix& m ) const;
         const Matrix operator*( const double& i ) const;
         const Matrix operator/( const double& i ) const;

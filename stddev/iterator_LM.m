@@ -23,14 +23,14 @@ for t = 1:length(thetas)
     end
 end
 
-
 ssd_errors = ones( size(inits,1), 1 ) .* Inf;
 iter_result = cell( size(inits,1), 1) ;
+    warning('REMEMBER TO TAKE OUT FOCALS FIX (iterator_LM, line 33');
 for i=1:size(inits,1);
     t = inits(i,1);
     p = inits(i,2);
     f = inits(i,3);
-    [iter_result{i},fval] = fsolve(@(x) errorfunc( x(1:2), [D,x(3)], plane_details.trajectories ),[t,p,f], options);
+    [iter_result{i},fval] = fsolve(@(x) errorfunc( x(1:2), [D,0.0014], plane_details.trajectories ),[t,p,f], options);
     %errors{i} = errorfunc([t,p],[D,f], trajectories);
     ssd_errors(i) = sum(fval);
     if ~mod(i,50)

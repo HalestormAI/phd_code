@@ -57,6 +57,9 @@ class Point
        
        Point( double wx, double wy, double wz );
        
+       void print( ) const;
+       std::string toStr( ) const;
+       
        void print2D( ) const;
        std::string toStr2D( ) const;
        
