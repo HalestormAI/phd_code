@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <iterator>
+#include <string>
 #include <math.h>
 #include <cstdlib>
 
@@ -25,6 +26,25 @@ std::map<int,SimTrajectory> trajectories;
 std::vector<Plane> planes;
 
 float ENTER_PROB;
+
+
+std::string get_mex_string( const mxArray *string_array_ptr )
+{
+    char *buffer;
+    mwSize buffer_length;
+    
+    // Allocate buffer memory
+    buffer_length = mxGetNumberOfElements(string_array_ptr) + 1;
+    buffer = (char*)mxCalloc(buffer_length, sizeof(char));
+    
+    if (mxGetString(string_array_ptr, buffer, buffer_length) != 0)
+        mexErrMsgIdAndTxt( "MATLAB:explore:invalidStringArray",
+            "Could not convert string data.");
+    
+    std::string output(buffer);
+    return output;
+
+}
 
 bool probabilityGenerator( float probability ) {
     float r = (float)std::rand( ) / (float)RAND_MAX;

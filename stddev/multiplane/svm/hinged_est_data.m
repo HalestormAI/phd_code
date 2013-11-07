@@ -1,65 +1,65 @@
-% 
-% FIXED_D = 1;
-% 
-% %% Set up initial parameters
-% MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
-% MODE_CLUSTER_K = 2; % Throw all into kmeans and cluster for 2 of them
-% MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
-% 
-% WINDOW_SIZE = 50;
-% WINDOW_DISTANCE = WINDOW_SIZE/2;
-% 
-% pcolours = repmat(['k','r','b','g','m','c','y'],1,6);
-% 
-% rootFld = sprintf('hinged-%s-winsz_%d-windist_%d',datestr(now,'HH-MM-SS'), WINDOW_SIZE, WINDOW_DISTANCE);
-% mkdir(rootFld);
-% pushd( rootFld );
-% 
-% MODE = MODE_CLUSTER_K;
-% 
-% params = multiplane_params_example(10,30);
-% 
-% if exist('wavefront_fn','var')
-%     % multiplane_sim_data;
-%     % If want ot use wavefront file, use '/home/ian/PhD/equal-plane-sizes.obj'
-%     [planes, trajectory_struct, params, plane_params] = multiplane_read_wavefront_obj( wavefront_fn, params,1 );
-% else
-%     planes = multiplane_random_plane_generator( 5 );
-%     [planes, trajectory_struct, params, plane_params] = multiplane_process_world_planes( planes, params );    
-% end
-% camTraj = trajectory_struct.camera;
-% imTraj = trajectory_struct.image;
-% 
-% drawPlanes(planes,'world',1,pcolours);
-% drawtraj(trajectory_struct.world,'',0,'k');
-% 
-% allPoints = [imTraj{:}];
-% 
-% %% Generate Initial Regions
-% mm = minmax([imTraj{:}]);
-% regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANCE);
-% % abs(mm(1,1)-mm(1,2))
-%     
-% empties = arrayfun(@(x) isempty(x.traj), regions);
-% regions = arrayfun( @addemptyfield, regions, empties);
-% 
-% 
-% restimate(1).regions = regions;
-% pixel_regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, 2);
-% pempties = arrayfun(@(x) isempty(x.traj), pixel_regions);
-% pixel_regions = arrayfun( @addemptyfield, pixel_regions, pempties);
-% 
-% 
-% % Output estimation details.
-% % [plane_ids,confidence] = multiplane_planeids_from_traj( planes, tmpTraj );
-% disp('GROUND TRUTH');
-% for p=1:length(planes)
-%     ground_truth(p,:) = anglesFromN(planeFromPoints(planes(p).camera),1,'degrees');
-% end
-% disp(ground_truth)
-% 
-% MAX_ITERATIONS = 3;
-% pcolours = ['k','r','b','g','m','c','y'];
+
+FIXED_D = 1;
+
+%% Set up initial parameters
+MODE_ALL_PARAM = 1; % Use all regions' estimated params as hypotheses
+MODE_CLUSTER_K = 2; % Throw all into kmeans and cluster for 2 of them
+MODE_CLUSTER_G = 3; % Use gmeans to more intelligently cluster
+
+WINDOW_SIZE = 50;
+WINDOW_DISTANCE = WINDOW_SIZE/2;
+
+pcolours = repmat(['k','r','b','g','m','c','y'],1,6);
+
+rootFld = sprintf('hinged-%s-winsz_%d-windist_%d',datestr(now,'HH-MM-SS'), WINDOW_SIZE, WINDOW_DISTANCE);
+mkdir(rootFld);
+pushd( rootFld );
+
+MODE = MODE_CLUSTER_K;
+
+params = multiplane_params_example(10,30);
+
+if exist('wavefront_fn','var')
+    % multiplane_sim_data;
+    % If want ot use wavefront file, use '/home/ian/PhD/equal-plane-sizes.obj'
+    [planes, trajectory_struct, params, plane_params] = multiplane_read_wavefront_obj( wavefront_fn, params,1 );
+else
+    planes = multiplane_random_plane_generator( 5 );
+    [planes, trajectory_struct, params, plane_params] = multiplane_process_world_planes( planes, params );    
+end
+camTraj = trajectory_struct.camera;
+imTraj = trajectory_struct.image;
+
+drawPlanes(planes,'world',1,pcolours);
+drawtraj(trajectory_struct.world,'',0,'k');
+
+allPoints = [imTraj{:}];
+
+%% Generate Initial Regions
+mm = minmax([imTraj{:}]);
+regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANCE);
+% abs(mm(1,1)-mm(1,2))
+    
+empties = arrayfun(@(x) isempty(x.traj), regions);
+regions = arrayfun( @addemptyfield, regions, empties);
+
+
+restimate(1).regions = regions;
+pixel_regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, 2);
+pempties = arrayfun(@(x) isempty(x.traj), pixel_regions);
+pixel_regions = arrayfun( @addemptyfield, pixel_regions, pempties);
+
+
+% Output estimation details.
+% [plane_ids,confidence] = multiplane_planeids_from_traj( planes, tmpTraj );
+disp('GROUND TRUTH');
+for p=1:length(planes)
+    ground_truth(p,:) = anglesFromN(planeFromPoints(planes(p).camera),1,'degrees');
+end
+disp(ground_truth)
+
+MAX_ITERATIONS = 3;
+pcolours = ['k','r','b','g','m','c','y'];
 
 %% Find the estimated plane boundaries
 for iteration=1:MAX_ITERATIONS
@@ -124,8 +124,8 @@ for iteration=1:MAX_ITERATIONS
 
     drawPlanes(plane_regions,'image',1,pcolours)
 
-    gtcolours = repmat(['m','c','y','g'],1,6);
-    drawPlanes(planes,'image',0,gtcolours)
+    
+    drawPlanes(planes,'image',0,pcolours,'--')
 
     % Create regions for next iteration
     for r=1:length(plane_regions)

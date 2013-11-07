@@ -1,4 +1,4 @@
-function f = drawPlanes( planes_struct, field, newfig, colours )
+function f = drawPlanes( planes_struct, field, newfig, colours, marker )
 % DRAWPLANES takes a plane struct array and draws the 
 % planes from the specified field (defaults to 'image').
 %
@@ -19,6 +19,10 @@ function f = drawPlanes( planes_struct, field, newfig, colours )
     
     if nargin < 4 || isempty(colours)
         colours = ['k','b','r','m','c','g','y'];
+    end
+    
+    if nargin < 5
+        marker = '-';
     end
         
     if length(colours) < length(planes_struct)
@@ -50,7 +54,7 @@ function f = drawPlanes( planes_struct, field, newfig, colours )
     
     
     for p=1:length(planes_struct)
-        drawPlane(planes_struct(p).(field),'', 0, colours(p));
+        drawPlane(planes_struct(p).(field),'', 0, colours(p),0,marker);
     end
 
 end

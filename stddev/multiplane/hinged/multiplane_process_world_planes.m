@@ -8,8 +8,10 @@ function [planes, trajectories, params, plane_params] = multiplane_process_world
         plane_params{p} = [n',d];
     end
 
+    plane_names = {planes.ID}';
+    
     % !~/make.sh multiplane_add_trajectories.cpp
-    traj = multiplane_add_trajectories({planes.world}',plane_params,params.trajectory.speeds,params.trajectory.drns);
+    traj = multiplane_add_trajectories({planes.world}',plane_params,params.trajectory.speeds,params.trajectory.drns, plane_names);
 
     % Get the camera position so we know how to transform the scene.
     params.camera.position = multiplane_camera_position(mean([planes.world],2), params);
