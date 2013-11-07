@@ -19,6 +19,10 @@ function [ imc ] = wc2im( wc, alpha )
 %     end
 %imc = wc(1:2,:) .* repmat((ones(1,size(wc,2)) ./ ( alpha.*wc(3,:))),2,1);
 
+if any(wc(3,:)>0)
+     warning('ijh:camGtZero','Warning: Camera coords exceed 0 on z-axis: output image will be severely distorted.');
+end
+
 imc(1,:) = wc(1,:) ./ (alpha*wc(3,:));
 imc(2,:) = wc(2,:) ./ (alpha*wc(3,:));
 end

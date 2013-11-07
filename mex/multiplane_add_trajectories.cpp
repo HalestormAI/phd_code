@@ -37,17 +37,18 @@ bool simulateFrame( int t ) {
     for(i = trajectories.begin( ); i != trajectories.end( ); i++) {
 //             mexPrintf("Checking trajectory\n"); mexEvalString("drawnow");
         if( i->second.isStarted( ) && !i->second.isFinished( ) ) {
-//             mexPrintf("Adding Frame\n"); mexEvalString("drawnow");
+        //     mexPrintf("Adding Frame\n"); mexEvalString("drawnow");
         
         //i->second.print3D( ); mexPrintf("\n\n");mexEvalString("drawnow");
              i->second.addFrame( &planes, t );
-//             mexPrintf("\tTrajectory is started but not finished\n");mexEvalString("drawnow");
+          //   mexPrintf("\tTrajectory is started but not finished\n");mexEvalString("drawnow");
         } else if( !i->second.isFinished( ) && probabilityGenerator( ENTER_PROB ) ) {
-//             mexPrintf("Starting trajectory\n"); mexEvalString("drawnow");
+             mexPrintf("Starting trajectory\n"); mexEvalString("drawnow");
             i->second.start( t, &planes );
         } else if( i->second.isFinished( ) ) {
             ++num_finished;
         }
+      //  mexPrintf("Loop end\n"); mexEvalString("drawnow");
     }
     
     return num_finished != trajectories.size( );
@@ -79,12 +80,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
                 "Plane boundaries and parameters must be the same length.");
     
     int num_planes = std::max(pbDims[0],pbDims[1]);
+    planes = std::vector<Plane>(num_planes);
     for( int p=0; p < num_planes; p++ ) {
         mx_bounds = (mxArray*) mxGetCell(prhs[0],p);
         mx_params = (mxArray*) mxGetCell(prhs[1],p);
         psz = mxGetDimensions( mx_bounds );
-        planes.push_back(Plane( (double*)mxGetPr(mx_bounds), psz, (double*)mxGetPr(mx_params), planes.size( )));
-//         planes.at(p).print( );
+        planes[p] = Plane( (double*)mxGetPr(mx_bounds), psz, (double*)mxGetPr(mx_params), p);
+//          planes.at(p).print( );
     }
     
     if( planes.empty( ) )
@@ -118,7 +120,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
 
     for( int frame = 0; frame < num_frames; frame++ ) {
-        mexPrintf("Running Frame %d of %d\n",frame, num_frames);
+        //mexPrintf("Running Frame %d of %d\n",frame, num_frames);
         if(!simulateFrame(frame))
             break;
     }

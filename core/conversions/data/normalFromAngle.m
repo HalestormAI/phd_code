@@ -20,6 +20,6 @@ if strcmp(base,'degrees'),
 end
 
 N =  -[ sin(psi)*sin(theta);
-       cos(psi)*sin(theta);
+       -cos(psi)*sin(theta);
        cos(theta)
      ];

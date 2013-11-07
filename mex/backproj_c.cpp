@@ -85,10 +85,10 @@ public:
     
     Trajectory( double *traj, const mwSize *dims, Params *p ) {
         this->params = p;
-        this->fromDouble( traj, dims );
+        this->from_double( traj, dims );
     }
     
-    void fromDouble( double* traj, const mwSize *dims ) {
+    void from_double( double* traj, const mwSize *dims ) {
     
         float x,y;
         for(int col=0;col < dims[1]; col++) {

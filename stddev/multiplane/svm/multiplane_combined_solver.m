@@ -40,6 +40,10 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
     end
         
 
+    if matlabpool('size') == 0
+        matlabpool 3;
+    end
+    
     %% Iterate over iterations
 
     for level=1:MAX_LEVEL
@@ -48,11 +52,11 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
         % and pass as cell
         if level == 1
             thetas = 1:STEP:89;
-            psis = -90:STEP:90;
+            psis = -45:STEP:45;
             focals = (focalScale/2):(focalScale/2.5):((focalScale*10)/2);
         else
             STEP = STEP/10;
-            sRange = (-10*STEP):2*STEP:(10*STEP);
+            sRange = (-10*STEP):10*STEP:(10*STEP);
 
             thetas = [];
             psis   = [];
@@ -63,7 +67,7 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
             thetas = unique(thetas);
             psis = unique(psis);
 
-            focals = (E_focals(level-1)-focalScale/2.5):(focalScale/10):(E_focals(level-1)+focalScale/2.5);
+            focals = (E_focals(level-1)-focalScale):(focalScale/10):(E_focals(level-1)+focalScale);
         end
 
         % Cludge to stop crash!
@@ -72,10 +76,6 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
         E_regions = combined_alpha_iterator( focals, thetas, psis, D, regions );
         [~,minErrors(level),E_focals(level),E_thetas{level},E_psis{level}] = hypotheses_from_region_errors( regions, E_regions, focals, thetas, psis );
 
-        E_focals(level)
-        E_thetas{level}
-        E_psis{level}
-        
         fn = sprintf('leveldata_%d.mat',level);
         
         save(fn,'E_*','minErrors','regions','E_regions','focals', 'thetas', 'psis', 'D');

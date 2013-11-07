@@ -24,7 +24,7 @@ kalparam.NEW_HYP_DUMMY_COST = 2;
 % 'pos+vel+size' = positions, velocities, size
 % 'pos+vel+size+size_vel' = positions, velocities, size and change of size over time
 
-KALMAN_STATE_TYPE = 'pos+vel+size';
+KALMAN_STATE_TYPE = 'pos+vel+size+size_vel';
 %KALMAN_STATE_TYPE = 'pos+vel';
 
 % Depending on the state representation, set the state transition matrix
@@ -91,7 +91,7 @@ kalparam.Q = Q_SCALEFACT * eye(KALMAN_STATE_SIZE);
 kalparam.R = R_SCALEFACT * eye(KALMAN_STATE_SIZE);
 
 % A filter is allowed to propate at most MAXPROPAGATE times
-kalparam.MAXPROPAGATE = 100;
+kalparam.MAXPROPAGATE = 200;
 
 % What kind of cost values are used to populate the cost matrix
 % Can be either 'distance' for squared distance between candidate pairs,
@@ -108,4 +108,4 @@ kalparam.ASSOC_COST_TYPE = 'kalman_expectation';
 % algorithm. If you are having trouble compiling the file lap.cpp, switch
 % this variable to 'MUNK' or 'SMP' instead.
 
-kalparam.ASSOC_ALG_TYPE = 'MUNK';
+kalparam.ASSOC_ALG_TYPE = 'LAP';

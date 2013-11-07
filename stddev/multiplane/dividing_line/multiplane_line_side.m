@@ -22,6 +22,6 @@ function side = multiplane_line_side( line_centre, line_angle, point, debug, deb
     % x and y are given in point
     err = line_m*point(1,:) + line_c - point(2,:);
     
-    side = err >= 0;
+    side = err < 0;
 
 end

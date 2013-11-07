@@ -1,16 +1,11 @@
-function [assignment,cost] = munkres(costMat)
+function [assignMat,cost] = munkres(costMat)
 % MUNKRES   Munkres (Hungarian) Algorithm for Linear Assignment Problem. 
 %
-% [ASSIGN,COST] = munkres(COSTMAT) returns the optimal column indices,
-% ASSIGN assigned to each row and the minimum COST based on the assignment
-% problem represented by the COSTMAT, where the (i,j)th element represents the cost to assign the jth
-% job to the ith worker.
+% [assignMat, cost] = munkres(costmat) returns the matching matrix and the
+% minimum cost based on the assignment problem represented by the costmat,
+% where the (i,j)th element represents the cost to assign the jth job to the
+% ith worker.
 %
-% Partial assignment: This code can identify a partial assignment is a full
-% assignment is not feasible. For a partial assignment, there are some
-% zero elements in the returning assignment vector, which indicate
-% un-assigned tasks. The cost returned only contains the cost of partially
-% assigned tasks.
 
 % This is vectorized implementation of the algorithm. It is the fastest
 % among all Matlab implementations of the algorithm.
@@ -36,36 +31,28 @@ A=rand(10,7);
 A(A>0.7)=Inf;
 [a,b]=munkres(A);
 %}
-% Example 4: an example of partial assignment
-%{
-A = [1 3 Inf; Inf Inf 5; Inf Inf 0.5]; 
-[a,b]=munkres(A)
-%}
-% a = [1 0 3]
-% b = 1.5
 % Reference:
 % "Munkres' Assignment Algorithm, Modified for Rectangular Matrices", 
 % http://csclab.murraystate.edu/bob.pilgrim/445/munkres.html
 
-% version 2.3 by Yi Cao at Cranfield University on 11th September 2011
+% version 2.0 by Yi Cao at Cranfield University on 10th July 2008
 
 assignment = zeros(1,size(costMat,1));
 cost = 0;
 
-validMat = costMat == costMat & costMat < Inf;
-bigM = 10^(ceil(log10(sum(costMat(validMat))))+1);
-costMat(~validMat) = bigM;
-
-% costMat(costMat~=costMat)=Inf;
-% validMat = costMat<Inf;
-validCol = any(validMat,1);
+costMat(costMat~=costMat)=Inf;
+validMat = costMat<Inf;
+validCol = any(validMat);
 validRow = any(validMat,2);
 
 nRows = sum(validRow);
 nCols = sum(validCol);
 n = max(nRows,nCols);
 if ~n
-    return
+  if(prod(size(costMat)) == 0)
+    assignMat = [];
+  end
+  return
 end
 
 maxv=10*max(costMat(validMat));
@@ -98,10 +85,12 @@ while any(zP(:))
 end
 
 while 1
+
 %**************************************************************************
 %   STEP 3: Cover each column with a starred zero. If all the columns are
 %           covered then the matching is maximum
 %**************************************************************************
+
     if all(starZ>0)
         break
     end
@@ -156,6 +145,7 @@ while 1
             break
         end
     end
+
     %**************************************************************************
     % STEP 5:
     %  Construct a series of alternating primed and starred zeros as
@@ -185,16 +175,23 @@ colIdx = find(validCol);
 starZ = starZ(1:nRows);
 vIdx = starZ <= nCols;
 assignment(rowIdx(vIdx)) = colIdx(starZ(vIdx));
-pass = assignment(assignment>0);
-pass(~diag(validMat(assignment>0,pass))) = 0;
-assignment(assignment>0) = pass;
 cost = trace(costMat(assignment>0,assignment(assignment>0)));
 
+assignMat = zeros(size(costMat));
+ind = sub2ind(size(assignMat), 1:length(assignment), assignment);
+assignMat(ind) = 1;
+
 function [minval,rIdx,cIdx]=outerplus(M,x,y)
-ny=size(M,2);
+[nx,ny]=size(M);
 minval=inf;
-for c=1:ny
-    M(:,c)=M(:,c)-(x+y(c));
-    minval = min(minval,min(M(:,c)));
+for r=1:nx
+    x1=x(r);
+    for c=1:ny
+        M(r,c)=M(r,c)-(x1+y(c));
+        if minval>M(r,c)
+            minval=M(r,c);
+        end
+    end
 end
 [rIdx,cIdx]=find(M==minval);
+

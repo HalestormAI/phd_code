@@ -1,4 +1,4 @@
-function drawCameraAxis( scale,rotation, newfig )
+function camgroup = drawCameraAxis( scale,rotation, newfig, origin )
     
     if nargin < 1 || isempty(scale)
         scale = 1;
@@ -13,30 +13,33 @@ function drawCameraAxis( scale,rotation, newfig )
         rotatez = rotatez(1:3,1:3);
         rotate = rotatez*rotatex;
     end
-    if nargin == 3 && newfig;
+    if nargin >= 3 && newfig;
         figure;
     end
 
-    origin = [0 0 0];
+    if nargin < 4 || isempty(origin)
+        origin = [0 0 0];
+    end
     
     
     lim = rotate * scale * [ 1  0  0;
                              0  1  0;
                              0  0 -1];
                  
-%     textLabels = {'$X_c$','$Y_c$','$Z_c$'};
+    textLabels = {'X_c','Y_c','Z_c'};
 
     for i=1:3
-        vector_dist(origin, lim(i,:))
-        lineHandles(i) = vectarrow( origin,lim(i,:) );
+        lineHandles(i) = vectarrow( origin,lim(i,:)+origin );
         
-%         textpos = lim(i,:).*0.5+scale/20;
-%         text(textpos(1), textpos(2), textpos(3),strcat('', textLabels{i}))
+        textpos = (lim(i,:)+scale/20)+origin;
+        textHandles(i) = text(textpos(1), textpos(2), textpos(3),strcat('', textLabels{i}),'Color',[0 0 1]);
         hold on;
     end
     
     for h=1:length(lineHandles)
         set(get(lineHandles(h),'children'),'LineWidth',1);
     end
+    camgroup = hggroup;
+    set([lineHandles,textHandles],'Parent',camgroup);
     
 end
