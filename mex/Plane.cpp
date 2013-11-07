@@ -1,17 +1,18 @@
 #include "Plane.hpp"
 #include <algorithm>
 
-Plane::Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl, int id ) {
+Plane::Plane( double *boundDbl, const mwSize *boundaryDims, double *paramsDbl, int id, std::string name ) {
     this->n.push_back(paramsDbl[0]);
     this->n.push_back(paramsDbl[1]);
     this->n.push_back(paramsDbl[2]);
     this->d = paramsDbl[3];
+    this->id = id;
+    this->text_id = name;
     
     this->boundariesFromDouble( boundDbl, boundaryDims );
     
     this->minmaxBounds( );
     
-    this->id = id;
 }
 
 void Plane::boundariesFromDouble( double *boundaries , const mwSize *dims ) {
@@ -25,10 +26,10 @@ void Plane::boundariesFromDouble( double *boundaries , const mwSize *dims ) {
         this->boundaries.push_back( Point( x, y, z ) );
     }
     
-    mexPrintf("Plane %d boundaries:\n",this->id);
-    for( unsigned int j = 0; j < this->boundaries.size( ); j++ ) {
-        this->boundaries.at(j).print( );
-    }
+//     mexPrintf("Plane %d boundaries:\n",this->id);
+//     for( unsigned int j = 0; j < this->boundaries.size( ); j++ ) {
+//         this->boundaries.at(j).print( );
+//     }
 }
 
 void Plane::minmaxBounds( ) {
@@ -52,6 +53,13 @@ void Plane::minmaxBounds( ) {
 
 void Plane::print( ) {
     std::stringstream ss;
+    ss << "\n\nPlane " << this->id;
+    if( !this->text_id.empty( ) ) {
+        ss << " (" << this->text_id << ")";
+    }
+    ss << "\n" << std::string(ss.str().size(),'*') << "\n";
+
+    ss << "\n";
     ss << "Parameters: \n\t n = (" << this->n[0] << "," << this->n[1]
        << "," << this->n[2] << ")\n\t " << this->d << "\n\nBoundaries: \n";
     

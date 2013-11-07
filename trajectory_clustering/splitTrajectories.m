@@ -1,13 +1,17 @@
-function [splitTraj,stats] = splitTrajectories( traj, drawfigs )
+function [splitTraj,stats] = splitTrajectories( traj, drawfigs, THRESH )
 
     if nargin < 2
         drawfigs = 0;
+    end
+    
+    if nargin < 3
+        THRESH = 2;
     end
 
     if iscell(traj)
         
         % Clear empty trajectories and those under length 2
-        splitTraj = cellfun(@splitTrajectories, traj, 'uniformoutput', false);
+        splitTraj = cellfun(@(x) splitTrajectories(x,drawfigs), traj, 'uniformoutput', false);
         splitTraj = vertcat(splitTraj{:});
     else
 
@@ -18,14 +22,14 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs )
         stats = [mL,sL];
         
         % Find ids where -3*std < length < 3*std
-        gt = find( lengths > mL+2*sL );
-        lt = find( lengths < mL-2*sL );
+        gt = find( lengths > mL+THRESH*sL );
+        lt = find( lengths < mL-THRESH*sL );
         
         bad = (unique_c([gt,lt]))+1;
         
         % Doesn't need splitting, save some time!
         if isempty(bad)
-            splitTraj = traj;
+            splitTraj{1} = traj;
         else
             good = 1:length(traj);
             good(bad) = [];
@@ -45,18 +49,19 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs )
             hold on;
             ax = axis;
             plot(ax(1:2),[mL,mL],'m-');
-            plot(ax(1:2),[mL+3*sL,mL+3*sL],'g-');
-            plot(ax(1:2),[mL-3*sL,mL-3*sL],'g-');
-            title('Length distribution showing mean and acceptable range (3 Std Devs)');
+            plot(ax(1:2),[mL+THRESH*sL,mL+THRESH*sL],'g-');
+            plot(ax(1:2),[mL-THRESH*sL,mL-THRESH*sL],'g-');
+            title(sprintf('Length distribution showing mean and acceptable range (%d Std Devs)',THRESH));
             
             subplot(2,2,1);
             drawtraj(traj,'',0);
             axis equal;
             subplot(2,2,2);
 
-            colours = ['r','b','g','m','y'];
+            colours = ['r','b','g','m','c'];
 
             for i=1:length(splitTraj)
+                hold on;
                 drawtraj(splitTraj{i},'',0,colours(i));
             end
             axis equal;

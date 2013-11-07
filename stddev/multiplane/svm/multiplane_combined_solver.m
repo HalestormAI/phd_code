@@ -52,7 +52,7 @@ function [ output_params, E_thetas E_psis, E_focals ] = multiplane_combined_solv
         % and pass as cell
         if level == 1
             thetas = 1:STEP:89;
-            psis = -45:STEP:45;
+            psis = -90:2*STEP:90;
             focals = (focalScale/2):(focalScale/2.5):((focalScale*10)/2);
         else
             STEP = STEP/10;
