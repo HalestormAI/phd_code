@@ -32,7 +32,7 @@ function params = multiplane_params_example( height, NUM_TRAJ, scale, TIME )
         speeds{t} = normrnd(scale,.0,1,TIME);
     end
     % speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
-    drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,TIME)),2);
+    drns = num2cell(deg2rad(normrnd(0,20,NUM_TRAJ,TIME)),2);
     
     params = multiplane_trajectory_params( speeds, drns, params );
 end
