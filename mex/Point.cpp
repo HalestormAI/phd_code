@@ -61,7 +61,7 @@ void Point::print2D( ) const
 std::string Point::toStr2D( ) const
 {
     std::stringstream ss;
-    ss << std::setw (10) << this->x << "\t" << this->y << std::endl;
+    ss << std::right << std::fixed << std::setw(12) << this->x << std::right << std::fixed << std::setw(12) << this->y << std::endl;
     return ss.str( );
     
 }
@@ -76,7 +76,8 @@ std::string Point::toStr3D( ) const
 {
     
     std::stringstream ss;
-    ss << this->X << "\t" << this->Y << "\t" << this->Z << std::endl;
+    
+    ss << std::right << std::fixed << std::setw(12) << this->X << std::right << std::fixed << std::setw(12) <<  this->Y << std::right << std::fixed << std::setw(12)  << this->Z << std::endl;
     return ss.str( );
 }
     
