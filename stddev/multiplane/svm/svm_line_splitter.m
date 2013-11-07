@@ -13,7 +13,6 @@ end
 full_regions = ~[regions.empty];
 centres = [regions.centre]';
 
-
 % Train an SVM on assignments to get approximate plane divider line
 figure;
 svm = svmtrain(centres(full_regions,:), MINIDS(full_regions),'showPlot','true');

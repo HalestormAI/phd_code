@@ -1,4 +1,6 @@
 #include "Matrix.hpp"
+#include <limits>
+
 
 Matrix::Matrix( ) {}
 
@@ -12,8 +14,11 @@ Matrix::Matrix( int numRows, int numCols ) {
 }
 
 void Matrix::set( int i, int j, double val ) {
-    if(i<0 || j<0 || i >= rows || j >= cols)
+    if(i<0 || j<0 || i >= rows || j >= cols) {
+         mexPrintf("i: %d, j: %d -> (%d x %d)\n", i, j, this->rows, this->cols);
+         mexEvalString("drawnow");
          throw std::out_of_range ("i or j was out of range.");
+    }
     this->elems[i][j] = val;
 }
 
@@ -37,11 +42,21 @@ void Matrix::fromDouble( double *dbl ) {
     }
 }
 
+void Matrix::fromVector( std::vector<float> &vec )
+{
+    if( vec.size( ) != this->rows && this->cols != 1)
+        mexErrMsgTxt("Invalid vector size compared to initialisation values for vector.");
+    for( unsigned int i=0; i < vec.size( ); i++ ) 
+    {
+        this->set(i,0,vec.at(i));
+    }
+}
+
 void Matrix::print( ) const {
     for( int i=0; i < this->rows; i++ ) {
         mexPrintf( "[ " );
         for( int j=0; j < this->cols; j++ ) {
-            mexPrintf( "%g ", this->at(i,j) );
+            mexPrintf( "%10g ", this->at(i,j) );
         }
         mexPrintf( " ]\n" );
     }
@@ -55,6 +70,20 @@ void Matrix::fromArray( double **m ) {
             this->set( i, j, m[i][j] );
         }
     }
+}
+
+double Matrix::mag( ) {
+    if( !this->isVector( ) ) {
+        mexErrMsgTxt("Matrix must be 1xn or nx1 for `mag`");
+    }
+    
+    /*double sqsum = 0;
+    for( int i=0; i < this->rows; i++ ) {
+        for( int j=0; j < this->cols; j++ ) {
+            sqsum += pow(this->at(i,j),2);
+        }
+    }*/
+    return sqrt(pow(this,2).sum( ));
 }
 
 const Matrix Matrix::operator*( const Matrix& m ) const {
@@ -181,7 +210,56 @@ Matrix Matrix::elemMult( Matrix *val ) {
 }
 
 
-/** Outside Functions **/
+double Matrix::min( bool ignoreDiag, int *minIout, int *minJout )
+{
+    double minVal = std::numeric_limits<float>::max( );
+    int minI = -1,
+        minJ = -1;
+    
+    for( int i = 0; i < this->rows; ++i) {
+        for(int j = 0; j < this->cols; ++j) {
+            if(ignoreDiag && i==j) 
+                continue;
+            if( int tmp = this->at(i,j) < minVal ) {
+                minVal = tmp;
+                minI = i;
+                minJ = j;
+            }
+        }
+    }
+    
+    *minIout = minI;
+    *minJout = minJ;
+    
+    return minVal;
+}
+
+double Matrix::max( bool ignoreDiag, int *maxIout, int *maxJout )
+{
+    double maxVal = std::numeric_limits<float>::min( );
+    int maxI = -1,
+        maxJ = -1;
+    
+    for( int i = 0; i < this->rows; ++i) {
+        for(int j = 0; j < this->cols; ++j) {
+            if(ignoreDiag && i==j) 
+                continue;
+            int tmp = this->at(i,j);
+            if( tmp > maxVal ) {
+                maxVal = tmp;
+                maxI = i;
+                maxJ = j;
+            }
+        }
+    }
+    
+    *maxIout = maxI;
+    *maxJout = maxJ;
+    
+    return maxVal;
+}
+
+/** Outside Functions (static/friend) **/
 
 Matrix pow( Matrix *m, double exp ) {
     Matrix out = Matrix( m->rows, m->cols );
@@ -205,4 +283,46 @@ Matrix Matrix::eye( int sz )
     
     return I;
     
+}
+    
+
+Matrix Matrix::cross( const Matrix &M, const Matrix &N ) {
+    if( M.rows != N.rows && M.cols != N.cols )
+    {
+        mexErrMsgTxt("Matrices must be the same size (Matrix::cross)");
+    }
+    
+    if( M.rows != 3 && M.cols != 1 )
+    {
+        mexErrMsgTxt("Matrix must represent a 3x1 vector. (Matrix::cross");
+    }
+    
+    Matrix crs(3,1);
+    crs.set(0,0, M.at(1,0)*N.at(2,0) - M.at(2,0)*N.at(1,0));
+    crs.set(1,0, M.at(2,0)*N.at(0,0) - M.at(0,0)*N.at(2,0));
+    crs.set(2,0, M.at(0,0)*N.at(1,0) - M.at(1,0)*N.at(0,0));
+    return crs;
+}
+
+Matrix Matrix::inv33( ) const
+{
+    // computes the inverse of a matrix m
+    double det = this->at(0,0) * (this->at(1,1) * this->at(2,2) - this->at(2,1) * this->at(1,2)) -
+                this->at(0,1) * (this->at(1,0) * this->at(2,2) - this->at(1,2) * this->at(2,0)) +
+                this->at(0,2) * (this->at(1,0) * this->at(2,1) - this->at(1,1) * this->at(2,0));
+
+    double invdet = 1 / det;
+
+    Matrix minv(3,3); // inverse of matrix m
+    minv.set(0,0,(this->at(1,1) * this->at(2,2) - this->at(2,1) * this->at(1,2)) * invdet);
+    minv.set(0,1,(this->at(0,2) * this->at(2,1) - this->at(0,1) * this->at(2,2)) * invdet);
+    minv.set(0,2,(this->at(0,1) * this->at(1,2) - this->at(0,2) * this->at(1,1)) * invdet);
+    minv.set(1,0,(this->at(1,2) * this->at(2,0) - this->at(1,0) * this->at(2,2)) * invdet);
+    minv.set(1,1,(this->at(0,0) * this->at(2,2) - this->at(0,2) * this->at(2,0)) * invdet);
+    minv.set(1,2,(this->at(1,0) * this->at(0,2) - this->at(0,0) * this->at(1,2)) * invdet);
+    minv.set(2,0,(this->at(1,0) * this->at(2,1) - this->at(2,0) * this->at(1,1)) * invdet);
+    minv.set(2,1,(this->at(2,0) * this->at(0,1) - this->at(0,0) * this->at(2,1)) * invdet);
+    minv.set(2,2,(this->at(0,0) * this->at(1,1) - this->at(1,0) * this->at(0,1)) * invdet);
+
+    return minv;
 }

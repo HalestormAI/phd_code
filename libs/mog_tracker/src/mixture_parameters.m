@@ -9,7 +9,7 @@ function [mixparam] = mixture_parameters()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters for Ant sequence (8fps)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% 
 % mixparam.K = 3;
 % mixparam.ALPHA = 0.02;
 % mixparam.RHO = 0.01;
@@ -63,13 +63,13 @@ function [mixparam] = mixture_parameters()
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 mixparam.K = 3;
-mixparam.ALPHA = 0.001;
-mixparam.RHO = 0.001;
-mixparam.DEVIATION_SQ_THRESH = 67.46;
+mixparam.ALPHA = 0.01;
+mixparam.RHO = 0.01;
+mixparam.DEVIATION_SQ_THRESH = 45;
 mixparam.INIT_VARIANCE = 3;
 mixparam.INIT_MIXPROP = 0.00001;
 mixparam.BACKGROUND_THRESH = 0.8;
-mixparam.COMPONENT_THRESH = 10;
+mixparam.COMPONENT_THRESH = 250;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters for webcam stream

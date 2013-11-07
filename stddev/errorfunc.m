@@ -1,4 +1,4 @@
-function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, scales, trajectories, DEBUG )   
+function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, scales, trajectories, DEBUG, backproj_func )   
     
     if nargin < 4
         DEBUG = false;
@@ -17,14 +17,12 @@ function [E,meanLength,stdLength, rectTrajectories] = errorfunc( orientation, sc
         rectTrajectories = cellfun(@(x) backproj_func(orientation, scales, x), longEnough,'uniformoutput', false);
     else
         rectTrajectories = cellfun(@(x) backproj_c(orientation(1),orientation(2), ...
-                                     scales(1),scales(2), x), ...
-                                     longEnough,'uniformoutput', false);
+                                                 scales(1),scales(2), x), ...
+                                                 longEnough,'uniformoutput', false);
     end
        
-      
-                                             
     for i=1:length(rectTrajectories)
-        lengths = vector_dist_c(rectTrajectories{i});
+        lengths = vector_dist(rectTrajectories{i});
         lengths(lengths == Inf) = 10e20; 
         meanLength(i) = mean(lengths);
         stdLength(i) = std(lengths);
