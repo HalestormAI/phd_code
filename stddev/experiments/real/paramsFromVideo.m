@@ -10,7 +10,7 @@ function plane_details = paramsFromVideo( vidname, FPS )
     trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
     
     disp('Splitting Trajectories...')
-    split = splitTrajectories(trajectories_lgt2,1);
+    split = splitTrajectories(trajectories_lgt2,0);
     length(split)
     disp('Clustering Trajectories (May take some time)...')
     [cluster_struct,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 100, frame, [0.5,0.5]);

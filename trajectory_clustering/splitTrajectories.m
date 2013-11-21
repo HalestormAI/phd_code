@@ -15,7 +15,8 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs, THRESH )
         splitTraj = vertcat(splitTraj{:});
     else
 
-        lengths = traj_speeds(traj);
+        rawlengths = traj_speeds(traj);
+        lengths = smooth(abs(diff(rawlengths)));
         % Find mean & std
         mL = mean(lengths);
         sL = std(lengths);
@@ -25,7 +26,9 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs, THRESH )
         gt = find( lengths > mL+THRESH*sL );
         lt = find( lengths < mL-THRESH*sL );
         
-        bad = (unique_c([gt,lt]))+1;
+        
+        
+        bad = (unique([gt;lt]))+1;
         
         % Doesn't need splitting, save some time!
         if isempty(bad)
@@ -42,9 +45,9 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs, THRESH )
         end
         if drawfigs
 
-            f2 = figure;
-            subplot(2,2,[3,4]);
-
+%             f2 = figure;
+%             subplot(2,2,[3,4]);
+figure;
             bar(lengths);
             hold on;
             ax = axis;
@@ -53,10 +56,12 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs, THRESH )
             plot(ax(1:2),[mL-THRESH*sL,mL-THRESH*sL],'g-');
             title(sprintf('Length distribution showing mean and acceptable range (%d Std Devs)',THRESH));
             
-            subplot(2,2,1);
+%             subplot(2,2,1);
+figure;
             drawtraj(traj,'',0);
             axis equal;
-            subplot(2,2,2);
+%             subplot(2,2,2);
+figure;
 
             colours = ['r','b','g','m','c'];
 
@@ -65,9 +70,9 @@ function [splitTraj,stats] = splitTrajectories( traj, drawfigs, THRESH )
                 drawtraj(splitTraj{i},'',0,colours(i));
             end
             axis equal;
-            suptitle('Trajectory split based on imaged speed');
+%             suptitle('Trajectory split based on imaged speed');
             
-            saveas(f2, sprintf('split_%d.fig',drawfigs));
+%             saveas(f2, sprintf('split_%d.fig',drawfigs));
         end
     end
     

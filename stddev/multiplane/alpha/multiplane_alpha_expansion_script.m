@@ -60,7 +60,7 @@ distanceCost(isnan(distanceCost)) = 0;
 %     ylabel('Region ID');
 %     title('Heatmap of image distance affinities between trajectories (red is better)');
 
-labelCost(:,[regions.empty]) = Inf;
+labelCost(:,logical([regions.empty])) = Inf;
 
 % labelCost1 = labelCost ./ max(max(abs(labelCost)));
 % smoothCost1 = smoothCost ./ max(max(abs(smoothCost)));

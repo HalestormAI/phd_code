@@ -3,8 +3,8 @@ function [ass] = plot_pairwise_assignment( i, j, imtraj, assignment, frame, dist
     figure;
     image(frame);
     
-    drawtraj(imtraj{i},'',0,'k',3,'-o');
-    drawtraj(imtraj{j},'',0,'r',3,'-o');
+    drawtraj(imtraj{i},'',0,'k',3,'.-');
+    drawtraj(imtraj{j},'',0,'r',3,'.-');
     
     ass = assignment{i,j};
     

@@ -25,10 +25,10 @@ function [f,g] = drawtraj( traj, ttl, newfig, colour, lw, marker, returnline )
     if newfig > 0,
         f = figure;
         title(ttl);
-        hold on;
     else 
         f = gcf;
     end
+    hold on;
     
     if iscell(traj)
         [~,line_handles] = cellfun(@(x) drawtraj(x,ttl,0,colour, lw, marker,1), traj);
