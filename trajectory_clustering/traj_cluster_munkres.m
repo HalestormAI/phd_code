@@ -94,24 +94,29 @@ function [cluster_struct,assignment,outputcost,imtraj,trajectory_distances,traje
         idx = sub2ind(size(shapes), subs(subs(:,2)>0,1), subs(subs(:,2)>0,2));
         mean_shape = mean(shapes(idx));
     end
+
+% 
+%     if draw
+%          medianTraj = medianAssignment(imtraj, matches, assignment);
+%         
+%         figure;
+%         subplot(1,2,1);
+%         image(frame);
+%         colours = ['r','b','g','m','y'];
+%         for i=1:length(matches)
+%             drawtraj(imtraj(matches{i}),'',0,colours(i),4,'-');
+%         end
+%         drawtraj(imtraj,'',0,'k',[],'-');
+%         title('Trajectory Group Assignments');
+%         
+%         subplot(1,2,2);
+%         image(frame);
+%         drawtraj(imtraj,'',0,'k',2,'-');
+%         for i=1:length(matches)
+%             drawtraj(medianTraj{i},'',0,colours(i),2,'-');
+%         end
+%         title('Median Trajectory Clusters');
+%     end
+
 end
 
-%  medianTraj = medianAssignment(fpstraj, matches, assignment);
-% 
-% figure;
-% subplot(1,2,1);
-% image(frame);
-% colours = ['r','b','g','m','y'];
-% for i=1:length(matches)
-%     drawtraj(imtraj(matches{i}),'',0,colours(i),4,'-');
-% end
-% drawtraj(imtraj,'',0,'k',[],'-');
-% title('Trajectory Group Assignments');
-% 
-% subplot(1,2,2);
-% image(frame);
-% drawtraj(imtraj,'',0,'k',2,'-');
-% for i=1:length(matches)
-%     drawtraj(medianTraj{i},'',0,colours(i),2,'-');
-% end
-% title('Median Trajectory Clusters');

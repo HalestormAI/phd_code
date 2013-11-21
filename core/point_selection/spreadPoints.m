@@ -27,10 +27,10 @@ ids_A = (K(maxpath(1:max(size(maxpath))-1)) .* 2) -1
 ids_B = (K(maxpath(1:max(size(maxpath))-1)) .* 2)
 ids_full = sort([ids_A ; ids_B ]);
 
-drawcoords(C_im);
-scatter( midpoints(1,:), midpoints(2,:), 16, '*r')
+drawcoords(C_im,'',0,'w');
+% scatter( midpoints(1,:), midpoints(2,:), 16, '*r')
 
-plot( midpoints(1,K), midpoints(2,K), 'Color','magenta' );
-plot(hullPoints(1,maxpath), hullPoints(2,maxpath))
+plot( midpoints(1,K), midpoints(2,K), 'ms--','LineWidth',2,'markerfacecolor','m' );
+plot(hullPoints(1,maxpath), hullPoints(2,maxpath),'bo-','LineWidth',2,'MarkerFaceColor','b')
 title(sprintf('%d Points, %d Rands', number_points, number_rands));
 
