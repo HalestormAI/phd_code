@@ -94,6 +94,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     rotation.set(0,1,cam->ry( ));
     rotation.set(0,2,cam->rz( ));
     
+    
     plhs[1] = mxCreateDoubleMatrix(1,3,mxREAL);
     rotationDbl = mxGetPr(plhs[1]);
     rotation.toDouble( rotationDbl );
@@ -102,7 +103,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     translation.set(0,0,cam->tx( ));
     translation.set(0,1,cam->ty( ));
     translation.set(0,2,cam->tz( ));
-    
+        
     plhs[2] = mxCreateDoubleMatrix(1,3,mxREAL);
     translationDbl = mxGetPr(plhs[2]);
     translation.toDouble( translationDbl );
@@ -110,6 +111,6 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     plhs[3] = mxCreateDoubleMatrix(1,1,mxREAL);
     focalDbl = mxGetPr(plhs[3]);
     focalDbl[0] = cam->focal( );
-    
+        
     return;
 }

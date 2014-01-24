@@ -203,6 +203,8 @@ void SimTrajectory::print3D( ) {
     for( i = this->directions.begin( ); i != this->directions.end( ); i++ ) {
         ss << *i << "\t";
     }
+    ss << "\n\nStarted: " << (this->started ? "True" : "False");
+    ss << "\n\nFinished: " << (this->started ? "True" : "False");
     ss << std::endl;
     mexPrintf(ss.str( ).c_str( ));
     mexEvalString("drawnow");

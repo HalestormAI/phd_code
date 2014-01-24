@@ -45,9 +45,9 @@ for level=1:MAX_LEVEL
         % Cludge to stop crash!
         focals(focals==0) = [];
     end
-    warning('REMEMBER TO TAKE OUT FOCALS FIX (multiscaleSolver, line 49');
-    focals = 0.0014;
-    thetas,psis,focals
+%     warning('REMEMBER TO TAKE OUT FOCALS FIX (multiscaleSolver, line 49');
+%     focals = 0.0014;
+%     thetas,psis,focals
     [fullErrors{level},minErrors(level),E_angles(level,:),E_focals(level),inits{level}] = iterator_LM( D, plane_details,thetas,psis,focals, options);
     
     if level > 1 && minErrors(level) > minErrors(level-1)

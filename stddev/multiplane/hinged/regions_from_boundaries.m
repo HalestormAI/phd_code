@@ -28,14 +28,15 @@ function [current_polygons,node_parents] = regions_from_boundaries( boundary_lin
         if length(current_polygons) > 1
             % work out which polygon this line crosses.
             ext_boundary_points = line_to_boundaries( boundary_line_points{l}, img_mm );
-            %             figure;
+%                         figure;
             for p=1:length(current_polygons)
-                %                 plot(current_polygons{p}(:,1),current_polygons{p}(:,2),'m-')
-                %                 hold on;
+%                                 plot(current_polygons{p}(:,1),current_polygons{p}(:,2),'m-')
+                                hold on;
                 [xi,yi] = polyxpoly( ext_boundary_points(1,:), ext_boundary_points(2,:),current_polygons{p}(:,1), current_polygons{p}(:,2));
-                %                 plot(ext_boundary_points(1,:), ext_boundary_points(2,:),'k-');
-                %                 hold off
-                %                 pause;
+%                                 plot(ext_boundary_points(1,:), ext_boundary_points(2,:),'y-','LineWidth',3);
+%                                 plot(boundary_line_points{l}(1,:), boundary_line_points{l}(2,:),'g-','LineWidth',3);
+%                                 hold off
+%                                 pause;
                 if length(xi) >= 2
                     use_poly = p;
                     found = 1;

@@ -22,6 +22,7 @@ function [f,g] = drawtraj( traj, ttl, newfig, colour, lw, marker, returnline )
         marker = '-';
     end
 
+    
     if newfig > 0,
         f = figure;
         title(ttl);

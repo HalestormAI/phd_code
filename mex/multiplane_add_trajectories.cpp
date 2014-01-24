@@ -54,6 +54,7 @@ bool probabilityGenerator( float probability ) {
 bool simulateFrame( int t ) {
     std::map<int,SimTrajectory>::iterator i;
     int num_finished = 0;
+    
     for(i = trajectories.begin( ); i != trajectories.end( ); i++) {
 //             mexPrintf("Checking trajectory\n"); mexEvalString("drawnow");
         if( i->second.isStarted( ) && !i->second.isFinished( ) ) {
@@ -63,10 +64,13 @@ bool simulateFrame( int t ) {
              i->second.addFrame( &planes, t );
           //   mexPrintf("\tTrajectory is started but not finished\n");mexEvalString("drawnow");
         } else if( !i->second.isFinished( ) && probabilityGenerator( ENTER_PROB ) ) {
-             mexPrintf("Starting trajectory\n"); mexEvalString("drawnow");
             i->second.start( t, &planes );
         } else if( i->second.isFinished( ) ) {
             ++num_finished;
+        } else {
+            i->second.print3D( );
+            mexErrMsgIdAndTxt( "multiplane:sim:simulateFrameErr",
+                "Something went wrong...");
         }
       //  mexPrintf("Loop end\n"); mexEvalString("drawnow");
     }
@@ -133,11 +137,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
         trajectories[t] = SimTrajectory( (double*)mxGetPr(mx_spds), (double*)mxGetPr(mx_drns), tsz );
     }
     
-    if( nrhs >= 5 )
-        ENTER_PROB = *((float*)mxGetPr(prhs[4]));
+    if( nrhs >= 6 )
+        ENTER_PROB = *((float*)mxGetPr(prhs[5]));
     else
         ENTER_PROB = 1;
     
+    mexPrintf("ENTER_PROB: %.3f\n", ENTER_PROB);
+    mexEvalString("drawnow");
 
     for( int frame = 0; frame < num_frames; frame++ ) {
         //mexPrintf("Running Frame %d of %d\n",frame, num_frames);

@@ -23,7 +23,7 @@ class Point
         
        double getX( ) const { return (is2D ? x : X); }
        double getY( ) const { return (is2D ? y : Y); }
-       double getZ( ) const { if(is2D) mexErrMsgTxt("Tried to get 3D point from 2D Point"); return Z; }
+       double getZ( ) const { if(!is3D) mexErrMsgTxt("Tried to get 3D point from 2D Point"); return Z; }
        
        void setX( double x1 ) {
            if(is2D)

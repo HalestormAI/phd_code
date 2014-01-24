@@ -1,4 +1,4 @@
-function planes = multiplane_random_plane_generator( chain_length )
+function planes = multiplane_random_plane_generator( chain_length, angles )
 
     % given one root plane, generate a chain of planes with random angles
 
@@ -9,8 +9,17 @@ function planes = multiplane_random_plane_generator( chain_length )
                   
                   
     planes(1).world = root_plane;
+    planes(1).ID = 'simulated-plane-1';
     
-    angles = (round(rand(chain_length-1,1)*30)-15)*2
+    
+    signs = rand(chain_length-1,1);
+    signs(signs >= 0.5) = 1;
+    signs(signs < 0.5) = -1;
+    
+    % Get plane angles from Gaussian Dist. centred about 25 degrees.
+    if nargin < 2
+        angles = signs.*(round(normrnd(25,5,(chain_length-1),1)))
+    end
     
     STRAIGHT_ON = 1;
     TURN_LEFT = 0;
@@ -34,6 +43,7 @@ function planes = multiplane_random_plane_generator( chain_length )
         planes(i-1).rotation_angle = angles(i-1);
         planes(i-1).rotation_axis = rotation_axis;
         planes(i).world = axis_rot(rotation_axis,pts,angles(i-1));
+        planes(i).ID = sprintf('simulated-plane-%d',i);
     end
     
     function [axisidx,transidx] = get_direction( )

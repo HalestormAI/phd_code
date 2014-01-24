@@ -39,7 +39,11 @@ function [regions, boundaries] = hinged_reconstruction( root_hypothesis, angles,
         traj = region.initial;
         imtraj = region.traj;
         rpts = axis_rot(axis,[traj{:}],angle);
+        
+        % Now get the plane parameters for these points
         [N,d] = planeFromPoints(rpts, length(rpts),'cross');
+        
+        % Finally, rectify using the discovered plane parameters
         rtraj = cellfun(@(x) backproj_n(N,[d,alpha],x), imtraj, 'un', 0);
     end
 
