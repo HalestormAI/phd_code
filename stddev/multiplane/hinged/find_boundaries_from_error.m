@@ -1,23 +1,26 @@
-function [boundary_pts,errthresh] = find_boundaries_from_error( regions, planes, labelCost, WINDOW_DISTANCE, do_not_skel )
+function [boundary_pts,errthresh,errimg] = find_boundaries_from_error( regions, planes, labelCost, WINDOW_DISTANCE, do_not_skel )
 
-    image_size = diff(minmax([regions.centre])')';
+    image_size = diff(minmax([regions.centre])')'
     num_rows = floor(image_size(2)/WINDOW_DISTANCE + 1); % + 1 because we start at (0,0)
     num_cols = floor(image_size(1)/WINDOW_DISTANCE + 1);
     
-    
+    num_rows*num_cols
     rawCostVector = labelCost;
-    rawCostVector(rawCostVector==Inf) = 0;
+    rawCostVector(abs(rawCostVector)==Inf) = min(rawCostVector);
     
     errimg = reshape(rawCostVector,num_cols, num_rows);
     
     figure; 
     
 %   Do a bit of tidying on the heat regions
-    errthresh = errimg > mean(mean(errimg));
+    %Gaussian blur to remove small blobs
+    errimg_b = errimg;%imfilter(errimg,fspecial('gaussian',[5 5],2));
+
+    errthresh = errimg_b > nanmean(nanmean(errimg_b));% + 2*nanstd(nanstd(errimg_b));
     
     % Now we have the heat map regions, use opening to get rid of small
     % areas
-    errthresh = bwmorph(errthresh,'open');
+    errthresh = bwmorph(errthresh,'close');
     
     line_params = regionprops(errthresh,'Orientation','Centroid','MajorAxisLength');
     
@@ -31,10 +34,15 @@ function [boundary_pts,errthresh] = find_boundaries_from_error( regions, planes,
 %         errthresh = bwmorph(errthresh,'skel',5);
 %     end
 %     size(errthresh)
-    subplot(1,2,1);
-    imagesc(errimg);
-    subplot(1,2,2)
+%     subplot(1,2,1);
+    imagesc(errimg_b);
+%     subplot(1,2,2)
+figure
     imagesc(errthresh);
+    hold on;
+    for i=1:size(lineEnds,1)
+      plot(lineEnds(i,[1 3]), lineEnds(i,[2 4]), 'g--','LineWidth',2)
+    end
 % 
 %     [H,T,R] = hough(errthresh);
 %     P  = houghpeaks(H,5,'threshold',ceil(0.3*max(H(:))));
@@ -64,7 +72,7 @@ function [boundary_pts,errthresh] = find_boundaries_from_error( regions, planes,
 %     allLineEnds = [vertcat(lines.point1) vertcat(lines.point2)];
 %     if isempty(allLineEnds)
 %         % If we didn't find any lines, we shouldn't have used skel, so call
-%         % again without it.
+%         % again without it. [boundary_pts,errthresh] = find_boundaries_from_error( pixel_regions, planes, min(labelCost), 2 );
 %         warning('find_boundaries_from_error: Lines was empty. Repeating without skel');
 %         [boundary_pts,errthresh] = find_boundaries_from_error( regions, planes, labelCost, WINDOW_DISTANCE, 1 );
 %         return;
@@ -94,7 +102,7 @@ function [boundary_pts,errthresh] = find_boundaries_from_error( regions, planes,
     for i=1:size(lineEnds,1)
         ceilpts(:,1) = regions(sub2ind(size(errimg), ceilEnds(i,2), ceilEnds(i,1))).centre;
         ceilpts(:,2) = regions(sub2ind(size(errimg), ceilEnds(i,4), ceilEnds(i,3))).centre;
-        size(errimg),floorEnds(i,2),floorEnds(i,1)
+%        size(errimg),floorEnds(i,2),floorEnds(i,1)
         floorpts(:,1) = regions(sub2ind(size(errimg), floorEnds(i,2), floorEnds(i,1))).centre;
         floorpts(:,2) = regions(sub2ind(size(errimg), floorEnds(i,4), floorEnds(i,3))).centre;
         pts = .5*(ceilpts+floorpts);

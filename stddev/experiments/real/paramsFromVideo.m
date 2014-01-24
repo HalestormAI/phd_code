@@ -6,6 +6,8 @@ function plane_details = paramsFromVideo( vidname, FPS )
     disp('Loading Data');
     load(vidname);
 
+    plane_details.frame = frame;
+    
     disp('Filtering Trajectories...')
     trajectories_lgt2 = filterTrajectoryLengths( trajectories,4 );
     
@@ -13,7 +15,7 @@ function plane_details = paramsFromVideo( vidname, FPS )
     split = splitTrajectories(trajectories_lgt2,0);
     length(split)
     disp('Clustering Trajectories (May take some time)...')
-    [cluster_struct,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 100, frame, [0.5,0.5]);
+    [cluster_struct,plane_details.matches,plane_details.assignment,plane_details.outputcost] = traj_cluster_munkres(split,FPS, 1500, frame, [0.5,0.5]);
     
     plane_details.trajectories = recentreImageTrajectories( cluster_struct.representative, frame );
     
@@ -36,10 +38,10 @@ function plane_details = paramsFromVideo( vidname, FPS )
     if exist('H','var')
         plane_details.camPlane = H*makeHomogenous(plane_details.imPlane);
     elseif exist('calib_fn','var')
-         plane_details.camPlane = PETSCalibrationParameters(calib_fn, {plane_details.imPlane});
+         [plane_details.camPlane, plane_details.rmat, plane_details.tmat, plane_details.focal] = PETSCalibrationParameters(calib_fn, {plane_details.imPlane});
     end
     
-    [plane_details.GT_N,plane_details.D] = planeFromPoints( allCamPoints, min(length(allCamPoints),100) );
+    [plane_details.GT_N,plane_details.D] = planeFromPoints( allCamPoints, 3, 'cross' );
     [plane_details.GT_theta,plane_details.GT_psi] = anglesFromN(plane_details.GT_N,0,'degrees');
 
     plane_details.GT_focal= 1;

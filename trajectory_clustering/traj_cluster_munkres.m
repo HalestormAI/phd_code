@@ -11,7 +11,6 @@ function [cluster_struct,assignment,outputcost,imtraj,trajectory_distances,traje
 
     
     NUM_LONGEST = min(length(trajectories), NUM_LONGEST);
-    
     lengths = cellfun(@length, trajectories);
     [~,sortedIds] = sort(lengths,'descend');
     longestIds = sortedIds(1:NUM_LONGEST);

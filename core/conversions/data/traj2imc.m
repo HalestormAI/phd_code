@@ -17,11 +17,13 @@ if ~NOROUND
     pieces = round(pieces);
 end
 
-if size(pieces,2) > 1
+if size(pieces,2) > 2
     imc = zeros( size(pieces,1), length(pieces - 1) );
     for p=1:size(pieces,2)-1
         imc(:,(2*p)-1:(2*p)) = pieces(:,p:p+1);
     end
+elseif size(pieces,2) == 2
+    imc = traj;
 else
     imc = [];
 end

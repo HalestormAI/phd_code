@@ -25,7 +25,7 @@ end
 
 ssd_errors = ones( size(inits,1), 1 ) .* Inf;
 iter_result = cell( size(inits,1), 1) ;
-    warning('REMEMBER TO TAKE OUT FOCALS FIX (iterator_LM, line 33');
+%     warning('REMEMBER TO TAKE OUT FOCALS FIX (iterator_LM, line 33');
 for i=1:size(inits,1);
     t = inits(i,1);
     p = inits(i,2);

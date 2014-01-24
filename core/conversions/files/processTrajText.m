@@ -22,8 +22,8 @@ function [trajectories,frame] = processTrajText( filename )
         raw_trajectories{trajectory_id}(:,end+1) = coord;
     end
 
-    trajectories = cellfun(@(x) traj2imc(x,1,1), raw_trajectories,'uniformoutput',false);
-
+%     trajectories = cellfun(@(x) traj2imc(x,1,1), raw_trajectories,'uniformoutput',false);
+    trajectories = raw_trajectories;
     trajectories(cellfun(@isempty,trajectories)) = [];
 
     % Now load in the image frame

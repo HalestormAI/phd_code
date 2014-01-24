@@ -190,6 +190,7 @@ void Trajectory::calibTsai( Etiseo::CameraModel *cam ) {
     for( i = this->points.begin( ); i != this->points.end( ); i++ ){
         i->calibTsai( cam );
     }
+    this->is3D = true;
 }
 
 Trajectory Trajectory::subtrajectory( std::vector<int> ids )

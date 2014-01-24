@@ -41,9 +41,9 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker, r
         end
         
         if size(plane,1) == 2
-            lines = plot( plane(1,[i,id]),plane(2,[i,id]), sprintf('%s%s', marker, colour) );
+            lines = plot( plane(1,[i,id]),plane(2,[i,id]), sprintf('%s%s', marker, colour),'linewidth',3  );
         else
-            lines = plot3( plane(1,[i,id]),plane(2,[i,id]),plane(3,[i,id]), sprintf('%s%s', marker, colour) );
+            lines = plot3( plane(1,[i,id]),plane(2,[i,id]),plane(3,[i,id]), sprintf('%s%s', marker, colour));
         end
         set(lines, 'Parent', thegroup )
 
