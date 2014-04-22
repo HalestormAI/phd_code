@@ -129,9 +129,7 @@
 %                  -a -b  c ];
 %     
 %              
-% figure;
-% scatter(intersects_mat(1,:), intersects_mat(2,:), 'r*')
-% 
+
 % return
 
 %% Conics - We have 2 pairs of lines, l(1):a,b and l(2):a,b
@@ -146,7 +144,7 @@ else
 end
 while ~done,
     f = figure,
-    im_handle = image(imPos(1,:),imPos(2,:),I2);%imagesc( I3 );
+    im_handle = image(imPos(1,:),imPos(2,:),I1);%imagesc( I3 );
     axis image;
     title('Need 2 sets of orthangonal lines');
 
@@ -164,13 +162,23 @@ while ~done,
         hline2( l{j}, colors(1) )
     end
 
-    theta = 90; % We know the angle between the two lines due to orthangonality.
-    a = -l{1}(2) / l{1}(1);
-    b = -l{2}(2) / l{2}(1);
-    c_alpha = (a+b)./2;
-    c_beta = (a - b)*cotd(theta);
-    r = abs( (a - b)./(2*sind(theta)) );
-
+    clear use_lengths
+    if exist('use_lengths','var')
+        Pe = P*makeHomogenous(endpoints);
+        endpoints = [Pe(1,:)./Pe(3,:);Pe(2,:)./Pe(3,:)];
+        s = input('Enter ratio of x1 to x2: ');
+        c_alpha = (endpoints(1,1)*endpoints(2,1) - endpoints(1,2)*endpoints(2,2)) / (endpoints(2,1)^2 - (s^2)*endpoints(2,2)^2);
+        c_beta = 0;
+        
+        r = abs( s*(endpoints(2,1)*endpoints(1,2) - endpoints(1,1)*endpoints(2,2)) / (endpoints(2,1)^2 - (s^2)*endpoints(2,2)^2));
+    else
+        theta = 90; % We know the angle between the two lines due to orthangonality.
+        a = -l{1}(2) / l{1}(1);
+        b = -l{2}(2) / l{2}(1);
+        c_alpha = (a+b)./2;
+        c_beta = (a - b)*cotd(theta);
+        r = abs( (a - b)./(2*sind(theta)) );
+    end
     disp('Now doing the others')
     % Keep trying if we don't get an intersection
 
@@ -188,16 +196,30 @@ while ~done,
     %      lines{i}(:,j) = lines{i}(:,j) ./ lines{i}(3,j);
         hline2( l2{j}, colors(2) )
     end
-
-    theta = 90;
-    a2 = -l2{1}(2) / l2{1}(1);
-    b2 = -l2{2}(2) / l2{2}(1);
-    c_alpha2 = (a2+b2)./2;
-    c_beta2 = (a2 - b2)*cotd(theta);
-    r2 = abs( (a2 - b2)./(2*sind(theta)) );
-    
+    use_lengths = 1;
+    if exist('use_lengths','var')
+        Pe = P*makeHomogenous(endpoints);
+        endpoints = [Pe(1,:)./Pe(3,:);Pe(2,:)./Pe(3,:)];
+        s = input('Enter ratio of x1 to x2: ');
+        c_alpha2 = (endpoints(1,1)*endpoints(2,1) - endpoints(1,2)*endpoints(2,2)) / (endpoints(2,1)^2 - (s^2)*endpoints(2,2)^2);
+        c_beta2 = 0;
+        
+        r2 = abs( s*(endpoints(2,1)*endpoints(1,2) - endpoints(1,1)*endpoints(2,2)) / (endpoints(2,1)^2 - (s^2)*endpoints(2,2)^2));
+    else
+        theta = 90;
+        a2 = -l2{1}(2) / l2{1}(1);
+        b2 = -l2{2}(2) / l2{2}(1);
+        c_alpha2 = (a2+b2)./2;
+        c_beta2 = (a2 - b2)*cotd(theta);
+        r2 = abs( (a2 - b2)./(2*sind(theta)) );
+    end
     % find distance between centres
     d = vector_dist( [c_alpha, c_beta], [c_alpha2, c_beta2] );
+    
+    circle( [c_alpha,c_beta],r );
+    hold on
+    circle( [c_alpha2,c_beta2],r2,1000,'-r' );
+
     if d < abs(r - r2),
         disp('Circles contained :(');
         close(f)
@@ -224,10 +246,6 @@ A = [ 1/beta, -alpha/beta, 0 ;
         0   ,      0     , 1 ];
     
 figure,
-circle( [c_alpha,c_beta],r );
-hold on
-circle( [c_alpha2,c_beta2],r2,1000,'-r' );
-
 
 H = A*P;
 H_t = maketform( 'projective',H );

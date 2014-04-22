@@ -6,8 +6,11 @@ function costs = multiplane_recalculate_costs( regions, labelling, hypotheses )
     costs = NaN*ones(length(regions),1);
     parfor r=1:length(regions)
         e = labelling(r);
-        
-        costs(r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(regions(r).traj,1,1)).^2);
+        if e == 0
+            costs(r) = NaN;
+        else
+            costs(r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(regions(r).traj,1,1)).^2);
+        end
     end
 
 end

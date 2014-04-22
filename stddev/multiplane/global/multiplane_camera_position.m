@@ -11,7 +11,7 @@ function camera_pos = multiplane_camera_position( world_centre, params )
     new_pt = origin + [0;0;params.camera.height];
 
     %Now rotate in x
-    rotations = makehgtform('xrotate', -deg2rad(params.camera.rotation(1)), 'zrotate', deg2rad(params.camera.rotation(2)));
+    rotations = makehgtform( 'zrotate', deg2rad(params.camera.rotation(1)), 'xrotate', deg2rad(params.camera.rotation(2)));
     
     offset = rotations*makeHomogenous(new_pt);
     

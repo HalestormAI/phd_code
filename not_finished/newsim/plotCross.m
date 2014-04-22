@@ -13,9 +13,9 @@ function grp = plotCross( cntr, lim, colourSpec, labels )
     
     if nargin < 2 || isempty(lim)
         if length(cntr) == 3
-            lim = reshape(axis',2,3)'
+            lim = reshape(axis',2,3)';
         else
-            lim = reshape(axis',2,2)'
+            lim = reshape(axis',2,2)';
         end
     end
     

@@ -1,4 +1,4 @@
-function [planes, trajectories, params, plane_params] = multiplane_process_world_planes (planes, params)
+function [planes, trajectories, params, plane_params] = multiplane_process_world_planes (planes, params, traj)
 
     plane_params = cell(length(planes),1);
     for p = 1:length(planes)
@@ -11,12 +11,13 @@ function [planes, trajectories, params, plane_params] = multiplane_process_world
     plane_names = {planes.ID}'
     
     % !~/make.sh multiplane_add_trajectories.cpp
-    traj = multiplane_add_trajectories({planes.world}',plane_params,params.trajectory.speeds,params.trajectory.drns, plane_names);
-
+    if nargin <3 
+        traj = multiplane_add_trajectories({planes.world}',plane_params,params.trajectory.speeds,params.trajectory.drns, plane_names);
+    end
     % Get the camera position so we know how to transform the scene.
     params.camera.position = multiplane_camera_position(mean([planes.world],2), params);
     [planes,camTraj] = world2camera( planes, traj, params);
-    [planes,imTraj] = camera2image( planes, camTraj, 1/params.camera.focal );
+    [planes,imTraj] = camera2image( planes, camTraj, -1/params.camera.focal );
     trajectories.world = traj;
     trajectories.camera = camTraj;
     trajectories.image = imTraj;

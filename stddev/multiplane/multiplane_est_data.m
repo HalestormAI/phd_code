@@ -103,45 +103,45 @@ regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, WINDOW_DISTANC
     ground_truth(1,:) = anglesFromN(planeFromPoints(planes(1).camera),1,'degrees');
     ground_truth(2,:) = anglesFromN(planeFromPoints(planes(2).camera),1,'degrees')
     
-% Uncomment for alpha expansion
-    pixel_regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, 2);
-    pempties = arrayfun(@(x) isempty(x.traj), pixel_regions);
-    pixel_regions = arrayfun( @addemptyfield, pixel_regions, pempties);
-    
-    disp('Calculating label cost')
-    labelCost = multiplane_calculate_label_cost( regions, hypotheses );
-    labelCost = labelCost;
-    [~,labelling_prealpha] = min(labelCost);
-
-    
-%     multiplane_alpha_expansion_script 
-    
-    figure;
-    pcolours = ['k','r','b','g','m','c','y'];
-    for i=1:length(planes)
-        drawPlane(planes(i).image, '' ,0, pcolours(i));
-    end
-    drawtraj(imTraj,'',0);
-    multiplane_overlay_sliding_regions( regions, labelling_prealpha);
-    
-    error('That''ll do for now kid');
-    history(iteration).smoothCost   = smoothCost;
-    history(iteration).distanceCost = distanceCost;
-    history(iteration).labelCost    = labelCost;
-    history(iteration).labelling    = labelling;
-    history(iteration).regions      = regions;
-
-    regionTrajectories = produce_label_binary_imgs( imTraj, regions, labelling, planes, 0 );
-    
-    
-    clear regions;
-
-    % TODO: Get new trajectory segments for new regions.
-    for l=1:length(labels)
-        regions(l).traj = regionTrajectories{l};
-        regions(l).centre = mean([regions(l).traj{:}],2);
-        regions(l).radius = max( range( [regions(l).traj{:}],2 ) );
-    end
+% % Uncomment for alpha expansion
+%     pixel_regions = multiplane_gen_sliding_regions(mm, WINDOW_SIZE, imTraj, 2);
+%     pempties = arrayfun(@(x) isempty(x.traj), pixel_regions);
+%     pixel_regions = arrayfun( @addemptyfield, pixel_regions, pempties);
+%     
+%     disp('Calculating label cost')
+%     labelCost = multiplane_calculate_label_cost( regions, hypotheses );
+%     labelCost = labelCost;
+%     [~,labelling_prealpha] = min(labelCost);
+% 
+%     
+% %     multiplane_alpha_expansion_script 
+%     
+%     figure;
+%     pcolours = ['k','r','b','g','m','c','y'];
+%     for i=1:length(planes)
+%         drawPlane(planes(i).image, '' ,0, pcolours(i));
+%     end
+%     drawtraj(imTraj,'',0);
+%     multiplane_overlay_sliding_regions( regions, labelling_prealpha);
+%     
+%     error('That''ll do for now kid');
+%     history(iteration).smoothCost   = smoothCost;
+%     history(iteration).distanceCost = distanceCost;
+%     history(iteration).labelCost    = labelCost;
+%     history(iteration).labelling    = labelling;
+%     history(iteration).regions      = regions;
+% 
+%     regionTrajectories = produce_label_binary_imgs( imTraj, regions, labelling, planes, 0 );
+%     
+%     
+%     clear regions;
+% 
+%     % TODO: Get new trajectory segments for new regions.
+%     for l=1:length(labels)
+%         regions(l).traj = regionTrajectories{l};
+%         regions(l).centre = mean([regions(l).traj{:}],2);
+%         regions(l).radius = max( range( [regions(l).traj{:}],2 ) );
+%     end
 
 
 % Dividing line for plane

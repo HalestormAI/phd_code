@@ -62,7 +62,7 @@ function [ output_params, finalError, fullErrors, inits, E_angles, E_ds, errorve
         end
         
 %         levelWeight = 1*10^(-(MAX_LEVEL-level));
-        levelWeight = 1000;
+        levelWeight = 0;
         
         [fullErrors{level},minErrors(level),E_angles(level,:), E_ds(level), inits{level}, errorvecs{level}] = multiplane_hinged_iterator( plane_details.trajectories,thetas,psis,ds,FOCAL,CONSTRAINTS,levelWeight);
         

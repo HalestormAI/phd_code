@@ -17,7 +17,7 @@ function [grp] = draw_camera_pyramid(params, l,w,h)
     
     %faces = [x,y,z];
     
-    rotations = makehgtform('zrotate', deg2rad(params.camera.rotation(2)),'xrotate', -deg2rad(params.camera.rotation(1)) );
+    rotations = makehgtform( 'zrotate', deg2rad(params.camera.rotation(1)), 'xrotate', deg2rad(params.camera.rotation(2)));
     
     
     faces{1}(1,:) = [P(1),P(1)+l,P(1)+l,P(1)];
@@ -41,7 +41,6 @@ function [grp] = draw_camera_pyramid(params, l,w,h)
     for f=1:5    
 %         faces{f}
         faces_r{f} = rotations*makeHomogenous(faces{f})+makeHomogenous(repmat(params.camera.position,1,size(faces{f},2)));
-
         hnd(f) = fill3(faces_r{f}(1,:)-l/2,faces_r{f}(2,:)+w/2,faces_r{f}(3,:),'k','FaceColor',[0.45,0.45,0.45],'EdgeColor',[0.25,0.25,0.25]);
     end
    

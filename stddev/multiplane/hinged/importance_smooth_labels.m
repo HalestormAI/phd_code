@@ -9,7 +9,10 @@ function output_data = importance_smooth_labels( region_dims, input_data, input_
 %         window_ids = (i-offset):(i+offset);
         window = input_data(window_ids);
         error_window = input_error(window_ids);
-        output_data(i) = importance_mode(window, error_window);
+        
+        if ~isempty(window)
+            output_data(i) = importance_mode(window, error_window);
+        end
     end
     
     function md = importance_mode( window, error_window )

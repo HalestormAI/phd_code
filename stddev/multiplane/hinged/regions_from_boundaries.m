@@ -23,31 +23,39 @@ function [current_polygons,node_parents] = regions_from_boundaries( boundary_lin
         %        ext_boundary_points = line_to_boundaries( boundary_line_points{l}, img_mm );
         %        [xi,yi] = polyxpoly( ext_boundary_points(1,:), ext_boundary_points(2,:),hullPts(1,:), hullPts(2,:));
 
-        use_poly = 1;
+        use_poly =[];
         found = 0;
         if length(current_polygons) > 1
             % work out which polygon this line crosses.
             ext_boundary_points = line_to_boundaries( boundary_line_points{l}, img_mm );
 %                         figure;
             for p=1:length(current_polygons)
+%                                 plot(hullPts(1,:),hullPts(2,:),'b-')
+%                                 hold on;
 %                                 plot(current_polygons{p}(:,1),current_polygons{p}(:,2),'m-')
-                                hold on;
                 [xi,yi] = polyxpoly( ext_boundary_points(1,:), ext_boundary_points(2,:),current_polygons{p}(:,1), current_polygons{p}(:,2));
 %                                 plot(ext_boundary_points(1,:), ext_boundary_points(2,:),'y-','LineWidth',3);
 %                                 plot(boundary_line_points{l}(1,:), boundary_line_points{l}(2,:),'g-','LineWidth',3);
 %                                 hold off
 %                                 pause;
                 if length(xi) >= 2
-                    use_poly = p;
+                    use_poly(end+1) = p;
                     found = 1;
-                    break;
+%                     break;
                 end
             end
         else
+            use_poly = 1;
             found = 1;
         end
-
+        use_poly
+%                                 hold on;
+%         for q = 1:length(current_polygons)
+%             
+%             plot(current_polygons{q}(:,1),current_polygons{q}(:,2),'r--')
+%         end
         if found
+            use_poly = use_poly(1);
             use_pts = current_polygons{use_poly};
 %             figure;
 %             subplot(2,1,1);

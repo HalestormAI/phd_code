@@ -8,19 +8,19 @@ NUM_TRAJ = 20;
 % drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,2000)),2);
 % global planes;
 
-
-disp('********************************');
-
-planes
-plane_params
-
-
-disp('********************************');
+% 
+% disp('********************************');
+% 
+% planes
+% plane_params
+% 
+% 
+% disp('********************************');
 
 % Plane_params contains (a,b,c)^\top and d.
 [planes,plane_params] = multiplane_make_planes(1, [0,25] );
 
-params = multiplane_params_example( 10, NUM_TRAJ );
+params = multiplane_params_example( 10, NUM_TRAJ,[],[],0.5 );
 params.camera.position = multiplane_camera_position( mean([planes.world],2), params );
 
 traj = multiplane_add_trajectories({planes.world}',plane_params,params.trajectory.speeds,params.trajectory.drns);
