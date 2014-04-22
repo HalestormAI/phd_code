@@ -4,7 +4,7 @@ function starting_plane = find_end_plane_labelling( pixel_regions, smoothed_labe
         avoid = [];
     end
 
-    % Get ids of regions in terms of rectangle image   
+    % Get ids of regions in terms of rectangle image
     sqreg = reshape(1:length(pixel_regions), region_dims);
 
     % Get xs and ys for scaling imagesc
@@ -21,18 +21,22 @@ function starting_plane = find_end_plane_labelling( pixel_regions, smoothed_labe
             end
         end
     end
-    
+
     labels = unique(smoothed_labelling);
+    labels(labels==0) = [];
 
     if nargin > 4
         figure;
         subplot(2,ceil((1+length(labels))/2),1);
         imagesc(px_xs, px_ys,empty_img)
-        drawPlanes(planes,'image',0)
+        drawPlanes(planes,'image',0);
         view(0,90)
         % colormap gray;
     end
     label_imgs = cell(length(labels),1);
+
+
+    all_component_areas = zeros(length(labels),1);
 
     % For each label, highlight each pixel centre
     for l=1:length(labels)
@@ -51,7 +55,7 @@ function starting_plane = find_end_plane_labelling( pixel_regions, smoothed_labe
         label_components_props{l} = regionprops(label_components{l});
 
         area_mean = mean([label_components_props{l}.Area]);
-
+        all_component_areas(l) = area_mean;
         % remove all components sub-mean area
         for k=1:length(label_components_props{l})
             if label_components_props{l}(k).Area < area_mean
@@ -68,24 +72,41 @@ function starting_plane = find_end_plane_labelling( pixel_regions, smoothed_labe
         end
     end
 
+    attempts = 0;
+    while 1
 
-    plane_adjacencies = zeros(length(labels));
-    adjacency_possibilities = combnk(labels,2);
+        plane_adjacencies = zeros(length(labels))
+        adjacency_possibilities = combnk(labels,2)
 
-    for p=1:length(adjacency_possibilities)
-        i = adjacency_possibilities(p,1);
-        j = adjacency_possibilities(p,2);
-        adjpos = sub2ind(size(plane_adjacencies),i,j);
-        adjpos2 = sub2ind(size(plane_adjacencies),j,i);
+        for p=1:length(adjacency_possibilities)
+            i = adjacency_possibilities(p,1);
+            j = adjacency_possibilities(p,2);
+            adjpos = sub2ind(size(plane_adjacencies),i,j);
+            adjpos2 = sub2ind(size(plane_adjacencies),j,i);
 
-        plane_adjacencies([adjpos,adjpos2]) = multiplane_check_adjacency(label_imgs(adjacency_possibilities(p,:)));
+            plane_adjacencies([adjpos,adjpos2]) = multiplane_check_adjacency(label_imgs(adjacency_possibilities(p,:)));
+        end
+
+        plane_adjacencies
+
+        % find all potential starting planes
+        starting_planes = find(sum(plane_adjacencies)==1)
+        avoid
+        starting_plane = starting_planes(find(~ismember(starting_planes,avoid),1,'first'));
+        
+        if ~isempty(starting_plane)
+            break;
+        elseif attempts == 1
+            labels
+            starting_plane = labels(find(~ismember(labels,avoid),1,'first'))
+            break;
+        end
+        attempts = 1;
+        global_area_mean = mean(all_component_areas)-abs(2*std(all_component_areas));
+
+        labels(all_component_areas < global_area_mean) = [];
     end
-
-    % find all potential starting planes
-    starting_planes = find(sum(plane_adjacencies)==1);
-    avoid
-    starting_plane = starting_planes(find(~ismember(starting_planes,avoid),1,'first'));
-
+    
     function TF = multiplane_check_adjacency( imgs )
 
         img_1g = bwmorph(imgs{1},'thicken');
@@ -93,7 +114,7 @@ function starting_plane = find_end_plane_labelling( pixel_regions, smoothed_labe
 
         TF = any(any((img_1g+img_2g)>=2));
     end
-    
+
     %
     % px_empties = [pixel_regions.empty];
     %

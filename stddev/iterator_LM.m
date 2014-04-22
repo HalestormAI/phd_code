@@ -1,4 +1,4 @@
-function [ssd_errors,minerror,E_angles,E_focal,inits] = iterator_LM( D, plane_details, thetas, psis,focals, options )
+function [ssd_errors,minerror,E_angles,E_focal,inits] = iterator_LM( D, plane_details, thetas, psis,focals, use_fsolve )
 
 if nargin < 3
     thetas = 1:10:89;
@@ -9,9 +9,13 @@ end
 if nargin < 5
     focals = 10.^(-4:4);
 end
+if nargin < 6
+    use_fsolve = 0;
+end
 
-fsolve_options;
-
+if use_fsolve
+    fsolve_options;
+end
 inits = zeros(length(thetas)*length(psis)*length(focals),3);
 count = 1;
 for t = 1:length(thetas)
@@ -30,8 +34,12 @@ for i=1:size(inits,1);
     t = inits(i,1);
     p = inits(i,2);
     f = inits(i,3);
-    [iter_result{i},fval] = fsolve(@(x) errorfunc( x(1:2), [D,0.0014], plane_details.trajectories ),[t,p,f], options);
-    %errors{i} = errorfunc([t,p],[D,f], trajectories);
+    if use_fsolve
+        [iter_result{i},fval] = fsolve(@(x) errorfunc( x(1:2), [D,f], plane_details.trajectories ),[t,p,f], options);
+    else
+        iter_result{i} = inits(i,:);
+    end
+    fval = errorfunc([t,p],[D,f], plane_details.trajectories);
     ssd_errors(i) = sum(fval);
     if ~mod(i,50)
         fprintf('Completed %d of %d rows (%.3f%%)\n', i,length(inits),100*(i/length(inits)));
@@ -51,7 +59,7 @@ E_angles = [E_theta,E_psi];
 
 % estParams = [thetas(best_combo_ids(1)),psis(best_combo_ids(2))];
 % rectTraj = cellfun(@(x) backproj(estParams, exp_constants, x), trajectories, 'uniformoutput', false );
-% rectPlane = backproj(estParams, exp_constants, imPlane ); 
-% 
+% rectPlane = backproj(estParams, exp_constants, imPlane );
+%
 % DISTS = cellfun(@(x,y) vector_dist(x,y),rectTraj,traj2imc(camTraj,1,1),'uniformoutput',false);
 end

@@ -33,7 +33,7 @@ for level=1:MAX_LEVEL
         focals = 10.^(-4:FSTEP:1);
     else
         STEP = STEP/10;
-        range = (-20*STEP):2*STEP:(20*STEP);
+        range = (-10*STEP):STEP:(10*STEP);
 
         thetas = E_angles(level-1,1) + range;
         psis = E_angles(level-1,2) + range;
@@ -48,7 +48,7 @@ for level=1:MAX_LEVEL
 %     warning('REMEMBER TO TAKE OUT FOCALS FIX (multiscaleSolver, line 49');
 %     focals = 0.0014;
 %     thetas,psis,focals
-    [fullErrors{level},minErrors(level),E_angles(level,:),E_focals(level),inits{level}] = iterator_LM( D, plane_details,thetas,psis,focals, options);
+    [fullErrors{level},minErrors(level),E_angles(level,:),E_focals(level),inits{level}] = iterator_LM( D, plane_details,thetas,psis,focals, 0);
     
     if level > 1 && minErrors(level) > minErrors(level-1)
         disp('Iteration stopped due to error increase.');

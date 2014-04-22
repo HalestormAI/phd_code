@@ -132,7 +132,7 @@ ncols = B(4) - B(3);
 
 % Determine any rescaling needed
 s = sze/max(nrows,ncols);
-
+s = s(1);
 S = [s 0 0        % Scaling matrix
      0 s 0
      0 0 1];

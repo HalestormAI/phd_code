@@ -28,7 +28,7 @@
 % Feb 2005  - SVD changed to 'Economy' decomposition (thanks to Paul O'Leary)
 
 function H = homography2d(varargin)
-    
+%     varargin(:)
     [x1, x2] = checkargs(varargin(:));
 
     % Attempt to normalise each set of points so that the origin 

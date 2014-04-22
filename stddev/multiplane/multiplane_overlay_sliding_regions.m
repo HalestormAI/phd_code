@@ -2,6 +2,9 @@ function [grp,regions] = multiplane_overlay_sliding_regions( regions, labelling,
 
 grp = hggroup;
 
+if ~ishold
+    hold on
+end
 
 labels = unique(labelling);
 

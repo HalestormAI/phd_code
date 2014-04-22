@@ -1,4 +1,4 @@
-function [sideTrajectories,sideTrajectoryId] = multiplane_split_trajectories_for_line( trajectories, centre, angle, debug, debug_colour, debug_style )
+function [sideTrajectories,sideTrajectoryId,endPoint] = multiplane_split_trajectories_for_line( trajectories, centre, angle, debug, debug_colour, debug_style )
 % CURRENTLY DUAL PLANE ONLY
 % ANGLE RANGE: -90:90 (in relation to x-axis)
     sideTrajectories = cell( 2, 1 );
@@ -16,7 +16,7 @@ function [sideTrajectories,sideTrajectoryId] = multiplane_split_trajectories_for
     end
     
     for t=1:length(trajectories)       
-        sides = multiplane_line_side( centre, angle, trajectories{t}, debug, debug_colour, debug_style );
+        [sides,endPoint] = multiplane_line_side( centre, angle, trajectories{t}, debug, debug_colour, debug_style );
         debug = 0;
         [splits, splitIds] = SplitVec( sides, 'equal','split','index' );
 

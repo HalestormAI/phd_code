@@ -21,15 +21,15 @@ function params = multiplane_params_example( height, NUM_TRAJ, scale, TIME, nois
         scale = 1/height;
     end
     
-    if nargin < 4 || isempty(time)
+    if nargin < 4 || isempty(TIME)
         TIME = 2000;
     end
     
     if nargin < 5
         noise_level = 0;
     end
-
-    params = multiplane_cam_params( 30, 15, 720, height );
+    TIME
+    params = multiplane_cam_params( 34, 20, 720, height );
     
     speeds = cell(NUM_TRAJ,1);
     for t=1:NUM_TRAJ

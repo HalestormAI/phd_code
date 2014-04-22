@@ -16,7 +16,7 @@ function [boundary_pts,errthresh,errimg] = find_boundaries_from_error( regions, 
     %Gaussian blur to remove small blobs
     errimg_b = errimg;%imfilter(errimg,fspecial('gaussian',[5 5],2));
 
-    errthresh = errimg_b > nanmean(nanmean(errimg_b));% + 2*nanstd(nanstd(errimg_b));
+    errthresh = errimg_b > nanmean(nanmean(errimg_b))+ 10*nanstd(nanstd(errimg_b));
     
     % Now we have the heat map regions, use opening to get rid of small
     % areas

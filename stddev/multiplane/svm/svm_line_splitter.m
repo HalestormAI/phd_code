@@ -1,21 +1,21 @@
-if ~exist('labelCost','var') || ~exist('MINIDS','var')
+% if ~exist('labelCost','var') || ~exist('MINIDS','var')
+% 
+%     labelCost = NaN.*ones(size(hypotheses,1),length(pixel_regions));
+%     for e=1:size(hypotheses,1)
+%         for r=1:length(pixel_regions)
+%             labelCost(e,r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(pixel_regions(r).traj,1,1)).^2);
+%         end
+%     end
+% 
+%     [~,MINIDS] = min(labelCost);
+% end
 
-    labelCost = NaN.*ones(size(hypotheses,1),length(regions));
-    for e=1:size(hypotheses,1)
-        for r=1:length(regions)
-            labelCost(e,r) = sum(errorfunc( hypotheses(e,1:2), [1,hypotheses(e,3)], traj2imc(regions(r).traj,1,1)).^2);
-        end
-    end
-
-    [~,MINIDS] = min(labelCost);
-end
-
-full_regions = ~[regions.empty];
-centres = [regions.centre]';
+full_pixel_regions = ~[pixel_regions.empty];
+centres = [pixel_regions.centre]';
 
 % Train an SVM on assignments to get approximate plane divider line
 figure;
-svm = svmtrain(centres(full_regions,:), MINIDS(full_regions),'showPlot','true');
+svm = svmtrain(centres(full_pixel_regions,:), smoothed_labelling(full_pixel_regions),'showPlot','true');
 hold on;
 
 % Get the line data from the plot
@@ -49,13 +49,15 @@ centre = mean(linePoints([1,end],:))';
 [sideTrajectories,sideTrajectoryId] = multiplane_split_trajectories_for_line( imTraj, centre, angle, 0, 'm' );
 
 
+if ~exist('output_mat','var')
+    output_mat = output_params;
+end
 
-
-% history(iteration).output_mat   = output_mat;
+history(iteration).output_mat   = output_mat;
 % history(iteration).fullErrors   = fullErrors;
-% history(iteration).centre       = centre;
-% history(iteration).angle        = angle;
-% history(iteration).regions      = regions;
+history(iteration).centre       = centre;
+history(iteration).angle        = angle;
+history(iteration).regions      = regions;
 
 
 
@@ -66,4 +68,7 @@ for r=1:2
     regions(r).traj = sideTrajectories{r};
     regions(r).centre = mean(minmax([sideTrajectories{r}{:}]),2);
     regions(r).radius = max(range([sideTrajectories{1}{:}],2));
+    regions(r).empty = 0;
 end
+
+history(iteration+1).regions = regions;

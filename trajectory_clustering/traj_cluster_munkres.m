@@ -13,7 +13,7 @@ function [cluster_struct,assignment,outputcost,imtraj,trajectory_distances,traje
     NUM_LONGEST = min(length(trajectories), NUM_LONGEST);
     lengths = cellfun(@length, trajectories);
     [~,sortedIds] = sort(lengths,'descend');
-    longestIds = sortedIds(1:NUM_LONGEST);
+    longestIds = sortedIds(1:5:NUM_LONGEST);
     
     imtraj = traj2imc(trajectories(longestIds),FPS,1);
     %     drawcoords( imtraj,'',0,'k' );

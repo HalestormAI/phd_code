@@ -18,7 +18,7 @@ function draw_error_mesh( planes, region_centres, min_errors )
     Z = f(X,Y);
 
     
-    ss = surf(X,Y,100*Z);
+    ss = surf(X,Y,10*Z);
     set(ss,'EdgeAlpha',0)
     
 end

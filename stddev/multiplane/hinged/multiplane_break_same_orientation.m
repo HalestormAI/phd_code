@@ -8,7 +8,6 @@ function [new_labelling, new_hypotheses] = multiplane_break_same_orientation( ol
     new_sq_labelling = sq_labelling;
     
     labels = unique(old_labelling);
-    
     for l=1:length(labels)
         % find connected components
         label_img = sq_labelling==labels(l);
@@ -20,19 +19,19 @@ function [new_labelling, new_hypotheses] = multiplane_break_same_orientation( ol
         end
         
         props = regionprops(components);
-
         % filter to remove those beneath mean
-        small_regions = find([props.Area] < mean([props.Area]));
-        
+        small_regions = find([props.Area] < abs(mean([props.Area])-std([props.Area])));
+
         % Filter small regions
         label_img(vertcat(components.PixelIdxList{small_regions})) = 0;
+        new_sq_labelling(vertcat(components.PixelIdxList{small_regions})) = 0;
         
-        remaining_components = components.NumObjects - length(small_regions);
+        
+         remaining_components = components.NumObjects - length(small_regions);
         if remaining_components == 1
             fprintf('Finished for label after removing smalls %d\n',labels(l));
             continue;
         end
-        
         
 %         figure; 
 %         subplot(1,2,1)
@@ -43,8 +42,12 @@ function [new_labelling, new_hypotheses] = multiplane_break_same_orientation( ol
         
         % For all but the first component
         for r=2:components.NumObjects
-            new_id = size(old_hypotheses,1)+1;
+            new_id = size(new_hypotheses,1)+1;
             % create new_hypotheses(end+1,:) = hypothesis(repeated,:);
+%             labels
+            if labels(l) == 0
+                continue;
+            end
             new_hypotheses(new_id,:) = old_hypotheses(labels(l),:);
             
             % change the label in the labelling matrix

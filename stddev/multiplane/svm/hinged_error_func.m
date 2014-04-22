@@ -38,15 +38,18 @@ function E = hinged_error_func( orientation, scales, trajectories, constraints, 
     
     toUse = E ~= Inf;
     
-    E = E(toUse) * priors( rectTrajectories(toUse) );
     
     % Now append point constraints
     unweighted_errors = zeros(size(constraints,2),1);
     for c=1:size(constraints,2)
         unweighted_errors(c) = distance_from_plane( N, D, constraints(:,c) );
-%         E(length(trajectories)+c) = WEIGHT*unweighted_error;
     end
-   E = WEIGHT*sum(unweighted_errors)*E;
+    
+    
+    E = E(toUse) + priors( rectTrajectories(toUse) ) + WEIGHT*sum(unweighted_errors.^2);
+%     unweighted_errors
+%     E
+%    E = WEIGHT*sum(unweighted_errors)*E;
     
     function P = priors( traj )
         
@@ -58,9 +61,9 @@ function E = hinged_error_func( orientation, scales, trajectories, constraints, 
         P = std(means);
     end
 % 
-%     function D = distance_from_plane( n, d, p )
-%         
-%         root = sqrt( sum(n.^2) );
-%         D = abs(sum(n.*p) - d) / root;
-%     end
+    function D = distance_from_plane( n, d, p )
+        
+        root = sqrt( sum(n.^2) );
+        D = abs(sum(n.*p) - d) / root;
+    end
 end

@@ -41,7 +41,7 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker, r
         end
         
         if size(plane,1) == 2
-            lines = plot( plane(1,[i,id]),plane(2,[i,id]), sprintf('%s%s', marker, colour),'linewidth',3  );
+            lines = plot( plane(1,[i,id]),plane(2,[i,id]), sprintf('%s%s', marker, colour),'linewidth',1  );
         else
             lines = plot3( plane(1,[i,id]),plane(2,[i,id]),plane(3,[i,id]), sprintf('%s%s', marker, colour));
         end
@@ -64,6 +64,10 @@ function [f,thegroup] = drawPlane( plane, ttl, newfig, colour, camera, marker, r
         scatter3(0,0,0,32,'r*');
         
     end
-    view(-22,44);
     axis equal;
+    if size(plane,1) == 3
+        view(-22,44);
+    else
+        view(0, 90);
+    end
 end
