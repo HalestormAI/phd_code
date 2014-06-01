@@ -35,15 +35,15 @@ public:
         dxy[1] = trajectories.second.front( ) - trajectories.second.back( );
         
         
-        double top = this->s*(dxy[1].x*dxy[0].y - dxy[0].x*dxy[1].y);
-        double btm = (pow(dxy[0].y,2) - pow(this->s,2)*pow(dxy[1].y,2));
+        double top = this->s*(dxy[1].getX( )*dxy[0].getY( ) - dxy[0].getX( )*dxy[1].getY( ));
+        double btm = (pow(dxy[0].getY( ),2) - pow(this->s,2)*pow(dxy[1].getY( ),2));
         
         this->radius = fabs(top/btm);
         
 //         dxy1.print2D( );
 //         ijh::cout << "***********************************************\n";
-//         ijh::cout << "dx1: " << dxy[0].x <<", dx2: " << dxy[1].x << "\n";
-//         ijh::cout << "dy1: " << dxy[0].y <<", dy2: " << dxy[1].y << "\n";
+//         ijh::cout << "dx1: " << dxy[0].getX( ) <<", dx2: " << dxy[1].getX( ) << "\n";
+//         ijh::cout << "dy1: " << dxy[0].getY( ) <<", dy2: " << dxy[1].getY( ) << "\n";
 //         ijh::cout << "TOP: " << top << "\n";
 //         ijh::cout << "BTM: " << btm << "\n";
 //         ijh::cout << "Radius: " << this->radius << " (s_i = " << this->s << ")" << std::endl;
@@ -59,8 +59,8 @@ public:
         dxy[1] = trajectories.second.front( ) - trajectories.second.back( );
         
         double centrex = 
-                (dxy[0].x*dxy[0].y - pow(this->s,2)*dxy[1].x*dxy[1].y) / 
-                (pow(dxy[0].y,2) - pow(this->s,2)*pow(dxy[1].y,2));
+                (dxy[0].getX( )*dxy[0].getY( ) - pow(this->s,2)*dxy[1].getX( )*dxy[1].getY( )) / 
+                (pow(dxy[0].getY( ),2) - pow(this->s,2)*pow(dxy[1].getY( ),2));
         
         this->centre = Point( centrex, 0 );
     }
@@ -77,8 +77,8 @@ public:
             
             row_id = abs(distance(con.begin( ), c));
             
-            dbl[row_id+0*num_rows] = c->centre.x;
-            dbl[row_id+1*num_rows] = c->centre.y;
+            dbl[row_id+0*num_rows] = c->centre.getX( );
+            dbl[row_id+1*num_rows] = c->centre.getY( );
             dbl[row_id+2*num_rows] = c->radius;
         }
     }
@@ -86,7 +86,7 @@ public:
     friend std::ostream& operator<<( std::ostream &out,
                                      const circular_constraint &c )
     {
-        out << "(" << c.centre.x << ", " << c.centre.y << ") - " << c.radius << std::endl;
+        out << "(" << c.centre.getX( ) << ", " << c.centre.getY( ) << ") - " << c.radius << std::endl;
         return out;
     }
     
