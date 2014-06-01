@@ -109,6 +109,7 @@ void Point::calibTsai( Etiseo::CameraModel *cam ) {
 
    cam->imageToWorld(this->x, this->y, this->Z, this->X, this->Y);
    this->is3D = true;
+   this->is2D = false;
 }
 
 Point Point::move( Matrix *drn, float spd ) const {
