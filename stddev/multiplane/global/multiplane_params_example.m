@@ -29,14 +29,14 @@ function params = multiplane_params_example( height, NUM_TRAJ, scale, TIME, nois
         noise_level = 0;
     end
     TIME
-    params = multiplane_cam_params( 34, 20, 720, height );
+    params = multiplane_cam_params( 67, 20, 720, height );
     
     speeds = cell(NUM_TRAJ,1);
     for t=1:NUM_TRAJ
         speeds{t} = normrnd(scale, noise_level*scale ,1, TIME);
     end
     % speeds(t,:) = num2cell((normrnd(.1,0,10,2000)),2);
-    drns = num2cell(deg2rad(normrnd(0,5,NUM_TRAJ,TIME)),2);
+    drns = num2cell(deg2rad(normrnd(0,10,NUM_TRAJ,TIME)),2);
     
     params = multiplane_trajectory_params( speeds, drns, params );
 end
