@@ -2,8 +2,10 @@
 #define _IJH_POINT 1
 
 #include <math.h>
-#include "camcal_pets/cameraModel.h"
-#include "camcal_pets/xmlUtil.h"
+#ifdef USE_ETSIO
+    #include "camcal_pets/cameraModel.h"
+    #include "camcal_pets/xmlUtil.h"
+#endif
 #include "mex.h"
 #include "matrix.h"
 #include "Matrix.hpp"
@@ -69,8 +71,10 @@ class Point
        double dist2D( const Point pt ) const;
        double dist( const Point pt ) const;
        
-       void calibTsai( Etiseo::CameraModel *cam );
        
+    #ifdef USE_ETSIO
+       void calibTsai( Etiseo::CameraModel *cam );
+    #endif
        Point move( Matrix *drn, float spd ) const;
        
        friend bool operator== (Point &p1, Point &p2);

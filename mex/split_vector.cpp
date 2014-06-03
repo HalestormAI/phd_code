@@ -58,7 +58,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     // Output raw data
     plhs[0] = mxCreateCellMatrix(all_vecs.size( ),1);
-    uint cell_count = 0;
+    unsigned int cell_count = 0;
     std::vector< std::vector<double> >::iterator it;
     for( it = all_vecs.begin( ); it != all_vecs.end( ); it++ )
     {

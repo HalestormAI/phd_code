@@ -1,6 +1,10 @@
 function angles = hinged_initial_condition( hypotheses, plane_graph )
     normals = hypotheses2normals(hypotheses);
     
+    if numel(plane_graph) == 1
+        angles = [];
+        return;
+    end
 %     for i=1:(length(normals)-1)
     for i=2:length(plane_graph)
         

@@ -1,6 +1,14 @@
  #include "SimTrajectory.hpp"
 
 
+
+#ifndef round_IN
+extern float round(float x)
+{
+   return x >= 0.0f ? floorf(x + 0.5f) : ceilf(x - 0.5f);
+}
+#define round_IN 1
+#endif
 SimTrajectory::SimTrajectory( ) {}
 SimTrajectory::SimTrajectory( double *spd, double *drn, const mwSize *num_frames ) {
     this->started = false;
@@ -364,3 +372,4 @@ void SimTrajectory::newStartingPoint( std::vector<Plane> *planes ) {
     this->addPoint( start );
     
 }
+

@@ -103,6 +103,7 @@ double Point::dist2D( const Point pt ) const {
     return this->dist(pt);
 }
 
+#ifdef USE_ETSIO
 void Point::calibTsai( Etiseo::CameraModel *cam ) {
    float Z = 1;
    this->Z = Z;
@@ -111,7 +112,7 @@ void Point::calibTsai( Etiseo::CameraModel *cam ) {
    this->is3D = true;
    this->is2D = false;
 }
-
+#endif
 Point Point::move( Matrix *drn, float spd ) const {
     Matrix out;
     out = this->toMatrix( ) + ((*drn)*spd);

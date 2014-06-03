@@ -80,6 +80,7 @@ bool ijh::check_io::check( int i, int o )
         strm << "-" << output.max( ) << std::endl;
         ijh::error(strm.str( ));
     };
+    return true;
 }
 
 #endif

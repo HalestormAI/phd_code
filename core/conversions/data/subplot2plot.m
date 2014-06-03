@@ -1,4 +1,4 @@
-function subplot2plot( fh )
+function newfig = subplot2plot( fh )
 
 if nargin < 1
     fh = gca;
