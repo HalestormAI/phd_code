@@ -1,5 +1,6 @@
 #ifndef _IJH_PLANE_
 #define _IJH_PLANE_ 1
+#define isnan(x) _isnan(x)  // VC++ uses _isnan() instead of isnan()
 
 #include <math.h>
 #include <vector>

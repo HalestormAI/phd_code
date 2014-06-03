@@ -34,7 +34,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     
     
     // Now output data
-    plhs[0] = mxCreateDoubleMatrix(1,floor(numDim[1]/col_offset),mxREAL);
+    plhs[0] = mxCreateDoubleMatrix(1,floorf(numDim[1]/col_offset),mxREAL);
     double *outputDbl = mxGetPr( plhs[0] );
         
     for( int col=0; col < numDim[1]; col += col_offset) {

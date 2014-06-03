@@ -127,7 +127,7 @@ public:
         }
     }
     
-    uint length( ) {
+    unsigned int length( ) {
         return this->points.size( );
     }
         

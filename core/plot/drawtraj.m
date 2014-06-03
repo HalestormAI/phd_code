@@ -44,6 +44,7 @@ function [f,g] = drawtraj( traj, ttl, newfig, colour, lw, marker, returnline )
         g = plot3(traj(1,:),traj(2,:),traj(3,:),sprintf('%s', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
     else
 %         drawfun = @drawcoords;
+colour
         g = plot(traj(1,:),traj(2,:),sprintf('%s', marker), 'Color', colour, 'LineWidth',lw, 'MarkerSize', 10 );
     end
      

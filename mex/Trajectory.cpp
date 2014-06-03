@@ -185,6 +185,7 @@ float Trajectory::angleDiff( int aIdx, const Trajectory &t, int bIdx ) const {
     return abs( ang1/PI - ang2/PI );
 }
 
+#ifdef USE_ETSIO
 void Trajectory::calibTsai( Etiseo::CameraModel *cam ) {
     std::vector<Point>::iterator i;
     for( i = this->points.begin( ); i != this->points.end( ); i++ ){
@@ -192,6 +193,7 @@ void Trajectory::calibTsai( Etiseo::CameraModel *cam ) {
     }
     this->is3D = true;
 }
+#endif
 
 Trajectory Trajectory::subtrajectory( std::vector<int> ids )
 {
@@ -324,17 +326,17 @@ void Trajectory::loadAll( const mxArray *prhs, std::vector<Trajectory> *alltraj 
         mx_traj = (mxArray*)mxGetCell(prhs,t);
         trajDims = mxGetDimensions( mx_traj );
         
-        Trajectory t = Trajectory( );
+        Trajectory t1 = Trajectory( );
         if( trajDims[0] == 2 ) {
-            t.fromDouble( mxGetPr( mx_traj), trajDims  );
+            t1.fromDouble( mxGetPr( mx_traj), trajDims  );
         } else if( trajDims[0] == 3 ) {
-            t.fromDouble3D( mxGetPr( mx_traj), trajDims  );
+            t1.fromDouble3D( mxGetPr( mx_traj), trajDims  );
         } else {
             mexErrMsgIdAndTxt( "MATLAB:errorfunc:invalidsize",
                     "Trajectory should be 3xn." );
         }
         
-        alltraj->push_back( t );
+        alltraj->push_back( t1 );
     }
 }
 

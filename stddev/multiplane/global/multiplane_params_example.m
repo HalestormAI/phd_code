@@ -29,7 +29,7 @@ function params = multiplane_params_example( height, NUM_TRAJ, scale, TIME, nois
         noise_level = 0;
     end
     TIME
-    params = multiplane_cam_params( 67, 20, 720, height );
+    params = multiplane_cam_params( 24, 8, 720, height );
     
     speeds = cell(NUM_TRAJ,1);
     for t=1:NUM_TRAJ

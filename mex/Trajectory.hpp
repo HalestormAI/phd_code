@@ -4,8 +4,15 @@
 #include <algorithm>
 #include <numeric>
 #include "mexHelper.hpp"
+#ifdef USE_ETSIO
 #include "camcal_pets/cameraModel.h"
 #include "camcal_pets/xmlUtil.h"
+#endif
+
+#ifndef uint
+#define uint int
+#endif
+
 #include "mex.h"
 #include "matrix.h"
 #include "Point.hpp"
@@ -50,8 +57,9 @@ public:
     void addPoint(Point p);
        
     float angleDiff( int aIdx, const Trajectory &t, int bIdx ) const;    
+    #ifdef USE_ETSIO
     void calibTsai( Etiseo::CameraModel *cam );
-    
+    #endif
     Trajectory subtrajectory( std::vector<int> ids );
     std::string toStr( ) const;
     void toFile( std::string filename );
